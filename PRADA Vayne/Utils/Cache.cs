@@ -118,7 +118,6 @@ namespace PRADA_Vayne.Utils
 
         public static void Load()
         {
-            Player = ObjectManager.Player;
             Utility.DelayAction.Add(1000, () => _heroes = ObjectManager.Get<Obj_AI_Hero>().ToList());
         }
     }
