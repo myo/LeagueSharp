@@ -13,13 +13,9 @@ namespace Most_Useless_Assembly_Ever
         {
             Game.OnUpdate += a =>
             {
-                Slack();
+                // MORE EFFICIENT
+                return;
             };
-        }
-
-        public static void Slack()
-        {
-                //IM NOT DOING ANYTHIN AT ALL LOL
         }
     }
 }
