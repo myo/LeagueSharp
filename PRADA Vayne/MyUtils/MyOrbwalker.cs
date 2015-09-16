@@ -746,14 +746,17 @@ namespace PRADA_Vayne.MyUtils
                 /*Champions*/
                 if (ActiveMode != OrbwalkingMode.LastHit)
                 {
-                    var silveredEnemy = ObjectManager.Get<Obj_AI_Hero>()
-                        .FirstOrDefault(
-                            e =>
-                                e.IsEnemy &&
-                                e.Buffs.Any(buff => buff.Name == "vaynesilvereddebuff" && buff.Count == 2));
-                    if (silveredEnemy != null && silveredEnemy.IsValidTarget())
+                    if (Player.Level < 16)
                     {
-                        return silveredEnemy;
+                        var silveredEnemy = ObjectManager.Get<Obj_AI_Hero>()
+                            .FirstOrDefault(
+                                e =>
+                                    e.IsEnemy &&
+                                    e.Buffs.Any(buff => buff.Name == "vaynesilvereddebuff" && buff.Count == 2));
+                        if (silveredEnemy != null && silveredEnemy.IsValidTarget())
+                        {
+                            return silveredEnemy;
+                        }
                     }
                     var target = TargetSelector.GetTarget(-1);
                     if (target.IsValidTarget())
