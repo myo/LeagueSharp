@@ -69,6 +69,7 @@
     <Compile Include="MyLogic\Others\OnDraw.cs" />
     <Compile Include="MyLogic\Others\OnProcessSpellcast.cs" />
     <Compile Include="MyLogic\Others\OnUpdate.cs" />
+    <Compile Include="MyLogic\Others\SkinHack.cs" />
     <Compile Include="MyLogic\Q\AfterAttack.cs" />
     <Compile Include="MyLogic\Q\BeforeAttack.cs" />
     <Compile Include="MyLogic\Q\OnAttack.cs" />

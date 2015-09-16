@@ -44,6 +44,7 @@ namespace PRADA_Vayne.MyInitializer
             Game.OnUpdate += MyLogic.Others.Events.OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += MyLogic.Others.Events.OnProcessSpellcast;
             Drawing.OnDraw += MyLogic.Others.Events.OnDraw;
+            Game.OnUpdate += MyLogic.Others.SkinHack.OnUpdate;
 
             #endregion
         }
