@@ -155,7 +155,7 @@ namespace PRADA_Vayne.MyUtils
             return false;
         }
 
-        public static Vector3 GetTumblePos(this Obj_AI_Hero target)
+        public static Vector3 GetTumblePos(this Obj_AI_Base target)
         {
             //if the target is not a melee and he's alone he's not really a danger to us, proceed to 1v1 him :^ )
             if (!target.IsMelee && Heroes.Player.CountEnemiesInRange(800) == 1) return Game.CursorPos;
