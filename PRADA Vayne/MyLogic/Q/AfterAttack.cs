@@ -28,11 +28,7 @@ namespace PRADA_Vayne.MyLogic.Q
                         tumblePosition = Game.CursorPos;
                         break;
                 }
-                if (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.Combo)
-                {
-                    Tumble.Cast(tumblePosition);
-                    return;
-                }
+                Tumble.Cast(tumblePosition);
             }
             if (sender.IsMe && target.IsValid<Obj_AI_Minion>())
             {
