@@ -38,7 +38,7 @@ namespace PRADA_Vayne.MyUtils
 
                 var hitchance = Program.ComboMenu.Item("EHitchance").GetValue<Slider>().Value;
                 var angle = 0.20*hitchance;
-                var travelDistance = 0.469 + Game.Ping/2000f;
+                const float travelDistance = 0.5f;
                 var alpha = new Vector2((float) (p.X + travelDistance*Math.Cos(Math.PI/180*angle)),
                     (float) (p.X + travelDistance*Math.Sin(Math.PI/180*angle)));
                 var beta = new Vector2((float) (p.X - travelDistance*Math.Cos(Math.PI/180*angle)),
@@ -48,7 +48,7 @@ namespace PRADA_Vayne.MyUtils
                 {
                     if (pP.To2D().Extend(alpha,
                             i)
-                        .To3D().IsCollisionable() || pP.To2D().Extend(beta, i).To3D().IsCollisionable()) return true;
+                        .To3D().IsCollisionable() && pP.To2D().Extend(beta, i).To3D().IsCollisionable()) return true;
                 }
                 return false;
             }
