@@ -849,8 +849,9 @@ namespace DRAVEN_Draven.MyUtils
                         target, catchableAxe.Position.Randomize(-25, 25),
                         _config.Item("ExtraWindup").GetValue<Slider>().Value,
                         _config.Item("HoldPosRadius").GetValue<Slider>().Value);
+                        return;
                     }
-                    else if ((target is Obj_AI_Hero))
+                    if ((target is Obj_AI_Hero))
                     {
                         Orbwalk(
                             target, (target as Obj_AI_Hero).GetPositioning(),
