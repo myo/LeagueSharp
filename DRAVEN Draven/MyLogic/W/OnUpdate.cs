@@ -10,7 +10,6 @@ namespace DRAVEN_Draven.MyLogic.W
     {
         public static void OnUpdate(EventArgs args)
         {
-            if (Program.LaneClearMenu.Item("WTowers"))
         }
     }
 }

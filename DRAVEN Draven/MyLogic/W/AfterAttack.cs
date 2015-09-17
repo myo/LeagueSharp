@@ -25,6 +25,13 @@ namespace DRAVEN_Draven.MyLogic.W
                     }
                 }
             }
+            if (target is Obj_AI_Turret)
+            {
+                if (Program.LaneClearMenu.Item("WTowers").GetValue<bool>())
+                {
+                    Program.W.Cast();
+                }
+            }
         }
     }
 }
