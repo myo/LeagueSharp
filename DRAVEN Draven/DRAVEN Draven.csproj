@@ -72,6 +72,7 @@
     <Compile Include="MyLogic\Others\SkinHack.cs" />
     <Compile Include="MyLogic\Q\OnUpdate.cs" />
     <Compile Include="MyLogic\R\OnUpdate.cs" />
+    <Compile Include="MyLogic\W\AfterAttack.cs" />
     <Compile Include="MyLogic\W\OnUpdate.cs" />
     <Compile Include="MyUtils\MyActivator.cs" />
     <Compile Include="MyUtils\MyCache.cs" />

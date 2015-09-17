@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace DRAVEN_Draven.MyLogic.W
 {
-    class OnUpdate
+    public static partial class Events
     {
+        public static void OnUpdate(EventArgs args)
+        {
+            if (Program.LaneClearMenu.Item("WTowers"))
+        }
     }
 }
