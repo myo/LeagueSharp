@@ -842,7 +842,7 @@ namespace DRAVEN_Draven.MyUtils
                     }
 
                     var target = GetTarget();
-                    var catchableAxe = Draven.QReticles.FirstOrDefault();
+                    var catchableAxe = Draven.QReticles.OrderBy(axe => axe.Key).FirstOrDefault().Value;
                     if (catchableAxe != null)
                     {
                         Orbwalk(

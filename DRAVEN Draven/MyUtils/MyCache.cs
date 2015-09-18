@@ -97,28 +97,21 @@ namespace DRAVEN_Draven.MyUtils
 
     public static class Draven
     {
-        public static List<GameObject> QReticles;
+        public static Dictionary<int, GameObject> QReticles;
 
         public static void Load()
         {
             GameObject.OnCreate += OnCreate;
-            GameObject.OnDelete += OnDelete;
-        }
-
-        private static void OnDelete(GameObject sender, EventArgs args)
-        {
-            if (sender.Name.Contains("Q_reticle"))
-            {
-                QReticles.RemoveAll(qr => qr.NetworkId == sender.NetworkId);
-            }
         }
 
         private static void OnCreate(GameObject sender, EventArgs args)
         {
+            var addTick = Environment.TickCount;
             if (sender.Name.Contains("Q_reticle"))
             {
-                QReticles.Add(sender);
+                QReticles.Add(addTick, sender);
             }
+            Utility.DelayAction.Add(1800, () => QReticles.Remove(addTick)); //thx chewy for the lifespan of reticles
         }
     }
 
