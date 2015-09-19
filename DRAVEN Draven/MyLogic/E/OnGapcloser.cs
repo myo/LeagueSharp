@@ -12,6 +12,7 @@ namespace DRAVEN_Draven.MyLogic.E
     {
         public static void OnGapcloser(ActiveGapcloser gapcloser)
         {
+            if (!gapcloser.Sender.IsValidTarget(700)) return;
             if (Program.EscapeMenu.SubMenu("antigapcloser")
                 .Item("antigc" + gapcloser.Sender.ChampionName)
                 .GetValue<bool>())

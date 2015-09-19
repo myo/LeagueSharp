@@ -10,8 +10,7 @@ namespace DRAVEN_Draven.MyInitializer
         {
             CustomEvents.Game.OnGameLoad += args =>
             {
-                Notifications.AddNotification("Draven draven disabled; use MoonDraven soon tm", 10000);
-                if (ObjectManager.Player.CharData.BaseSkinName == "ProjectFioraMistress")
+                if (ObjectManager.Player.CharData.BaseSkinName == "Draven")
                 {
                     MyUtils.Cache.Load();
                     LoadMenu();

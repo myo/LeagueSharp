@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DRAVEN_Draven</RootNamespace>
     <AssemblyName>DRAVEN Draven</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
     <PostBuildEvent />
     <OutputPath>bin\Release</OutputPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -70,6 +71,7 @@
     <Compile Include="MyLogic\Others\OnProcessSpellcast.cs" />
     <Compile Include="MyLogic\Others\OnUpdate.cs" />
     <Compile Include="MyLogic\Others\SkinHack.cs" />
+    <Compile Include="MyLogic\Q\DravenDecision.cs" />
     <Compile Include="MyLogic\Q\OnUpdate.cs" />
     <Compile Include="MyLogic\R\OnUpdate.cs" />
     <Compile Include="MyLogic\W\AfterAttack.cs" />

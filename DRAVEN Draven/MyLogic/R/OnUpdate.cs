@@ -11,11 +11,11 @@ namespace DRAVEN_Draven.MyLogic.R
     {
         public static void OnUpdate(EventArgs args)
         {
-            if (Program.R.IsReady())
+            /*if (Program.R.IsReady())
             {
-                var target = TargetSelector.GetTarget(20000f, TargetSelector.DamageType.Physical);
+                var target = TargetSelector.GetTarget(10000f, TargetSelector.DamageType.Physical);
                 Program.R.CastIfWillHit(target, 2);
-            }
+            }*/
         }
     }
 }

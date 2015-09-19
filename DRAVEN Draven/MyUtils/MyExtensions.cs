@@ -25,31 +25,19 @@ namespace DRAVEN_Draven.MyUtils
             if (!cursorPos.IsDangerousPosition()) return cursorPos;
 
 
-            var aRC = new Geometry.Circle(Heroes.Player.ServerPosition.To2D(), 300).ToPolygon().ToClipperPath();
-            var targetPosition = target.ServerPosition;
+            var aRC = new Geometry.Circle(Heroes.Player.ServerPosition.To2D(), 575).ToPolygon().ToClipperPath();
+            var targetPosition = Prediction.GetPrediction(target, 1800f).UnitPosition;
             var pList = new List<Vector3>();
-            var additionalDistance = (0.106 + Game.Ping / 2000f) * target.MoveSpeed;
 
-            if (!cursorPos.IsDangerousPosition()) return cursorPos;
+            if (!cursorPos.IsDangerousPosition() || Player.UnderTurret() || Game.CursorPos.UnderTurret(true) || Player.CountEnemiesInRange(1400) == 1) return cursorPos;
 
             foreach (var p in aRC)
             {
                 var v3 = new Vector2(p.X, p.Y).To3D();
 
-                if (target.IsFacing(Heroes.Player))
-                {
-                    if (!v3.IsDangerousPosition() && v3.Distance(targetPosition) < 550) pList.Add(v3);
-                }
-                else
-                {
-                    if (!v3.IsDangerousPosition() && v3.Distance(targetPosition) < 550 - additionalDistance) pList.Add(v3);
-                }
+                if (!v3.IsDangerousPosition() && v3.Distance(targetPosition) > 375 && v3.Distance(targetPosition) < 600) pList.Add(v3);
             }
-            if (Heroes.Player.UnderTurret() || Heroes.Player.CountEnemiesInRange(800) == 1)
-            {
-                return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
-            }
-            return pList.Count > 1 ? pList.OrderByDescending(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
+            return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
         }
 
         public static Vector3 Randomize(this Vector3 pos)
@@ -62,10 +50,9 @@ namespace DRAVEN_Draven.MyUtils
         {
             return
                 HeroManager.Enemies.Any(
-                    e => e.IsValidTarget() && e.IsVisible &&
+                    e => e.IsMelee && e.IsValidTarget() && e.IsVisible &&
                         e.Distance(pos) < Program.ComboMenu.Item("QMinDist").GetValue<Slider>().Value) ||
-                Traps.EnemyTraps.Any(t => pos.Distance(t.Position) < 125) ||
-                (pos.UnderTurret(true) && !Player.UnderTurret(true)) || pos.IsWall();
+                Traps.EnemyTraps.Any(t => pos.Distance(t.Position) < 125);
         }
 
         public static bool IsKillable(this Obj_AI_Hero hero)

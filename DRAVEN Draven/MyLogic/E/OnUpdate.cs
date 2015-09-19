@@ -15,7 +15,7 @@ namespace DRAVEN_Draven.MyLogic.E
         {
             if (Program.E.IsReady())
             {
-                var chasee = Heroes.EnemyHeroes.FirstOrDefault(e => e.HealthPercent < 50 && !e.IsFacing(Heroes.Player));
+                var chasee = Heroes.EnemyHeroes.FirstOrDefault(e => e.Distance(ObjectManager.Player) < 700 && e.HealthPercent < 50 && !e.IsFacing(Heroes.Player));
                 if (ObjectManager.Player.CountEnemiesInRange(1200) <= 2 && chasee != null)
                 {
                     Program.E.Cast(Program.E.GetPrediction(chasee).UnitPosition);

@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DRAVEN_Draven.MyLogic.Q;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -842,29 +843,12 @@ namespace DRAVEN_Draven.MyUtils
                     }
 
                     var target = GetTarget();
-                    var catchableAxe = Draven.QReticles.OrderBy(axe => axe.Key).FirstOrDefault().Value;
-                    if (catchableAxe != null)
-                    {
-                        Orbwalk(
-                        target, catchableAxe.Position.Randomize(-25, 25),
+                    var objaibase_target = target as Obj_AI_Base;
+                    var orbwalkPosition = DravenDecision.WhichAxeShouldITake(objaibase_target);
+                    Orbwalk(
+                        target, !orbwalkPosition.IsDangerousPosition() ? orbwalkPosition : objaibase_target.GetPositioning(),
                         _config.Item("ExtraWindup").GetValue<Slider>().Value,
                         _config.Item("HoldPosRadius").GetValue<Slider>().Value);
-                        return;
-                    }
-                    if ((target is Obj_AI_Hero))
-                    {
-                        Orbwalk(
-                            target, (target as Obj_AI_Hero).GetPositioning(),
-                            _config.Item("ExtraWindup").GetValue<Slider>().Value,
-                            _config.Item("HoldPosRadius").GetValue<Slider>().Value);
-                    }
-                    else
-                    {
-                        Orbwalk(
-                            target, (_orbwalkingPoint.To2D().IsValid()) ? _orbwalkingPoint : Game.CursorPos,
-                            _config.Item("ExtraWindup").GetValue<Slider>().Value,
-                            _config.Item("HoldPosRadius").GetValue<Slider>().Value);
-                    }
                 }
                 catch (Exception e)
                 {

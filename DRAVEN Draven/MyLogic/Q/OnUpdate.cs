@@ -13,11 +13,21 @@ namespace DRAVEN_Draven.MyLogic.Q
     {
         public static void OnUpdate(EventArgs args)
         {
-            if (Program.Q.IsReady() && Heroes.EnemyHeroes.Any(h => h.Distance(Heroes.Player) < 600) ||
-                ObjectManager.Get<Obj_AI_Minion>().Any(m => m.Distance(ObjectManager.Player) < 600))
+            if (Program.Q.IsReady() && DravenDecision.QTotalCount < 3)
             {
-                Program.Q.Cast();
+                if (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.Combo &&
+                    Heroes.Player.CountEnemiesInRange(600) >= 1)
+                {
+                    Program.Q.Cast();
+                    return;
+                }
+                if (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear &&
+                    ObjectManager.Get<Obj_AI_Minion>().Any(m => m.Distance(ObjectManager.Player) < 550))
+                {
+                    Program.Q.Cast();
+                }
             }
+            
         }
     }
 }
