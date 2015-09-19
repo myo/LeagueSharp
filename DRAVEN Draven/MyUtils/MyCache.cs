@@ -102,6 +102,7 @@ namespace DRAVEN_Draven.MyUtils
         public static void Load()
         {
             GameObject.OnCreate += OnCreate;
+            GameObject.OnDelete += OnDelete;
         }
 
         private static void OnCreate(GameObject sender, EventArgs args)
@@ -112,6 +113,15 @@ namespace DRAVEN_Draven.MyUtils
                 QReticles.Add(addTick, sender);
             }
             Utility.DelayAction.Add(1800, () => QReticles.Remove(addTick)); //thx chewy for the lifespan of reticles
+        }
+
+        private static void OnDelete(GameObject sender, EventArgs args)
+        {
+            var garbage = QReticles.Where(entry => entry.Value.NetworkId == sender.NetworkId).ToList();
+            foreach (var entry in garbage)
+            {
+                QReticles.Remove(entry.Key);
+            }
         }
     }
 
