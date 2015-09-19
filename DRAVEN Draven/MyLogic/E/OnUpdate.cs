@@ -18,7 +18,12 @@ namespace DRAVEN_Draven.MyLogic.E
                 var chasee = Heroes.EnemyHeroes.FirstOrDefault(e => e.HealthPercent < 50 && !e.IsFacing(Heroes.Player));
                 if (ObjectManager.Player.CountEnemiesInRange(1200) <= 2 && chasee != null)
                 {
-                    Program.E.Cast(chasee);
+                    Program.E.Cast(Program.E.GetPrediction(chasee).UnitPosition);
+                }
+                var treeSmoker = Heroes.EnemyHeroes.FirstOrDefault(enemy => enemy.Distance(ObjectManager.Player) < 350);
+                if (treeSmoker != null && treeSmoker.IsValidTarget())
+                {
+                    Program.E.Cast(Program.E.GetPrediction(treeSmoker).UnitPosition);
                 }
             }
         }

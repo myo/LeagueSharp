@@ -14,7 +14,7 @@ namespace DRAVEN_Draven.MyLogic.E
         {
             if (Program.E.IsReady() && args.DangerLevel == Interrupter2.DangerLevel.High && Program.E.IsInRange(sender))
             {
-                Program.E.Cast(sender);
+                Program.E.Cast(Program.E.GetPrediction(sender).UnitPosition);
             }
         }
     }

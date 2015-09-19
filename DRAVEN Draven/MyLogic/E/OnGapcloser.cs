@@ -18,7 +18,7 @@ namespace DRAVEN_Draven.MyLogic.E
             {
                 if (Heroes.Player.Distance(gapcloser.End) < 1000 && Heroes.Player.Distance(gapcloser.Start) < 1000)
                 {
-                    Program.E.Cast(gapcloser.Sender);
+                    Program.E.Cast(Program.E.GetPrediction(gapcloser.Sender).UnitPosition);
                 }
             }
         }
