@@ -13,7 +13,7 @@ namespace DRAVEN_Draven.MyLogic.Q
     {
         public static void OnUpdate(EventArgs args)
         {
-            if (Program.Q.IsReady() && DravenDecision.QTotalCount < 3)
+            if (Program.Q.IsReady() && DravenDecision.QTotalCount <= 2)
             {
                 if (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.Combo &&
                     Heroes.Player.CountEnemiesInRange(600) >= 1)

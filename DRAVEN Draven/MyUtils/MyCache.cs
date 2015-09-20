@@ -113,7 +113,7 @@ namespace DRAVEN_Draven.MyUtils
             {
                 QReticles.Add(addTick, sender);
             }
-            Utility.DelayAction.Add(1300, () => QReticles.Remove(addTick)); //thx chewy for the lifespan of reticles
+            Utility.DelayAction.Add(1100, () => QReticles.Remove(addTick)); //thx chewy for the lifespan of reticles
         }
         private static void OnDelete(GameObject sender, EventArgs args)
         {
