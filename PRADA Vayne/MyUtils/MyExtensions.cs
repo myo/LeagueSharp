@@ -185,7 +185,11 @@ namespace PRADA_Vayne.MyUtils
             {
                 return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
             }
-            return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
+            if (!cursorPos.IsDangerousPosition())
+            {
+                return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
+            }
+            return pList.Count > 1 ? pList.OrderByDescending(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
         }
 
         public static int VayneWStacks(this Obj_AI_Base o)
