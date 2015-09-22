@@ -16,18 +16,6 @@ namespace PRADA_Vayne.MyLogic.Others
 
         public static void OnUpdate(EventArgs args)
         {
-            if (ObjectManager.Player.IsDead)
-            {
-                Died = true;
-            }
-            else
-            {
-                if (Died)
-                {
-                    Died = false;
-                    Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, Program.SkinhackMenu.Item("skin").GetValue<StringList>().SelectedIndex + 1);
-                }
-            }
         }
     }
 }
