@@ -51,7 +51,7 @@ namespace PRADA_Vayne.MyInitializer
                     new MenuItem("ManualE", "Semi-Manual Condemn").SetValue(new KeyBind('E', KeyBindType.Press)));
                 Program.ComboMenu.AddItem(
                     new MenuItem("EMode", "E Mode").SetValue(
-                        new StringList(new[] {"PRADAPERFECT", "MARKSMAN", "SHARPSHOOTER", "GOSU", "VHR", "PRADALEGACY", "FASTEST"})));
+                        new StringList(new[] {"PRADAPERFECT", "MARKSMAN", "SHARPSHOOTER", "GOSU", "VHR", "PRADALEGACY", "FASTEST", "OLDPRADA"})));
                 Program.ComboMenu.AddItem(
                     new MenuItem("EPushDist", "E Push Distance").SetValue(new Slider(420, 300, 475)));
                 Program.ComboMenu.AddItem(new MenuItem("EHitchance", "E % Hitchance").SetValue(new Slider(67)));
