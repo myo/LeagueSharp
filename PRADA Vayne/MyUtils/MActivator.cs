@@ -190,7 +190,7 @@ namespace PRADA_Vayne.MyUtils
             }
             catch
             {
-                Game.PrintChat("MasterActivator error creating menu!");
+                Console.WriteLine("MasterActivator error creating menu!");
             }
         }
 
@@ -499,7 +499,7 @@ namespace PRADA_Vayne.MyUtils
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Game.PrintChat("Problem with MasterActivator(Drawing).");
+                Console.WriteLine("Problem with MasterActivator(Drawing).");
             }
         }
 
@@ -557,7 +557,7 @@ namespace PRADA_Vayne.MyUtils
                 }
                 catch
                 {
-                    Game.PrintChat("MasterActivator presented a problem, and has been disabled!");
+                    Console.WriteLine("MasterActivator presented a problem, and has been disabled!");
                     Config.Item("enabled").SetValue<KeyBind>(new KeyBind('L', KeyBindType.Toggle, false)); // Check
                 }
             }
@@ -774,7 +774,7 @@ namespace PRADA_Vayne.MyUtils
                             }
                             else
                             {
-                                Game.PrintChat("MasterActivator cant get " + hero.BaseSkinName + " spells!");
+                                Console.WriteLine("MasterActivator cant get " + hero.BaseSkinName + " spells!");
                             }*/
                         }
                     }
@@ -1117,7 +1117,7 @@ namespace PRADA_Vayne.MyUtils
                                             }
                                             catch
                                             {
-                                                Game.PrintChat("Problem with MasterActivator(Smite).");
+                                                Console.WriteLine("Problem with MasterActivator(Smite).");
                                             }
                                         }
                                     }
