@@ -511,18 +511,6 @@ namespace PRADA_Vayne.MyUtils
                 misc.AddItem(
                     new MenuItem("HoldPosRadius", "Hold Position Radius").SetValue(new Slider(50, 0, 250)));
                 misc.AddItem(new MenuItem("PriorizeFarm", "Priorize farm over harass").SetShared().SetValue(true));
-                misc.AddItem(new MenuItem("FreezeHealth", "LaneFreeze Damage %").SetShared().SetValue(new Slider(50, 50)));
-                misc.AddItem(new MenuItem("PermaShow", "PermaShow").SetShared().SetValue(true)).ValueChanged += (s, args) =>
-                {
-                    if (args.GetNewValue<bool>())
-                    {
-                        _config.Item("Freeze").Permashow(true, "Freeze");
-                    }
-                    else
-                    {
-                        _config.Item("Freeze").Permashow(false);
-                    }
-                };
                 _config.AddSubMenu(misc);
 
                 /* Missile check */
@@ -548,11 +536,6 @@ namespace PRADA_Vayne.MyUtils
 
                 _config.AddItem(
                     new MenuItem("Orbwalk", "Combo").SetShared().SetValue(new KeyBind(32, KeyBindType.Press)));
-
-                _config.AddItem(
-                   new MenuItem("Freeze", "Lane Freeze (Toggle)").SetShared().SetValue(new KeyBind('H', KeyBindType.Toggle)));
-
-                _config.Item("Freeze").Permashow(_config.Item("PermaShow").GetValue<bool>(), "Freeze");
 
                 _delay = _config.Item("MovementDelay").GetValue<Slider>().Value;
 
@@ -675,7 +658,6 @@ namespace PRADA_Vayne.MyUtils
                 if (ActiveMode == OrbwalkingMode.LaneClear || ActiveMode == OrbwalkingMode.Mixed ||
                     ActiveMode == OrbwalkingMode.LastHit)
                 {
-                    var FreezeActive = _config.Item("Freeze").GetValue<KeyBind>().Active && (ActiveMode != OrbwalkingMode.LaneClear);
                     var MinionList =
                         ObjectManager.Get<Obj_AI_Minion>()
                             .Where(
@@ -686,16 +668,9 @@ namespace PRADA_Vayne.MyUtils
                                     (ObjectManager.Player.BaseAttackDamage + ObjectManager.Player.FlatPhysicalDamageMod));
 
                     foreach (var minion in MinionList)
-                    {
-                        var FreezeDamage = Player.GetAutoAttackDamage(minion, false) * (_config.Item("FreezeHealth").GetValue<Slider>().Value / 100f);
-                        var t = (int)(Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
+                    {var t = (int)(Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
                                 1000 * (int)Player.Distance(minion) / (int)GetMyProjectileSpeed();
                         var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
-
-                        if (FreezeActive && predHealth.Equals(minion.Health))
-                        {
-                            continue;
-                        }
 
                         if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
                         {
@@ -704,7 +679,7 @@ namespace PRADA_Vayne.MyUtils
                                 FireOnNonKillableMinion(minion);
                             }
 
-                            if (predHealth > 0 && predHealth <= (FreezeActive ? FreezeDamage : Player.GetAutoAttackDamage(minion, true)))
+                            if (predHealth > 0 && predHealth <= (Player.GetAutoAttackDamage(minion, true)))
                             {
                                 return minion;
                             }
