@@ -1,7 +1,6 @@
 ﻿using System;
 using LeagueSharp.Common;
 using PRADA_Vayne.MyUtils;
-using Activator = PRADA_Vayne.MyUtils.Activator;
 
 namespace PRADA_Vayne
 {
@@ -9,9 +8,8 @@ namespace PRADA_Vayne
     {
         #region Fields and Objects
 
-        public static Activator Activator;
+        public static MActivator Activator;
         public static MyOrbwalker.Orbwalker Orbwalker;
-        public static PotionManager PotionManager;
 
         #region Menu
 

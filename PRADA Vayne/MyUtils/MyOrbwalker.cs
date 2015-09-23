@@ -531,7 +531,7 @@ namespace PRADA_Vayne.MyUtils
                 /* Delay sliders */
                 _config.AddItem(
                     new MenuItem("ExtraWindup", "Extra windup time").SetValue(new Slider(123, 0, 200)));
-                _config.AddItem(new MenuItem("FarmDelay", "Farm delay").SetShared().SetValue(new Slider(0, 0, 200)));
+                _config.AddItem(new MenuItem("FarmDelay", "Farm delay").SetShared().SetValue(new Slider(25, 0, 200)));
                 _config.AddItem(
                     new MenuItem("MovementDelay", "Movement delay").SetValue(new Slider(100, 0, 250)))
                     .ValueChanged += (sender, args) => SetMovementDelay(args.GetNewValue<Slider>().Value);

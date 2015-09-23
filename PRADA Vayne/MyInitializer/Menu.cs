@@ -28,7 +28,7 @@ namespace PRADA_Vayne.MyInitializer
                 Program.LaneClearMenu = new Menu("Laneclear Settings", "laneclearmenu");
                 Program.EscapeMenu = new Menu("Escape Settings", "escapemenu");
 
-                Program.ActivatorMenu = new Menu("CK Activator", "activatormenu");
+                Program.ActivatorMenu = new Menu("MActivator", "activatormenu");
 
                 Program.DrawingsMenu = new Menu("Drawing Settings", "drawingsmenu");
                 Program.DrawingsMenu.AddItem(new MenuItem("streamingmode", "Disable All Drawings").SetValue(false));
@@ -87,7 +87,7 @@ namespace PRADA_Vayne.MyInitializer
 
         public static void InitActivator()
         {
-            Program.Activator = new MyUtils.Activator(Program.ActivatorMenu);
+            Program.Activator = new MActivator();
         }
 
         public static void InitOrbwalker()
