@@ -32,7 +32,8 @@ namespace PRADA_Vayne.MyLogic.Q
             }
             if (sender.IsMe && target.IsValid<Obj_AI_Minion>())
             {
-                if (Program.LaneClearMenu.Item("QWaveClear").GetValue<bool>() && Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear)
+                if (Program.LaneClearMenu.Item("QWaveClear").GetValue<bool>() &&
+                    Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear)
                 {
                     var meleeMinion = ObjectManager.Get<Obj_AI_Minion>().FirstOrDefault(m => m.IsMelee);
                     if (ObjectManager.Player.ManaPercent >=
@@ -53,32 +54,22 @@ namespace PRADA_Vayne.MyLogic.Q
                         Tumble.Cast(((Obj_AI_Base) target).GetTumblePos());
                     }
                 }
-                if (Program.LaneClearMenu.Item("QLastHit").GetValue<bool>() && ObjectManager.Player.ManaPercent >= Program.LaneClearMenu.Item("QLastHitMana").GetValue<Slider>().Value && Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear ||
+                if (Program.LaneClearMenu.Item("QLastHit").GetValue<bool>() &&
+                    ObjectManager.Player.ManaPercent >=
+                    Program.LaneClearMenu.Item("QLastHitMana").GetValue<Slider>().Value &&
+                    Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear ||
                     Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LastHit)
                 {
-                    var MinionList =
+                    var m =
                         ObjectManager.Get<Obj_AI_Minion>()
-                            .Where(
+                            .FirstOrDefault(
                                 minion =>
                                     minion.IsValidTarget() && MyOrbwalker.InAutoAttackRange(minion) &&
-                                    minion.Health <
-                                    2*
-                                    (ObjectManager.Player.BaseAttackDamage + ObjectManager.Player.FlatPhysicalDamageMod));
-
-                    foreach (var minion in MinionList)
+                                    minion.Health < ObjectManager.Player.BaseAttackDamage);
+                    if (m.IsValidTarget())
                     {
-                        var t = (int) (ObjectManager.Player.AttackCastDelay*1000) - 100 + Game.Ping/2 +
-                                1000*(int) ObjectManager.Player.Distance(minion)/(int) MyOrbwalker.GetMyProjectileSpeed();
-                        var predHealth = HealthPrediction.GetHealthPrediction(minion, t, 25);
-
-                        if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
-                        {
-                            if (predHealth > 0 && predHealth <= (ObjectManager.Player.GetAutoAttackDamage(minion, true)))
-                            {
-                                Tumble.Cast(minion.GetTumblePos());
-                                return;
-                            }
-                        }
+                        Tumble.Cast(m.GetTumblePos());
+                        return;
                     }
                 }
             }
