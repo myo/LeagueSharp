@@ -75,7 +75,8 @@ namespace PRADA_Vayne.MyLogic.Q
                         {
                             if (predHealth > 0 && predHealth <= (ObjectManager.Player.GetAutoAttackDamage(minion, true)))
                             {
-                                Program.Q.Cast();
+                                Tumble.Cast(minion.GetTumblePos());
+                                return;
                             }
                         }
                     }
