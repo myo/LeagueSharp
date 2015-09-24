@@ -846,7 +846,7 @@ namespace PRADA_Vayne.MyUtils
                     var myTarget = GetTarget();
                     if (myTarget != null)
                     {
-                        Render.Circle.DrawCircle(myTarget.Position,  myTarget.IsValid<Obj_AI_Hero>() ? GetRealAutoAttackRange(myTarget) : 100,
+                        Render.Circle.DrawCircle(myTarget.Position,  myTarget.IsValid<Obj_AI_Hero>() ? GetRealAutoAttackRange(myTarget) : 75,
                             _config.Item("AACircle3").GetValue<Circle>().Color);
                     }
                 }
