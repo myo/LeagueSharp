@@ -36,7 +36,6 @@ namespace PRADA_Vayne.MyLogic.Q
                 if (Program.LaneClearMenu.Item("QLastHit").GetValue<bool>() &&
                     ObjectManager.Player.ManaPercent >=
                     Program.LaneClearMenu.Item("QLastHitMana").GetValue<Slider>().Value &&
-                    Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear ||
                     Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LastHit)
                 {
                     var minion =
