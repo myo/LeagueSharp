@@ -14,6 +14,7 @@
     <PreBuildEvent />
     <PostBuildEvent />
     <OutputPath>bin\Release</OutputPath>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -81,6 +82,7 @@
     <Compile Include="MyLogic\Q\WallTumble.cs" />
     <Compile Include="MyLogic\R\BeforeAttack.cs" />
     <Compile Include="MyLogic\R\OnCastSpell.cs" />
+    <Compile Include="MyUtils\HealthPrediction.cs" />
     <Compile Include="MyUtils\MActivator.cs" />
     <Compile Include="MyUtils\MyCache.cs" />
     <Compile Include="MyUtils\MyExtensions.cs" />

@@ -635,9 +635,9 @@ namespace PRADA_Vayne.MyUtils
                             minion =>
                                 minion.IsValidTarget() && minion.Team != GameObjectTeam.Neutral &&
                                 InAutoAttackRange(minion) &&
-                                HealthPrediction.LaneClearHealthPrediction(
-                                    minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay) <=
-                                Player.GetAutoAttackDamage(minion));
+                                HealthPrediction.GetHealthPrediction(
+                                    minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod)) <=
+                                ObjectManager.Player.BaseAttackDamage);
             }
 
             public virtual AttackableUnit GetTarget()
@@ -670,7 +670,7 @@ namespace PRADA_Vayne.MyUtils
                     foreach (var minion in MinionList)
                     {var t = (int)(Player.AttackCastDelay * 1000) - 100 + Game.Ping / 2 +
                                 1000 * (int)Player.Distance(minion) / (int)GetMyProjectileSpeed();
-                        var predHealth = HealthPrediction.GetHealthPrediction(minion, t, FarmDelay);
+                        var predHealth = HealthPrediction.GetHealthPrediction(minion, t);
 
                         if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
                         {
@@ -679,7 +679,7 @@ namespace PRADA_Vayne.MyUtils
                                 FireOnNonKillableMinion(minion);
                             }
 
-                            if (predHealth > 0 && predHealth <= (Player.GetAutoAttackDamage(minion, true)))
+                            if (predHealth > 0 && predHealth <= (ObjectManager.Player.BaseAttackDamage))
                             {
                                 return minion;
                             }
@@ -771,9 +771,9 @@ namespace PRADA_Vayne.MyUtils
                     {
                         if (_prevMinion.IsValidTarget() && InAutoAttackRange(_prevMinion))
                         {
-                            var predHealth = HealthPrediction.LaneClearHealthPrediction(
-                                _prevMinion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay);
-                            if (predHealth >= 2 * Player.GetAutoAttackDamage(_prevMinion) ||
+                            var predHealth = HealthPrediction.GetHealthPrediction(
+                                _prevMinion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod));
+                            if (predHealth >= 2 * (ObjectManager.Player.BaseAttackDamage) ||
                                 Math.Abs(predHealth - _prevMinion.Health) < float.Epsilon)
                             {
                                 return _prevMinion;
@@ -784,10 +784,10 @@ namespace PRADA_Vayne.MyUtils
                                       ObjectManager.Get<Obj_AI_Minion>()
                                           .Where(minion => minion.IsValidTarget() && InAutoAttackRange(minion) && minion.CharData.BaseSkinName != "gangplankbarrel")
                                   let predHealth =
-                                      HealthPrediction.LaneClearHealthPrediction(
-                                          minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod), FarmDelay)
+                                      HealthPrediction.GetHealthPrediction(
+                                          minion, (int)((Player.AttackDelay * 1000) * LaneClearWaitTimeMod))
                                   where
-                                      predHealth >= 2 * Player.GetAutoAttackDamage(minion) ||
+                                      predHealth >= 2 * ObjectManager.Player.BaseAttackDamage ||
                                       Math.Abs(predHealth - minion.Health) < float.Epsilon
                                   select minion).MaxOrDefault(m => m.Health);
 

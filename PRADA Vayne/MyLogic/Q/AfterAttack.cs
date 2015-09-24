@@ -13,6 +13,7 @@ namespace PRADA_Vayne.MyLogic.Q
     {
         public static void AfterAttack(AttackableUnit sender, AttackableUnit target)
         {
+            if (!Program.Q.IsReady()) return;
             if (sender.IsMe && target.IsValid<Obj_AI_Hero>())
             {
                 var tg = target as Obj_AI_Hero;
@@ -60,16 +61,16 @@ namespace PRADA_Vayne.MyLogic.Q
                     Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear ||
                     Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LastHit)
                 {
-                    var m =
-                        ObjectManager.Get<Obj_AI_Minion>()
-                            .FirstOrDefault(
-                                minion =>
-                                    minion.IsValidTarget() && MyOrbwalker.InAutoAttackRange(minion) &&
-                                    minion.Health < ObjectManager.Player.BaseAttackDamage);
-                    if (m.IsValidTarget())
+                    foreach (var minion in ObjectManager.Get<Obj_AI_Minion>().Where(MyOrbwalker.InAutoAttackRange))
                     {
-                        Tumble.Cast(m.GetTumblePos());
-                        return;
+                        var healthPred = MyUtils.HealthPrediction.GetHealthPrediction(
+                            minion, (int) (250));
+                        if (healthPred > 0 && healthPred < ObjectManager.Player.BaseAttackDamage)
+                        {
+                            Tumble.Cast(minion.GetTumblePos());
+                            Program.Orbwalker.ForceTarget(minion);
+                            return;
+                        }
                     }
                 }
             }
