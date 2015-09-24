@@ -39,16 +39,16 @@ namespace PRADA_Vayne.MyLogic.Q
                     Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear ||
                     Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LastHit)
                 {
-                    foreach (var minion in ObjectManager.Get<Obj_AI_Minion>().Where(m => MyOrbwalker.InAutoAttackRange(m) && m.IsValidTarget()))
+                    var minion =
+                        ObjectManager.Get<Obj_AI_Minion>()
+                            .FirstOrDefault(
+                                m =>
+                                    MyOrbwalker.InAutoAttackRange(m) &&
+                                    m.Health <= (Program.Q.GetDamage(m) + ObjectManager.Player.GetAutoAttackDamage(m)));
+                    if (minion != null && minion.IsValidTarget())
                     {
-                        var healthPred = MyUtils.HealthPrediction.GetHealthPrediction(
-                            minion, (int) (250));
-                        if (healthPred > 0 && healthPred < ObjectManager.Player.BaseAttackDamage - 15)
-                        {
-                            Tumble.Cast(minion.GetTumblePos());
-                            Program.Orbwalker.ForceTarget(minion);
-                            return;
-                        }
+                        Program.Q.Cast(minion.GetTumblePos());
+                        return;
                     }
                 }
             }
