@@ -45,7 +45,7 @@ namespace PRADA_Vayne.MyUtils
             Game.OnUpdate += Game_OnGameUpdate;
             Spellbook.OnStopCast += SpellbookOnStopCast;
             MissileClient.OnDelete += MissileClient_OnDelete;
-            //Obj_AI_Base.OnDoCast += Obj_AI_Base_OnDoCast;
+            Obj_AI_Base.OnDoCast += Obj_AI_Base_OnDoCast;
         }
 
         private static void Obj_AI_Base_OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
