@@ -39,7 +39,7 @@ namespace PRADA_Vayne.MyLogic.Q
                     Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear ||
                     Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LastHit)
                 {
-                    foreach (var minion in ObjectManager.Get<Obj_AI_Minion>().Where(MyOrbwalker.InAutoAttackRange))
+                    foreach (var minion in ObjectManager.Get<Obj_AI_Minion>().Where(m => MyOrbwalker.InAutoAttackRange(m) && m.IsValidTarget()))
                     {
                         var healthPred = MyUtils.HealthPrediction.GetHealthPrediction(
                             minion, (int) (250));
