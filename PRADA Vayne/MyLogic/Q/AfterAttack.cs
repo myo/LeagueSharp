@@ -43,7 +43,7 @@ namespace PRADA_Vayne.MyLogic.Q
                     {
                         var healthPred = MyUtils.HealthPrediction.GetHealthPrediction(
                             minion, (int) (250));
-                        if (healthPred > 0 && healthPred < ObjectManager.Player.BaseAttackDamage)
+                        if (healthPred > 0 && healthPred < ObjectManager.Player.BaseAttackDamage - 15)
                         {
                             Tumble.Cast(minion.GetTumblePos());
                             Program.Orbwalker.ForceTarget(minion);

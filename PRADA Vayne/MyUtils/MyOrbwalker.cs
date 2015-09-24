@@ -500,7 +500,10 @@ namespace PRADA_Vayne.MyUtils
                         .SetValue(new Circle(true, Color.Gold)));
                 drawings.AddItem(
                     new MenuItem("AACircle2", "Enemy AA circle")
-                        .SetValue(new Circle(false, Color.White)));
+                        .SetValue(new Circle(false, Color.Red)));
+                drawings.AddItem(
+                    new MenuItem("AACircle3", "Target AA circle")
+                        .SetValue(new Circle(true, Color.Gold)));
                 drawings.AddItem(
                     new MenuItem("HoldZone", "HoldZone")
                         .SetValue(new Circle(false, Color.DarkRed)));
@@ -837,14 +840,24 @@ namespace PRADA_Vayne.MyUtils
                     Program.DrawingsMenu.Item("enemycounter").Permashow(false);
                     return;
                 }
+                if (!_config.Item("AACircle2").GetValue<Circle>().Active 
+                    && _config.Item("AACircle3").GetValue<Circle>().Active)
+                {
+                    var myTarget = GetTarget();
+                    if (myTarget != null)
+                    {
+                        Render.Circle.DrawCircle(myTarget.Position,  myTarget.IsValid<Obj_AI_Hero>() ? GetRealAutoAttackRange(myTarget) : 100,
+                            _config.Item("AACircle3").GetValue<Circle>().Color);
+                    }
+                }
 
                 if (_config.Item("AACircle").GetValue<Circle>().Active)
                 {
                     Render.Circle.DrawCircle(
                         Player.Position, GetRealAutoAttackRange(null) + 65,
                         _config.Item("AACircle").GetValue<Circle>().Color);
-                }
-
+                } 
+                
                 if (_config.Item("AACircle2").GetValue<Circle>().Active)
                 {
                     foreach (var target in
