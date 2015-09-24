@@ -67,10 +67,7 @@ namespace PRADA_Vayne.MyInitializer
                 }
                 Program.LaneClearMenu.AddItem(new MenuItem("QLastHit", "Use Q to Lasthit").SetValue(true));
                 Program.LaneClearMenu.AddItem(
-                    new MenuItem("QLastHitMana", "Min Mana for Q Lasthit").SetValue(new Slider(45)));
-                Program.LaneClearMenu.AddItem(new MenuItem("QWaveClear", "Use Q to clear the wave").SetValue(false));
-                Program.LaneClearMenu.AddItem(
-                    new MenuItem("QWaveClearMana", "Min Mana for Q Wave clear").SetValue(new Slider(75)));
+                    new MenuItem("QLastHitMana", "Min Mana% for Q Lasthit").SetValue(new Slider(45)));
                 Program.SkinhackMenu.AddItem(
                 new MenuItem("skin", "Skin: ").SetValue(
                     new StringList(new[] { "Classic", "Vindicator", "Aristocrat", "Dragonslayer", "Heartseeker", "SKT T1", "Arclight", "Dragonslayer Green", "Dragonslayer Red", "Dragonslayer Azure" }))).DontSave().ValueChanged +=
