@@ -58,18 +58,21 @@ namespace PRADA_Vayne.MyLogic.Q
                 if (Program.LaneClearMenu.Item("QLastHit").GetValue<bool>() &&
                     ObjectManager.Player.ManaPercent >=
                     Program.LaneClearMenu.Item("QLastHitMana").GetValue<Slider>().Value &&
-                    Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LastHit)
+                    Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LastHit ||
+                    Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear)
                 {
-                    var minion =
-                        ObjectManager.Get<Obj_AI_Minion>()
-                            .FirstOrDefault(
+                    if (ObjectManager.Get<Obj_AI_Minion>()
+                            .Where(
                                 m =>
-                                    MyOrbwalker.InAutoAttackRange(m) &&
-                                    m.Health <= (Program.Q.GetDamage(m) + ObjectManager.Player.GetAutoAttackDamage(m)));
-                    if (minion != null && minion.IsValidTarget())
+                                    MyOrbwalker.InAutoAttackRange(m)).Count(m =>
+                                    m.Health <= ObjectManager.Player.GetAutoAttackDamage(m)) > 2)
                     {
-                        Program.Q.Cast(minion.GetTumblePos());
-                        return;
+                        var cursorPos = Game.CursorPos;
+                        if (!cursorPos.IsDangerousPosition())
+                        {
+                            Program.Q.Cast(ObjectManager.Player.GetTumblePos());
+                            return;
+                        }
                     }
                 }
             }
