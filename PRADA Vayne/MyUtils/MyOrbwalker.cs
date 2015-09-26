@@ -123,6 +123,7 @@ namespace PRADA_Vayne.MyUtils
                 if (args.SData.Name == "vaynetumble")
                 {
                     ResetAutoAttackTimer();
+                    Console.WriteLine("Resetted AA with tumble!");
                 }
             }
         }
