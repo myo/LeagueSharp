@@ -359,12 +359,17 @@ namespace PRADA_Vayne.MyUtils
                             _missileLaunched = false;
 
                             var d = GetRealAutoAttackRange(target) - 65;
-                            if (Player.Distance(target, true) > d * d)
+                            if (Player.Distance(target, true) > d * d && !Player.IsMelee)
                             {
                                 LastAATick = LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping + 400 - (int)(ObjectManager.Player.AttackCastDelay * 1000f);
                             }
                         }
-                        Player.IssueOrder(GameObjectOrder.AttackUnit, target);
+
+                        if (!Player.IssueOrder(GameObjectOrder.AttackUnit, target))
+                        {
+                            //ResetAutoAttackTimer();
+                        }
+
                         _lastTarget = target;
                         return;
                     }
@@ -403,6 +408,7 @@ namespace PRADA_Vayne.MyUtils
             if (missile != null && missile.SpellCaster.IsMe && IsAutoAttack(missile.SData.Name))
             {
                 _missileLaunched = true;
+                FireAfterAttack(missile.SpellCaster, missile.Target as AttackableUnit);
             }
         }
 
@@ -412,10 +418,9 @@ namespace PRADA_Vayne.MyUtils
             {
                 var spellName = Spell.SData.Name;
 
-                if (spellName == "vaynetumble")
+                if (spellName == "vaynetumble" && unit.IsMe)
                 {
                     Utility.DelayAction.Add(100, ResetAutoAttackTimer);
-                    return;
                 }
 
                 if (!IsAutoAttack(spellName))
@@ -438,9 +443,11 @@ namespace PRADA_Vayne.MyUtils
                             _lastTarget = target;
                         }
 
-                        //Trigger it for ranged until the missiles catch normal attacks again!
-                        Utility.DelayAction.Add(
-                            (int)(unit.AttackCastDelay * 1000 + 50), () => FireAfterAttack(unit, _lastTarget));
+                        if (unit.IsMelee)
+                        {
+                            Utility.DelayAction.Add(
+                                (int)(unit.AttackCastDelay * 1000 + 40), () => FireAfterAttack(unit, _lastTarget));
+                        }
                     }
                 }
 
