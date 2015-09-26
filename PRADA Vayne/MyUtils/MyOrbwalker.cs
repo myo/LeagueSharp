@@ -120,6 +120,7 @@ namespace PRADA_Vayne.MyUtils
                     ResetAutoAttackTimer();
                     FireAfterAttack(sender, (AttackableUnit) args.Target);
                 }
+                Console.WriteLine(args.SData.Name);
                 if (args.SData.Name == "vaynetumble")
                 {
                     ResetAutoAttackTimer();
