@@ -113,10 +113,17 @@ namespace PRADA_Vayne.MyUtils
 
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsMe && args.SData.IsAutoAttack())
+            if (sender.IsMe)
             {
-                ResetAutoAttackTimer();
-                FireAfterAttack(sender, (AttackableUnit)args.Target);
+                if (args.SData.IsAutoAttack())
+                {
+                    ResetAutoAttackTimer();
+                    FireAfterAttack(sender, (AttackableUnit) args.Target);
+                }
+                if (args.SData.Name == "vaynetumble")
+                {
+                    ResetAutoAttackTimer();
+                }
             }
         }
 
