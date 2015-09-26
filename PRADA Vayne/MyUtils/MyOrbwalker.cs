@@ -120,12 +120,6 @@ namespace PRADA_Vayne.MyUtils
                     ResetAutoAttackTimer();
                     FireAfterAttack(sender, (AttackableUnit) args.Target);
                 }
-                Console.WriteLine(args.SData.Name);
-                if (args.SData.Name == "vaynetumble")
-                {
-                    ResetAutoAttackTimer();
-                    Console.WriteLine("Resetted AA with tumble!");
-                }
             }
         }
 
@@ -434,9 +428,10 @@ namespace PRADA_Vayne.MyUtils
             {
                 var spellName = Spell.SData.Name;
 
-                if (IsAutoAttackReset(spellName) && unit.IsMe)
+                if (spellName == "vaynetumble")
                 {
-                    Utility.DelayAction.Add(250, ResetAutoAttackTimer);
+                    Utility.DelayAction.Add(100, ResetAutoAttackTimer);
+                    return;
                 }
 
                 if (!IsAutoAttack(spellName))
