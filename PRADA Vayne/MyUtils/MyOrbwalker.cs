@@ -117,8 +117,8 @@ namespace PRADA_Vayne.MyUtils
             {
                 if (args.SData.IsAutoAttack())
                 {
-                    ResetAutoAttackTimer();
-                    FireAfterAttack(sender, (AttackableUnit) args.Target);
+                    //ResetAutoAttackTimer();
+                    //FireAfterAttack(sender, (AttackableUnit) args.Target);
                 }
             }
         }
