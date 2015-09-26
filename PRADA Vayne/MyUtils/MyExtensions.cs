@@ -28,6 +28,53 @@ namespace PRADA_Vayne.MyUtils
             var pD = Program.ComboMenu.Item("EPushDist").GetValue<Slider>().Value;
             var mode = Program.ComboMenu.Item("EMode").GetValue<StringList>().SelectedValue;
 
+
+            if (mode == "PRADASMART" && (p.Extend(pP, -pD).IsCollisionable() || p.Extend(pP, -pD / 2f).IsCollisionable() ||
+                 p.Extend(pP, -pD / 3f).IsCollisionable()))
+            {
+                if (!hero.CanMove ||
+                    (hero.IsWindingUp))
+                    return true;
+
+                var enemiesCount = ObjectManager.Player.CountEnemiesInRange(1200);
+                if (enemiesCount <= 3)
+                {
+                    var prediction = Program.E.GetPrediction(hero);
+                    for (var i = 15; i < pD; i += 75)
+                    {
+                        var posFlags = NavMesh.GetCollisionFlags(
+                            prediction.UnitPosition.To2D()
+                                .Extend(
+                                    pP.To2D(),
+                                    -i)
+                                .To3D());
+                        if (posFlags.HasFlag(CollisionFlags.Wall) || posFlags.HasFlag(CollisionFlags.Building))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                else
+                {
+                    var hitchance = Program.ComboMenu.Item("EHitchance").GetValue<Slider>().Value;
+                    var angle = 0.20 * hitchance;
+                    const float travelDistance = 0.5f;
+                    var alpha = new Vector2((float)(p.X + travelDistance * Math.Cos(Math.PI / 180 * angle)),
+                        (float)(p.X + travelDistance * Math.Sin(Math.PI / 180 * angle)));
+                    var beta = new Vector2((float)(p.X - travelDistance * Math.Cos(Math.PI / 180 * angle)),
+                        (float)(p.X - travelDistance * Math.Sin(Math.PI / 180 * angle)));
+
+                    for (var i = 15; i < pD; i += 100)
+                    {
+                        if (pP.To2D().Extend(alpha,
+                                i)
+                            .To3D().IsCollisionable() && pP.To2D().Extend(beta, i).To3D().IsCollisionable()) return true;
+                    }
+                    return false;
+                }
+            }
+
             if (mode == "PRADAPERFECT" &&
                 (p.Extend(pP, -pD).IsCollisionable() || p.Extend(pP, -pD/2f).IsCollisionable() ||
                  p.Extend(pP, -pD/3f).IsCollisionable()))

@@ -107,20 +107,7 @@ namespace PRADA_Vayne.MyUtils
             Player = ObjectManager.Player;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             MissileClient.OnCreate += MissileClient_OnCreate;
-            Spellbook.OnStopCast += SpellbookOnStopCast; 
-            Obj_AI_Base.OnDoCast += OnDoCast;
-        }
-
-        private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            if (sender.IsMe)
-            {
-                if (args.SData.IsAutoAttack())
-                {
-                    //ResetAutoAttackTimer();
-                    //FireAfterAttack(sender, (AttackableUnit) args.Target);
-                }
-            }
+            Spellbook.OnStopCast += SpellbookOnStopCast;
         }
 
         /// <summary>

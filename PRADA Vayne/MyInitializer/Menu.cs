@@ -51,10 +51,10 @@ namespace PRADA_Vayne.MyInitializer
                     new MenuItem("ManualE", "Semi-Manual Condemn").SetValue(new KeyBind('E', KeyBindType.Press)));
                 Program.ComboMenu.AddItem(
                     new MenuItem("EMode", "E Mode").SetValue(
-                        new StringList(new[] {"PRADAPERFECT", "MARKSMAN", "SHARPSHOOTER", "GOSU", "VHR", "PRADALEGACY", "FASTEST", "OLDPRADA"})));
+                        new StringList(new[] {"PRADASMART", "PRADAPERFECT", "MARKSMAN", "SHARPSHOOTER", "GOSU", "VHR", "PRADALEGACY", "FASTEST", "OLDPRADA"})));
                 Program.ComboMenu.AddItem(
-                    new MenuItem("EPushDist", "E Push Distance").SetValue(new Slider(420, 300, 475)));
-                Program.ComboMenu.AddItem(new MenuItem("EHitchance", "E % Hitchance").SetValue(new Slider(67)));
+                    new MenuItem("EPushDist", "E Push Distance").SetValue(new Slider(450, 300, 475)));
+                Program.ComboMenu.AddItem(new MenuItem("EHitchance", "E % Hitchance").SetValue(new Slider(50)));
                 Program.ComboMenu.AddItem(new MenuItem("RCombo", "Auto Ult").SetValue(false));
                 Program.ComboMenu.AddItem(new MenuItem("AutoBuy", "Auto-Swap Trinkets?").SetValue(true));
                 Program.EscapeMenu.AddItem(new MenuItem("QUlt", "Smart Q-Ult").SetValue(true));
