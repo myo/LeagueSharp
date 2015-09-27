@@ -37,7 +37,7 @@ namespace PRADA_Vayne.MyUtils
                     return true;
 
                 var enemiesCount = ObjectManager.Player.CountEnemiesInRange(1200);
-                if (enemiesCount <= 3)
+                if (enemiesCount > 1 && enemiesCount <= 3)
                 {
                     var prediction = Program.E.GetPrediction(hero);
                     for (var i = 15; i < pD; i += 75)
