@@ -26,42 +26,11 @@ namespace PRADA_Vayne.MyUtils
         MItem bilgewater = new MItem("BilgewaterCutlass", "Bilgewater", "bilge", 3144, ItemTypeId.Offensive, 450);
         MItem king = new MItem("ItemSwordOfFeastAndFamine", "BoRKing", "king", 3153, ItemTypeId.Offensive, 450);
         MItem youmus = new MItem("YoumusBlade", "Youmuu's", "youmus", 3142, ItemTypeId.Offensive);
-        MItem tiamat = new MItem("ItemTiamatCleave", "Tiamat", "tiamat", 3077, ItemTypeId.Offensive, 400, SpellSlot.Unknown, SpellType.Self);
-        MItem hydra = new MItem("Ravenous Hydra", "Hydra", "hydra", 3074, ItemTypeId.Offensive, 400, SpellSlot.Unknown, SpellType.Self);
-        MItem dfg = new MItem("DeathfireGrasp", "DFG", "dfg", 3128, ItemTypeId.Offensive, 750);
-        MItem divine = new MItem("ItemSoTD", "SoDivine", "divine", 3131, ItemTypeId.Offensive); //Sword of the Divine
-        MItem hextech = new MItem("Hextech Gunblade", "Hextech", "hextech", 3146, ItemTypeId.Offensive, 700);
-        MItem muramana = new MItem("Muramana", "Muramana", "muramana", 3042, ItemTypeId.Buff);
-        MItem seraph = new MItem("ItemSeraphsEmbrace", "Seraph's", "seraph", 3040, ItemTypeId.Deffensive);
-        MItem seraph2 = new MItem("ItemSeraphsEmbrace", "Seraph's", "seraph", 3048, ItemTypeId.Deffensive);
-        MItem zhonya = new MItem("ZhonyasHourglass", "Zhonya's", "zhonya", 3157, ItemTypeId.Deffensive);
-        MItem wooglet = new MItem("Wooglet's Witchcap", "Wooglet's", "wooglet", 3090, ItemTypeId.Deffensive);
-        MItem randuin = new MItem("RanduinsOmen", "Randuin's", "randuin", 3143, ItemTypeId.OffensiveAOE, 500, SpellSlot.Unknown, SpellType.Self);
-        //Item banner = new Item("Banner of Command", "BoCommand", "banner", 3060); // falta range
-        MItem mountain = new MItem("Face of the Mountain", "FoMountain", "mountain", 3401, ItemTypeId.Deffensive, 700); // falta range
-        MItem frost = new MItem("Frost Queen's Claim", "Frost Queen's", "frost", 3092, ItemTypeId.OffensiveAOE, 850);
-        MItem solari = new MItem("Locket of the Iron Solari", "Solari", "solari", 3190, ItemTypeId.Deffensive, 600, SpellSlot.Unknown, SpellType.Self);
-        MItem mikael = new MItem("Mikael's Crucible", "Mikael's", "mikael", 3222, ItemTypeId.Purifier, 750);
-        MItem mikaelHP = new MItem("Mikael's Crucible", "Mikael's", "mikaelHP", 3222, ItemTypeId.Deffensive, 750);
-        //Item talisman = new Item("Talisman of Ascension", "Talisman", "talisman", 3069, 600);
-        //Item shadows = new Item("Twin Shadows", "Shadows", "shadows", 3023, 750); //2700
-        //Item ohmwrecker = new Item("Ohmwrecker", "Ohmwrecker", "ohmwrecker", 3056, 775); // tower atk range Utility.UnderTurret
         MItem hpPot = new MItem("Health Potion", "HP Pot", "hpPot", 2003, ItemTypeId.HPRegenerator);
         MItem manaPot = new MItem("Mana Potion", "Mana Pot", "manaPot", 2004, ItemTypeId.ManaRegenerator);
         MItem biscuit = new MItem("Total Biscuit of Rejuvenation", "Biscuit", "biscuit", 2010, ItemTypeId.HPRegenerator);
         MItem cFlaskHP = new MItem("Crystalline Flask", "Cryst. Flask HP", "cFlaskHP", 2041, ItemTypeId.HPRegenerator);
         MItem cFlaskMP = new MItem("Crystalline Flask", "Cryst. Flask MP", "cFlaskMP", 2041, ItemTypeId.ManaRegenerator);
-        #endregion
-
-        #region Wards
-        // se tiver thresh cria menu/verifica; Se o thresh estiver longe do skill; for inimigo
-        MItem wardTotem = new MItem("Warding Totem", "Ward Totem", "wTotem", 3340, ItemTypeId.Ward, 600);
-        MItem pink = new MItem("Vision Ward", "Pink", "vWard", 2043, ItemTypeId.VisionWard, 600); //pink
-        MItem ward = new MItem("Stealth Ward", "Ward", "ward", 2044, ItemTypeId.Ward, 600);
-        MItem sightStone = new MItem("Sightstone", "Sightstone", "sightStone", 2049, ItemTypeId.Ward, 600);
-        MItem rubySightStone = new MItem("Ruby Sightstone", "Ruby Sightstone", "rubySightStone", 2045, ItemTypeId.Ward, 600);
-        MItem greatVisionTotem = new MItem("Greater Vision Totem", "G.Vision Totem", "gVTotem", 3362, ItemTypeId.VisionWard, 600);
-        MItem greatWardTotem = new MItem("Greater Stealth Totem", "G. Ward Totem", "gWTotem", 3361, ItemTypeId.Ward, 600);
         #endregion
 
         #region SummonerSpells
@@ -78,70 +47,6 @@ namespace PRADA_Vayne.MyUtils
         MItem smiteDuel = new MItem("SmiteDuel", "smite Duel", "s5_summonersmiteduel", 0, ItemTypeId.OffensiveSpell, 500);
         MItem smiteQuick = new MItem("SmiteQuick", "smite Quick", "s5_summonersmitequick", 0, ItemTypeId.OffensiveSpell, 500);
         MItem smiteGanker = new MItem("SmiteGanker", "smite Ganker", "s5_summonersmiteplayerganker", 0, ItemTypeId.OffensiveSpell, 500);
-        #endregion
-
-        #region Spells
-        #region Deffensive
-        // Auto shields 
-        MItem blackshield = new MItem("BlackShield", "Black Shield", "bShield", 0, ItemTypeId.TeamAbility, 750, SpellSlot.E); //Morgana
-        MItem unbreakable = new MItem("BraumE", "Unbreakable", "unbreak", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.E);
-        MItem palecascade = new MItem("DianaOrbs", "Pale Cascade", "cascade", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem bulwark = new MItem("GalioBulwark", "Bulwark", "bulwark", 0, ItemTypeId.TeamAbility, 800, SpellSlot.W);
-        MItem courage = new MItem("GarenW", "Courage", "courage", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem eyeofstorm = new MItem("EyeOfTheStorm", "Eye of the Storm", "storm", 0, ItemTypeId.Ability, 800, SpellSlot.E); //Janna
-        MItem inspire = new MItem("KarmaSolKimShield", "Inspire", "inspire", 0, ItemTypeId.TeamAbility, 800, SpellSlot.E);
-        MItem helppix = new MItem("LuluE", "Help Pix!", "pix", 0, ItemTypeId.TeamAbility, 650, SpellSlot.E);
-        MItem prismaticbarrier = new MItem("LuxPrismaticWave", "Prismatic Barrier", "pBarrier", 0, ItemTypeId.TeamAbility, 1075, SpellSlot.W);
-        MItem titanswraith = new MItem("NautilusPiercingGaze", "Titans Wraith", "tWraith", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem commandprotect = new MItem("OrianaRedactCommand", "Command Protect", "cProt", 0, ItemTypeId.TeamAbility, 1100, SpellSlot.E);
-        MItem feint = new MItem("ShenFeint", "Feint", "feint", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W); // ?
-        MItem spellshield = new MItem("SivirE", "SpellShield", "sShield", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.E);
-        MItem nocturneShield = new MItem("NocturneShroudOfDarkness", "Noct. Shield", "nShield", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem yasuoShield = new MItem("YasuoWMovingWall", "Yasuo Shield", "yShield", 0, ItemTypeId.TeamAbility, 400, SpellSlot.W);
-        MItem fioraRiposte = new MItem("FioraRiposte", "Fiora Riposte", "fRiposte", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);// S2 fiora
-        MItem fioraDance = new MItem("FioraDance", "Fiora Dance", "fDance", 0, ItemTypeId.Ability, 400, SpellSlot.R, SpellType.TargetEnemy); // FioraDanceStrike
-        MItem masterQ = new MItem("AlphaStrike", "Master Q", "masterQ", 0, ItemTypeId.Ability, 600, SpellSlot.Q, SpellType.TargetEnemy);
-        MItem tryndaUlt = new MItem("UndyIngrage", "Trynda Ult.", "tIngrage", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.R);// Trynda mia ult
-        MItem nasusUlt = new MItem("NasusR", "Nasus Ult.", "nasusR", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.R);
-        MItem renekUlt = new MItem("RenektonReignOfTheTyrant", "Renek Ult.", "renekR", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.R); //Renek nek
-        MItem leonaW = new MItem("LeonaSolarBarrier", "Leona Barrier", "leonaW", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem annieE = new MItem("MoltenShield", "Annie Barrier", "annieE", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.E); // Annie
-        MItem vladW = new MItem("VladimirSanguinePool", "Vlad. Pool", "vladW", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W); // nigga VladImir W
-        MItem wukongW = new MItem("MonkeyKingDecoy", "Wu. Decoy", "wuW", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem akaliW = new MItem("AkaliSmokeBomb", "Akali Smoke", "akaliW", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem kayleR = new MItem("JudicatorIntervention", "Intervention", "kayleR", 0, ItemTypeId.TeamAbility, 900, SpellSlot.R);
-        //MItem rivenE = new MItem("RivenFeint", "Riven Feint", "rivenE", 0, ItemTypeId.Ability, 325, SpellSlot.E);
-        MItem nidaE = new MItem("PrimalSurge", "Primal Surge", "nidaE", 0, ItemTypeId.TeamAbility, 600, SpellSlot.E);
-        MItem fizzE = new MItem("FizzJump", "Fizz Jump", "fizzE", 0, ItemTypeId.Ability, 400, SpellSlot.E);
-        MItem sionW = new MItem("DeathScaress", "Soul Furnace", "sionW", 0, ItemTypeId.Ability, int.MaxValue, SpellSlot.W);
-        MItem sonaW = new MItem("SonaAriaOfPerseverance", "Aria of Perseverance	", "sonaW", 0, ItemTypeId.TeamAbility, 1000, SpellSlot.W, SpellType.Self);
-        MItem lissR = new MItem("LissandraR", "Liss R(Self)", "lissR", 0, ItemTypeId.Ability, 550, SpellSlot.R);
-        //  sona W range 1000
-        // lee W, blindmonkwone(targ), blindmonkwtwo(self-l-steal/mv) 700 range?
-        //obduracy malp W
-        //defensiveballcurl rammus W
-        //rumbleshield rumble W crap 
-        //shenfeint W
-        // skarnerexoskeleton skarner W
-        //yorickravenous Yorik E, taget enemy
-        //udyrturtlestance Udyr runner guy W
-        // urgotterrorcapacitoractive2 Urgot W never played
-        // chronoshift Zilean R NAHH
-        //poppyparagonofdemacia poppy W def
-        //gp heal
-        //alistouro heal
-        // master meditate
-        // soraka wish R global - astralblessing W 550 !self
-        // imbue taric Q
-        #endregion
-        #region Offensives
-        MItem choR = new MItem("Feast", "Feast", "Feast", 0, ItemTypeId.KSAbility, 255, SpellSlot.R);
-        MItem nunuQ = new MItem("Consume", "Consume", "Consume", 0, ItemTypeId.KSAbility, 125, SpellSlot.Q);
-        MItem amumuE = new MItem("Tantrum", "Tantrum", "Tantrum", 0, ItemTypeId.KSAbility, 350, SpellSlot.E);
-        //nasusq
-        MItem gragasR = new MItem("gragasr", "Explosive Cask", "gragasr", 0, ItemTypeId.KSAbility, 1150, SpellSlot.R, SpellType.SkillShotCircle);
-        MItem luxR = new MItem("luxmalicecannon", "Final Spark", "luxmalicecannon", 0, ItemTypeId.KSAbility, 3340, SpellSlot.R, SpellType.SkillShotLine);
-        #endregion
         #endregion
 
         #region Jungle Minions
@@ -175,18 +80,7 @@ namespace PRADA_Vayne.MyUtils
 
                 LeagueSharp.Drawing.OnDraw += onDraw;
                 Game.OnUpdate += onGameUpdate;
-                Obj_AI_Base.OnProcessSpellCast += onProcessSpellCast;
                 Game.OnEnd += Game_OnGameEnd;
-
-                /*String dTime = DateTime.Now.ToString("dd-MM-yyyy_hh-mm-ss");
-                if (!File.Exists("C:/Windows/temp/MActivatorLOG" + dTime + ".log"))
-                {
-                    log = new StreamWriter("C:/Windows/temp/MActivatorLOG" + dTime + ".log");
-                }
-                else
-                {
-                    log = File.AppendText("C:/Windows/temp/MActivatorLOG" + dTime + ".log");
-                }*/
             }
             catch
             {
@@ -198,237 +92,6 @@ namespace PRADA_Vayne.MyUtils
         {
             //log.Close();
         }
-
-        private void onProcessSpellCast(Obj_AI_Base attacker, GameObjectProcessSpellCastEventArgs args)
-        {
-            try
-            {
-                double incDmg = 0;
-                SpellSlot spellSlot = SpellSlot.Unknown;
-                GameObject spellTarget = args.Target;
-
-                if (Config.Item("enabled").GetValue<KeyBind>().Active)
-                {
-                    #region AkaliW
-                    // Akali W Ward
-                    if (attacker.Type == GameObjectType.obj_AI_Hero && attacker.IsEnemy)
-                    {
-                        if (args.SData.Name == akaliW.name)
-                        {
-                            if (Config.Item("menuAkaliW").GetValue<bool>())
-                            {
-                                if ((Config.Item("akaliWOnCombo").GetValue<bool>() && Config.Item("comboModeActive").GetValue<KeyBind>().Active) ||
-                                   (!Config.Item("akaliWOnCombo").GetValue<bool>()))
-                                {
-                                    int usePercent = Config.Item("menuAkaliW" + "UseOnPercent").GetValue<Slider>().Value;
-                                    int attackerHpPercent = (int)((attacker.Health / attacker.MaxHealth) * 100);
-
-                                    if (attackerHpPercent <= usePercent)
-                                    {
-                                        // Try closer ward position; All wards have same range.
-                                        Vector3 wardPos = args.End;
-                                        if (wardPos.Distance(_player.Position) > pink.range)
-                                        {
-                                            wardPos = wardPos.Extend(_player.Position, 220);
-                                            if (_player.Distance(wardPos) <= pink.range)
-                                            {
-                                                return;
-                                            }
-                                        }
-
-                                        if (Config.Item(akaliW.menuVariable + greatVisionTotem.menuVariable).GetValue<bool>())
-                                        {
-                                            useItem(greatVisionTotem.id, wardPos);
-                                            return;
-                                        }
-
-                                        if (Config.Item(akaliW.menuVariable + pink.menuVariable).GetValue<bool>())
-                                        {
-                                            useItem(pink.id, wardPos);
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    #endregion
-
-                    AttackId attackId = AttackId.Unknown;
-                    if (Config.Item("predict").GetValue<bool>())
-                    {
-                        #region WithTarget
-                        if (spellTarget != null)
-                        {
-                            if (spellTarget.Type == GameObjectType.obj_AI_Hero)
-                            {
-                                #region SelfTarget
-                                //&& attacker.IsEnemy
-                                /*if (attacker.Type == GameObjectType.obj_AI_Hero && attacker.NetworkId == spellTarget.NetworkId)
-                                {
-                                    Obj_AI_Hero attackerHero = ObjectManager.Get<Obj_AI_Hero>().First(hero => hero.NetworkId == attacker.NetworkId);
-                                    Obj_AI_Hero attackedHero = ObjectManager.Get<Obj_AI_Hero>().First(hero => hero.NetworkId == spellTarget.NetworkId);
-
-                                    SpellDataInst spellA = attacker.Spellbook.Spells.FirstOrDefault(hero => args.SData.Name.Contains(hero.SData.Name));
-                                    spellSlot = spellA == null ? SpellSlot.Unknown : spellA.Slot;
-
-                                    float range1 = args.SData.CastRangeDisplayOverride;
-                                    float range2 = args.SData.CastRange;
-                                    float range = range1 > 1 ? range1 : range2;
-
-                                    log.WriteLine("Self-Attacker->" + attackerHero.BaseSkinName + "    Spell->" + args.SData.Name + "    Range->" + range + "   Slot->" + spellSlot);
-
-                                    // test prop.
-                                    List<Obj_AI_Hero> alliesInRange = attackerHero.IsEnemy ? Utility.GetAlliesInRange(attackerHero, range) : Utility.GetEnemiesInRange(attackerHero, range);
-                                    if (alliesInRange.Count > 0)
-                                    {
-                                        log.WriteLine("Count->" + alliesInRange.Count);
-                                        foreach (Obj_AI_Hero hero in alliesInRange)
-                                        {
-                                            log.WriteLine("Got-> " + hero.BaseSkinName);
-                                        }
-                                    }
-                                    //Console.WriteLine("Target Name2-> " + spellTarget.Name + "  Spell->" + args.SData.Name + "   SpellTT->" + args.SData.SpellTotalTime);
-                                }*/
-                                #endregion
-
-                                #region EnemyTarget
-                                //Config.Item(hero.SkinName).GetValue<bool>()
-                                // 750 from greater range(mikael).
-                                if (attacker.Type == GameObjectType.obj_AI_Hero && attacker.IsEnemy && (spellTarget.IsMe || (spellTarget.IsAlly && _player.Distance(spellTarget.Position) <= 750)))
-                                {
-                                    Obj_AI_Hero attackerHero = ObjectManager.Get<Obj_AI_Hero>().First(hero => hero.NetworkId == attacker.NetworkId);
-                                    Obj_AI_Hero attackedHero = ObjectManager.Get<Obj_AI_Hero>().First(hero => hero.NetworkId == spellTarget.NetworkId);
-
-                                    // Check TeamUse config
-                                    if (!Config.Item(attackedHero.SkinName).GetValue<bool>())
-                                    {
-                                        return;
-                                    }
-
-                                    SpellDataInst spellA = attacker.Spellbook.Spells.FirstOrDefault(hero => args.SData.Name.Contains(hero.SData.Name));
-                                    spellSlot = spellA == null ? SpellSlot.Unknown : spellA.Slot;
-
-                                    SpellSlot igniteSlot = Utility.GetSpellSlot(attackerHero, ignite.menuVariable);
-
-                                    //log.WriteLine("Attacker->" + attackerHero.BaseSkinName + "   Target->" + attackedHero.BaseSkinName + "    Spell->" + args.SData.Name + "    Slot->" + spellSlot);
-                                    if (igniteSlot != SpellSlot.Unknown && spellSlot == igniteSlot)
-                                    {
-                                        incDmg = Damage.GetSummonerSpellDamage(attackerHero, attackedHero, Damage.SummonerSpell.Ignite);
-                                        attackId = AttackId.Ignite;
-                                    }
-
-                                    else if (spellSlot == SpellSlot.Item1 || spellSlot == SpellSlot.Item2 || spellSlot == SpellSlot.Item3 || spellSlot == SpellSlot.Item4 || spellSlot == SpellSlot.Item5 || spellSlot == SpellSlot.Item6)
-                                    {
-                                        if (args.SData.Name == king.name)
-                                        {
-                                            incDmg = Damage.GetItemDamage(attackerHero, attackedHero, Damage.DamageItems.Botrk);
-                                            attackId = AttackId.King;
-                                        }
-                                        else if (args.SData.Name == bilgewater.name)
-                                        {
-                                            incDmg = Damage.GetItemDamage(attackerHero, attackedHero, Damage.DamageItems.Bilgewater);
-                                        }
-                                        else if (args.SData.Name == dfg.name)
-                                        {
-                                            incDmg = Damage.GetItemDamage(attackerHero, attackedHero, Damage.DamageItems.Dfg);
-                                        }
-                                        else if (args.SData.Name == hydra.name)
-                                        {
-                                            incDmg = Damage.GetItemDamage(attackerHero, attackedHero, Damage.DamageItems.Hydra);
-                                        }
-                                    }
-                                    else if (spellSlot == SpellSlot.Unknown)
-                                    {
-                                        incDmg = Damage.GetAutoAttackDamage(attackerHero, attackedHero, true);
-                                        attackId = AttackId.Basic;
-                                    }
-                                    else
-                                    {
-                                        incDmg = Damage.GetSpellDamage(attackerHero, attackedHero, spellSlot);
-                                        attackId = AttackId.Spell;
-                                    }
-
-                                    //Console.WriteLine("Slot->" + spellSlot + "  inc-> " + incDmg + " Spell-> " + args.SData.Name);// 44 = sivir w, 49 = YasuoBasicAttack3, 50 YassuoCritAttack, 45 = LeonaShieldOfDaybreakAttack
-                                }
-                                else if (attacker.Type == GameObjectType.obj_AI_Turret && attacker.IsEnemy && (spellTarget.IsAlly && _player.Distance(spellTarget.Position) <= 750))
-                                {
-                                    // TODO: Get multiplier/real dmg
-                                    incDmg = attacker.BaseAttackDamage;
-                                    attackId = AttackId.Tower;
-                                }
-                                #endregion
-                            }
-                        }
-                        #endregion
-                        #region W/O Target
-                        else
-                        {
-                            if (attacker.Type == GameObjectType.obj_AI_Hero && attacker.IsEnemy)
-                            {
-                                float range1 = args.SData.CastRangeDisplayOverride;
-                                float range2 = args.SData.CastRange;
-                                float range = range1 > 1 ? range1 : range2;
-
-                                // CHECK AOE ???
-                                //log.WriteLine("Shot-Attacker->" + attacker.BaseSkinName + "    Spell->" + args.SData.Name + "    Range->" + range);
-
-                                //drawPos2 = args.Start.Extend(args.End, range);
-                                List<Obj_AI_Hero> alliesInRange = Utility.GetAlliesInRange(args.Start, range);
-                                if (alliesInRange.Count > 0)
-                                {
-                                    Obj_AI_Hero attackerHero = ObjectManager.Get<Obj_AI_Hero>().First(hero => hero.NetworkId == attacker.NetworkId);
-                                    foreach (Obj_AI_Hero hero in alliesInRange)
-                                    {
-                                        // Check TeamUse config
-                                        if (Config.Item(hero.SkinName).GetValue<bool>())
-                                        {
-                                            // ponto fake
-                                            Vector3 fakePoint = args.Start.Extend(args.End, args.Start.Distance(hero.Position));
-
-                                            if (hero.Position.Distance(fakePoint) <= 30)
-                                            {
-                                                SpellDataInst spellA = attacker.Spellbook.Spells.FirstOrDefault(spell => args.SData.Name.Contains(spell.SData.Name));
-                                                spellSlot = spellA == null ? SpellSlot.Unknown : spellA.Slot;
-
-                                                // TEMP log
-                                                //log.WriteLine("Shot-Target->" + hero.BaseSkinName + "    Slot->" + spellSlot);
-
-                                                //Calc dmg and check deffs
-                                                incDmg = Damage.GetSpellDamage(attackerHero, hero, spellSlot);
-                                                callDeff(attacker, hero, incDmg, spellSlot, AttackId.Spell);
-                                            }
-                                        }
-                                    }
-                                    return;
-                                }
-                            }
-                        }
-                        #endregion
-                    }
-
-                    if (incDmg > 0 || spellSlot != SpellSlot.Unknown)
-                    {
-                        if (spellTarget != null)
-                        {
-                            if (spellTarget.Team == _player.Team)
-                            {
-                                Obj_AI_Hero attackedHero = ObjectManager.Get<Obj_AI_Hero>().First(hero => hero.NetworkId == spellTarget.NetworkId);
-
-                                callDeff(attacker, attackedHero, incDmg, spellSlot, attackId);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Problem with MasterActivator(Receiving dmg sys.).");
-                //log.WriteLine(e);
-                Console.WriteLine(e);
-            }
-        }
-
         private void onDraw(EventArgs args)
         {
             try
@@ -437,12 +100,6 @@ namespace PRADA_Vayne.MyUtils
                 {
                     Drawing.DrawText(Drawing.Width - 120, 80, Config.Item("enabled").IsActive() ? System.Drawing.Color.Green : System.Drawing.Color.Red, "MActivator");
                 }
-
-                ksDrawRange(choR);
-                ksDrawRange(nunuQ);
-                ksDrawRange(amumuE);
-                ksDrawRange(gragasR);
-                ksDrawRange(luxR);
 
                 if (Config.Item("dSmite").GetValue<bool>())
                 {
@@ -482,13 +139,6 @@ namespace PRADA_Vayne.MyUtils
                                         {
                                             Drawing.DrawCircle(minion.Position, minion.BoundingRadius + smite.range + _player.BoundingRadius, _player.Distance(minion, false) <= (smite.range + minion.BoundingRadius + _player.BoundingRadius) ? System.Drawing.Color.Lime : System.Drawing.Color.WhiteSmoke);
                                         }
-
-                                        // Draw for abilitys
-                                        ksDrawDmg(choR, minion, jMinion, hpBarPos, hpXPos);
-                                        ksDrawDmg(nunuQ, minion, jMinion, hpBarPos, hpXPos);
-                                        ksDrawDmg(amumuE, minion, jMinion, hpBarPos, hpXPos);
-                                        ksDrawDmg(gragasR, minion, jMinion, hpBarPos, hpXPos);
-                                        ksDrawDmg(luxR, minion, jMinion, hpBarPos, hpXPos);
                                     }
                                 }
                             }
@@ -510,7 +160,6 @@ namespace PRADA_Vayne.MyUtils
                 try
                 {
                     checkAndUse(clarity);
-                    teamCheckAndUse(mikael);
                     if (!_player.InFountain() && !Config.Item("justPredHeal").GetValue<bool>())
                     {
                         teamCheckAndUse(heal, Config.Item("useWithHealDebuff").GetValue<bool>() ? "" : "summonerhealcheck");
@@ -528,15 +177,7 @@ namespace PRADA_Vayne.MyUtils
 
                     if (!Config.Item("justPred").GetValue<bool>() || !Config.Item("predict").GetValue<bool>())
                     {
-                        checkAndUse(zhonya);
-                        checkAndUse(wooglet);
                         checkAndUse(barrier);
-                        checkAndUse(seraph);
-                        checkAndUse(seraph2);
-                        teamCheckAndUse(solari);
-                        teamCheckAndUse(mountain);
-                        teamCheckAndUse(mikaelHP);
-                        checkAndUseShield();
                     }
 
                     checkAndUse(smite);
@@ -544,11 +185,6 @@ namespace PRADA_Vayne.MyUtils
                     checkAndUse(smiteDuel);
                     checkAndUse(smiteGanker);
                     checkAndUse(smiteQuick);
-                    checkAndUse(choR);
-                    checkAndUse(nunuQ);
-                    checkAndUse(amumuE, "", 0, true);
-                    checkAndUse(gragasR);
-                    checkAndUse(luxR);
 
                     if (Config.Item("comboModeActive").GetValue<KeyBind>().Active)
                     {
@@ -569,26 +205,6 @@ namespace PRADA_Vayne.MyUtils
             checkAndUse(youmus);
             checkAndUse(bilgewater);
             checkAndUse(king);
-            checkAndUse(tiamat);
-            checkAndUse(hydra);
-            checkAndUse(dfg);
-            checkAndUse(divine);
-            checkAndUse(hextech);
-            checkAndUse(muramana);
-            checkAndUse(frost);
-            checkAndUse(randuin);
-        }
-
-        private void ksDrawRange(MItem item)
-        {
-            if (Config.Item(item.menuVariable) != null)
-            {
-                if (Config.Item(item.menuVariable).GetValue<bool>() && Config.Item(item.menuVariable + "drawRange").GetValue<bool>())
-                {
-                    float range = item == choR ? getChoUltRange() : item.range;
-                    Drawing.DrawCircle(_player.Position, range, System.Drawing.Color.Brown);
-                }
-            }
         }
 
         private void ksDrawDmg(MItem item, Obj_AI_Base minion, MMinion jMinion, Vector2 hpBarPos, float hpXPos)
@@ -603,24 +219,6 @@ namespace PRADA_Vayne.MyUtils
                     hpXPos = hpBarPos.X + (jMinion.width * spellDmgPercent);
                     Drawing.DrawLine(hpXPos, hpBarPos.Y, hpXPos, hpBarPos.Y + 5, 2, spellDmg >= minion.Health ? System.Drawing.Color.BlueViolet : System.Drawing.Color.Black);
                 }
-            }
-        }
-
-        private void callDeff(Obj_AI_Base attacker, Obj_AI_Hero target, double incDmg, SpellSlot spellSlot, AttackId attackId)
-        {
-            teamCheckAndUse(heal, Config.Item("useWithHealDebuff").GetValue<bool>() ? "" : "summonerhealcheck", incDmg);
-            teamCheckAndUse(solari, "", incDmg);
-            teamCheckAndUse(mountain, "", incDmg);
-            teamCheckAndUse(mikaelHP, "", incDmg);
-            checkAndUseShield(incDmg, attacker, target, spellSlot, attackId);
-
-            if (target.IsMe)
-            {
-                checkAndUse(zhonya, "", incDmg);
-                checkAndUse(wooglet, "", incDmg);
-                checkAndUse(barrier, "", incDmg);
-                checkAndUse(seraph, "", incDmg);
-                checkAndUse(seraph2, "", incDmg);
             }
         }
 
@@ -680,40 +278,6 @@ namespace PRADA_Vayne.MyUtils
                     teamCheckAndUse(item, "", incDmg, attacked);
                 }
             }
-        }
-
-        private void checkAndUseShield(double incDmg = 0, Obj_AI_Base attacker = null, Obj_AI_Base attacked = null, SpellSlot attackerSpellSlot = SpellSlot.Unknown, AttackId attackId = AttackId.Unknown)
-        {
-            justUseAgainstCheck(titanswraith, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(blackshield, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(unbreakable, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(palecascade, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(bulwark, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(courage, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(eyeofstorm, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(inspire, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(helppix, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(prismaticbarrier, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(commandprotect, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(spellshield, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(nocturneShield, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(yasuoShield, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(fioraRiposte, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(tryndaUlt, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(fioraDance, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(masterQ, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(lissR, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(nasusUlt, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(renekUlt, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(leonaW, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(annieE, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(vladW, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(wukongW, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(kayleR, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(nidaE, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(fizzE, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(sionW, incDmg, attacker, attacked, attackerSpellSlot, attackId);
-            justUseAgainstCheck(sonaW, incDmg, attacker, attacked, attackerSpellSlot, attackId);
         }
 
         private bool checkBuff(String name)
@@ -1087,7 +651,7 @@ namespace PRADA_Vayne.MyUtils
                                                     jungleMinions = new string[] { blue.name, red.name, razor.name, baron.name, krug.name, wolf.name, dragon.name, gromp.name, crab.name };
                                                 }
 
-                                                float searchRange = item == choR ? getChoUltRange() : (item.range + 300); // Get minions in 800 range
+                                                float searchRange = (item.range + 300); // Get minions in 800 range
 
                                                 var minions = MinionManager.GetMinions(_player.Position, searchRange, MinionTypes.All, MinionTeam.Neutral);
                                                 if (minions.Count() > 0)
@@ -1096,7 +660,7 @@ namespace PRADA_Vayne.MyUtils
 
                                                     foreach (Obj_AI_Base minion in minions)
                                                     {
-                                                        float range = item == choR ? getChoUltRange() : item.range + minion.BoundingRadius + _player.BoundingRadius;
+                                                        float range = item.range + minion.BoundingRadius + _player.BoundingRadius;
                                                         if (_player.Distance(minion, false) <= range)
                                                         {
                                                             int dmg = item.type == ItemTypeId.OffensiveSpell ? smiteDmg : (int)Damage.GetSpellDamage(_player, minion, spellSlot);
@@ -1261,26 +825,6 @@ namespace PRADA_Vayne.MyUtils
             }
         }
 
-        private float getChoUltRange()
-        {
-            float range = choR.range;
-            BuffInstance[] buffs = _player.Buffs;
-            if (buffs.Length > 0)
-            {
-                foreach (BuffInstance pBuff in buffs)
-                {
-                    if (pBuff.Name == "Feast")
-                    {
-                        // Please give me credits
-                        //range = choR.range + ((new float[] { 3.8F, 6.1F, 8.3F }[_player.GetSpell(choR.abilitySlot).Level - 1]) * buff.Count);
-                        range = choR.range + ((new float[] { 5.83F, 9.16F, 12.5F }[_player.GetSpell(choR.abilitySlot).Level - 1]) * pBuff.Count);
-                        SpellDataInst spell = _player.Spellbook.GetSpell(choR.abilitySlot);
-                    }
-                }
-            }
-            return range;
-        }
-
         private void useItem(int id, Obj_AI_Hero target = null)
         {
             try
@@ -1351,7 +895,6 @@ namespace PRADA_Vayne.MyUtils
             createMenuItem(qss, "purifiers");
             createMenuItem(mercurial, "purifiers");
             createMenuItem(cleanse, "purifiers");
-            createMenuItem(mikael, "purifiers");
             Config.SubMenu("purifiers").AddItem(new MenuItem("defJustOnCombo", "Just on combo")).SetValue(false);
 
             Config.AddSubMenu(new Menu("Purify", "purify"));
@@ -1415,65 +958,10 @@ namespace PRADA_Vayne.MyUtils
             createMenuItem(youmus, "offensive", 100);
             createMenuItem(bilgewater, "offensive", 100);
             createMenuItem(king, "offensive", 100);
-            createMenuItem(tiamat, "offensive", 100);
-            createMenuItem(hydra, "offensive", 100);
-            createMenuItem(dfg, "offensive", 100);
-            createMenuItem(divine, "offensive", 80);
-            createMenuItem(hextech, "offensive", 80);
-            createMenuItem(muramana, "offensive", 80);
-
-            Config.AddSubMenu(new Menu("Off. AOE", "offAOE"));
-            createMenuItem(frost, "offAOE", 2);
-            createMenuItem(randuin, "offAOE", 1);
 
             Config.AddSubMenu(new Menu("Deffensive", "deffensive"));
-            createMenuItem(barrier, "deffensive", 35);
-            createMenuItem(seraph, "deffensive", 45);
-            createMenuItem(zhonya, "deffensive", 35);
-            createMenuItem(wooglet, "deffensive", 35);
-            createMenuItem(solari, "deffensive", 45);
-            createMenuItem(mountain, "deffensive", 45);
-            createMenuItem(mikaelHP, "deffensive", 5);
             Config.SubMenu("deffensive").AddItem(new MenuItem("justPred", "Just Predicted")).SetValue(true);
             Config.SubMenu("deffensive").AddItem(new MenuItem("useRecalling", "Use Recalling")).SetValue(false);
-
-            Config.AddSubMenu(new Menu("Auto Skill", "autoshield"));
-            createMenuItem(blackshield, "autoshield", 100, false, 40);
-            createMenuItem(unbreakable, "autoshield", 90, false, 40);
-            createMenuItem(bulwark, "autoshield", 90, false, 40);
-            createMenuItem(courage, "autoshield", 90);
-            createMenuItem(eyeofstorm, "autoshield", 90, false, 40);
-            createMenuItem(inspire, "autoshield", 90, false, 40);
-            createMenuItem(helppix, "autoshield", 90, false, 40);
-            createMenuItem(prismaticbarrier, "autoshield", 90, false, 40);
-            createMenuItem(titanswraith, "autoshield", 90, false, 40);
-            createMenuItem(commandprotect, "autoshield", 99, false, 40);
-            createMenuItem(feint, "autoshield", 90, false, 0);
-            createMenuItem(spellshield, "autoshield", 100, false, 0);
-            createMenuItem(nocturneShield, "autoshield", 90, false, 0);
-            createMenuItem(yasuoShield, "autoshield", 90);
-            createMenuItem(fioraRiposte, "autoshield", 90, false, 0);
-            createMenuItem(tryndaUlt, "autoshield", 30);
-            createMenuItem(fioraDance, "autoshield", 30);
-            createMenuItem(masterQ, "autoshield", 45);
-            createMenuItem(lissR, "autoshield", 20);
-            createMenuItem(nasusUlt, "autoshield", 30, false, 0);
-            createMenuItem(renekUlt, "autoshield", 30);
-            createMenuItem(leonaW, "autoshield", 60, false, 0);
-            createMenuItem(annieE, "autoshield", 60, false, 0);
-            createMenuItem(vladW, "autoshield", 45);
-            createMenuItem(wukongW, "autoshield", 40, false, 0);
-            createMenuItem(kayleR, "autoshield", 30);
-            createMenuItem(nidaE, "autoshield", 40);
-            createMenuItem(fizzE, "autoshield", 40);
-            createMenuItem(sionW, "autoshield", 40, false, 20);
-            createMenuItem(sonaW, "autoshield", 40, false, 25);
-
-            createMenuItem(choR, "autoshield");
-            createMenuItem(nunuQ, "autoshield");
-            createMenuItem(amumuE, "autoshield");
-            createMenuItem(gragasR, "autoshield");
-            createMenuItem(luxR, "autoshield");
 
             Config.AddSubMenu(new Menu("Regenerators", "regenerators"));
             createMenuItem(heal, "regenerators", 35);
@@ -1496,20 +984,6 @@ namespace PRADA_Vayne.MyUtils
             {
                 Config.SubMenu("teamUseOn").AddItem(new MenuItem(allyHero, allyHero)).SetValue(true);
             }
-
-            // Wards
-            Config.AddSubMenu(new Menu("Wards", "wards"));
-            var menu = new Menu("Akali W", "menuAkaliW");
-            menu.AddItem(new MenuItem("menuAkaliW" + "UseOnPercent", "Use on HP%")).SetValue(new Slider(60, 0, 100));
-            menu.AddItem(new MenuItem("menuAkaliW", "Enable").SetValue(false));
-            menu.AddItem(new MenuItem("akaliWOnCombo", "Just On Combo").SetValue(true));
-
-            var menuAkaliWWards = new Menu("Wards", "akaliRWards");
-            menuAkaliWWards.AddItem(new MenuItem(akaliW.menuVariable + pink.menuVariable, pink.menuName).SetValue(true));
-            menuAkaliWWards.AddItem(new MenuItem(akaliW.menuVariable + greatVisionTotem.menuVariable, greatVisionTotem.menuName).SetValue(true));
-
-            menu.AddSubMenu(menuAkaliWWards);
-            Config.SubMenu("wards").AddSubMenu(menu);
 
             // Combo mode
             Config.AddSubMenu(new Menu("Combo Mode", "combo"));
