@@ -84,7 +84,7 @@ namespace HERMES_Kalista.MyLogic
                         if (buff.Count >= 5)
                         {
                             // Check if target is about to leave our E range or the buff is about to run out
-                            if ((target.Distance(ObjectManager.Player, true) > Math.Pow(Program.E.Range*0.85, 2) ||
+                            if ((target.Distance(ObjectManager.Player, true) > Math.Pow(Program.E.Range*0.80, 2) ||
                                  buff.EndTime - Game.Time < 0.3) && Program.E.Cast())
                             {
                                 return;
