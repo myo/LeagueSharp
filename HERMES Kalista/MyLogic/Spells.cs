@@ -46,7 +46,7 @@ namespace HERMES_Kalista.MyLogic
                     HeroManager.Enemies.Any(e =>
                     {
                         var buf = Extensions.GetRendBuff(e);
-                        return buf != null && buf.Count > Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value && Program.E.IsInRange(e);
+                        return buf != null && buf.Count >= Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value && Program.E.IsInRange(e);
                     }) && Program.E.Cast())
                 {
                     return;
