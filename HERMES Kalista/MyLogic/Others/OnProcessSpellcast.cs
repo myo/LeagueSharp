@@ -28,7 +28,7 @@ namespace HERMES_Kalista.MyLogic.Others
             }
             #endregion
 
-            if (sender.IsEnemy && args.Target.NetworkId == ObjectManager.Player.NetworkId && Program.R.IsReady())
+            if (Program.R.IsReady() && sender.IsEnemy && args.Target.NetworkId == ObjectManager.Player.NetworkId)
             {
                 var cctype = Utils.SpellDb.GetByName(args.SData.Name).CcType;
                 if (ObjectManager.Player.CountEnemiesInRange(600) > 1 && cctype == CcType.Suppression || (cctype == CcType.Knockup && HeroManager.Enemies.Any(e => e.ChampionName == "Yasuo" && e.Distance(ObjectManager.Player) < 1100)) ||
