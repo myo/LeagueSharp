@@ -28,11 +28,11 @@ namespace HERMES_Kalista.MyLogic.Others
             }
             #endregion
 
-            if (Program.R.IsReady())
+            if (sender.IsEnemy && args.Target.NetworkId == ObjectManager.Player.NetworkId && Program.R.IsReady())
             {
                 var cctype = Utils.SpellDb.GetByName(args.SData.Name).CcType;
                 if (ObjectManager.Player.CountEnemiesInRange(600) > 1 && cctype == CcType.Suppression || cctype == CcType.Silence || cctype == CcType.Knockup ||
-                    cctype == CcType.Pull || cctype == CcType.Stun)
+                    cctype == CcType.Pull)
                 {
                     Program.R.Cast();
                 }
