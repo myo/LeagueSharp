@@ -36,11 +36,15 @@ namespace HERMES_Kalista.MyInitializer
                 Program.SkinhackMenu = new Menu("Skin Hack", "skinhackmenu");
                 Program.OrbwalkerMenu = new Menu("Orbwalker", "orbwalkermenu");
                 Program.ComboMenu.AddItem(new MenuItem("QCombo", "USE Q").SetValue(true));
-                Program.ComboMenu.AddItem(new MenuItem("ECombo", "USE E").SetValue(true));
+                Program.ComboMenu.AddItem(new MenuItem("EComboMinionReset", "USE SMART E RESET").SetValue(true));
+                Program.ComboMenu.AddItem(
+                    new MenuItem("EComboMinionResetStacks", "Min enemy stacks for SMART RESET").SetValue(new Slider(3, 1,
+                        33)));
                 Program.ComboMenu.AddItem(
                     new MenuItem("DamageReductionE", "Reduce E dmg by").SetValue(
                         new Slider(0, 0, 300)));;
-                Program.ComboMenu.AddItem(new MenuItem("RCombo", "USE R").SetValue(false));
+                Program.ComboMenu.AddItem(new MenuItem("RComboSelf", "USE R TO SELF-PEEL").SetValue(false));
+                Program.ComboMenu.AddItem(new MenuItem("RComboSupport", "USE R TO SAVE SUPP").SetValue(false));
                 Program.ComboMenu.AddItem(new MenuItem("AutoBuy", "Auto-Swap Trinkets?").SetValue(true));
                 Program.EscapeMenu.AddItem(new MenuItem("SOON", "SOON").SetValue(true));
                 var antigcmenu = Program.EscapeMenu.AddSubMenu(new Menu("Anti-Gapcloser", "antigapcloser"));

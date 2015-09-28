@@ -42,11 +42,11 @@ namespace HERMES_Kalista.MyLogic
                 {
                     return;
                 }
-                if (MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()) &&
+                if (Program.ComboMenu.Item("EComboMinionReset").GetValue<bool>() && MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()) &&
                     HeroManager.Enemies.Any(e =>
                     {
                         var buf = Extensions.GetRendBuff(e);
-                        return buf != null && buf.Count > 0 && Program.E.IsInRange(e);
+                        return buf != null && buf.Count > Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value && Program.E.IsInRange(e);
                     }) && Program.E.Cast())
                 {
                     return;

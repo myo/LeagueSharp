@@ -69,7 +69,7 @@ namespace HERMES_Kalista.MyLogic.Others
 
         public static void OnUpdate(EventArgs args)
         {
-            if (ObjectManager.Player.IsRecalling() || ObjectManager.Player.InFountain())
+            if (!Program.ComboMenu.Item("RComboSupport").GetValue<bool>() || ObjectManager.Player.IsRecalling() || ObjectManager.Player.InFountain() || !_connectedAlly.HasBuff("Recall"))
                 return;
 
             if (_connectedAlly == null)
