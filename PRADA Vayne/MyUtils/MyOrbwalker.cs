@@ -384,7 +384,7 @@ namespace PRADA_Vayne.MyUtils
                     }
                 }
 
-                if ((!CanAttack() || !target.IsValidTarget()) && CanMove(extraWindup))
+                if (!ObjectManager.Player.HasBuff("VayneInquisition") && (!CanAttack() || !target.IsValidTarget()) && CanMove(extraWindup))
                 {
                     MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
                 }
