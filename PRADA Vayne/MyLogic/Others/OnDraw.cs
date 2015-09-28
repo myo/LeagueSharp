@@ -14,17 +14,6 @@ namespace PRADA_Vayne.MyLogic.Others
     {
         public static void OnDraw(EventArgs args)
         {
-            foreach (var hero in HeroManager.Enemies.Where(h => h.IsValidTarget() && h.Distance(Heroes.Player) < 1400))
-            {
-                var WDMG = Program.W.GetDamage(hero);
-                var AADMG = Heroes.Player.GetAutoAttackDamage(hero);
-                var AAOnly = (int)(hero.Health / AADMG);
-                var Combined = (int)((hero.Health - ((AAOnly/3)*WDMG))/AADMG);
-                Drawing.DrawText(hero.HPBarPosition.X + 5, hero.HPBarPosition.Y - 30,
-                    Combined <= 3 ? Color.Gold : Color.White,
-                    "AAs to kill: " + Combined);
-            }
-
             if (Program.DrawingsMenu.Item("drawenemywaypoints").GetValue<bool>())
             {
                 foreach (var e in HeroManager.Enemies.Where(en => en.IsVisible && !en.IsDead && en.Distance(Heroes.Player) < 2500))
