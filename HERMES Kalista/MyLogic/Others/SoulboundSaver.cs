@@ -88,7 +88,7 @@ namespace HERMES_Kalista.MyLogic.Others
             }
             else
             {
-                if (IncomingDamage > _connectedAlly.Health || _connectedAlly.HealthPercent < 10 && _connectedAlly.CountEnemiesInRange(500) > 0)
+                if (IncomingDamage > _connectedAlly.Health && _connectedAlly.CountEnemiesInRange(500) > 0)
                 {
                     Program.R.Cast();
                 }

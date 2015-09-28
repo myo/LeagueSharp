@@ -46,8 +46,9 @@ namespace HERMES_Kalista.MyInitializer
                 Program.ComboMenu.AddItem(
                       new MenuItem("DamageAdditionerE", "Increase E dmg by").SetValue(
                           new Slider(0, 0, 300)));
-                Program.ComboMenu.AddItem(new MenuItem("RComboSelf", "USE R TO SELF-PEEL").SetValue(true));
+                Program.ComboMenu.AddItem(new MenuItem("RComboSelf", "USE R TO SELF-PEEL").SetValue(false));
                 Program.ComboMenu.AddItem(new MenuItem("RComboSupport", "USE R TO SAVE SUPP").SetValue(true));
+                Program.ComboMenu.AddItem(new MenuItem("MinionOrbwalking", "ORBWALK ON MINIONS?").SetValue(false));
                 Program.ComboMenu.AddItem(new MenuItem("AutoBuy", "Auto-Swap Trinkets?").SetValue(true));
                 Program.LaneClearMenu.AddItem(new MenuItem("LaneclearE", "Use E").SetValue(true));
                 var antigcmenu = Program.EscapeMenu.AddSubMenu(new Menu("Anti-Gapcloser", "antigapcloser"));

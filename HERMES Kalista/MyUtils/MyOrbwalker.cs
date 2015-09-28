@@ -769,7 +769,7 @@ namespace HERMES_Kalista.MyUtils
                 }
 
                 /*Lane Clear minions*/
-                if (ActiveMode == OrbwalkingMode.LaneClear)
+                if (ActiveMode == OrbwalkingMode.LaneClear || (ActiveMode == OrbwalkingMode.Combo && Program.ComboMenu.Item("MinionOrbwalking").GetValue<bool>()))
                 {
                     if (!ShouldWait())
                     {
