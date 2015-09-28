@@ -373,7 +373,7 @@ namespace HERMES_Kalista.MyUtils
                     }
                 }
 
-                if (CanMove(extraWindup))
+                if ((!CanAttack() || !target.IsValidTarget()) && CanMove(extraWindup))
                 {
                     MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
                 }
