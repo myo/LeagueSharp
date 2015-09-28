@@ -37,7 +37,12 @@ namespace HERMES_Kalista.MyLogic
         {
             if (Program.E.IsReady())
             {
-                if (MinionManager.GetMinions(Program.Q.Range).Any(m => m.IsRendKillable()) &&
+                if (HeroManager.Enemies.Any(e => e.IsRendKillable()) &&
+                    Program.E.Cast())
+                {
+                    return;
+                }
+                if (MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()) &&
                     HeroManager.Enemies.Any(e =>
                     {
                         var buf = Extensions.GetRendBuff(e);
@@ -46,13 +51,8 @@ namespace HERMES_Kalista.MyLogic
                 {
                     return;
                 }
-                if (MinionManager.GetMinions(Program.Q.Range, MinionTypes.All, MinionTeam.Neutral)
+                if (ObjectManager.Player.Level > 1 && MinionManager.GetMinions(Program.Q.Range, MinionTypes.All, MinionTeam.Neutral)
                     .Any(m => m.IsRendKillable()) && Program.E.Cast())
-                {
-                    return;
-                }
-                if (ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy).Any(e => e.IsRendKillable()) &&
-                    Program.E.Cast())
                 {
                     return;
                 }
