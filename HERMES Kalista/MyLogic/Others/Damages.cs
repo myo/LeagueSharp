@@ -44,7 +44,20 @@ namespace HERMES_Kalista.MyLogic.Others
 
         public static float GetRendDamage(Obj_AI_Base target, int customStacks = -1)
         {
-            return ((float)player.CalcDamage(target, Damage.DamageType.Physical, GetRawRendDamage(target, customStacks)) - 20 * 0.98f);
+            var damage = (float)player.CalcDamage(target, Damage.DamageType.Physical, GetRawRendDamage(target, customStacks));
+            if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
+            {
+                return 0.6f*damage;
+            }
+            if (target.Name == "SRU_Baron" && ObjectManager.Player.HasBuff("barontarget"))
+            {
+                return 0.5f*damage;
+            }
+            if (target.Name == "SRU_Dragon" && ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
+            {
+                return 0.8f*damage;
+            }
+            return damage;
         }
 
         public static bool HasRendBuff(this Obj_AI_Base target)
@@ -59,11 +72,12 @@ namespace HERMES_Kalista.MyLogic.Others
 
         public static float GetRawRendDamage(Obj_AI_Base target, int customStacks = -1)
         {
-            if (target.GetBuffCount("kalistaexpungemarker") != 0 || customStacks > -1)
+            var stacks = (customStacks > -1 ? customStacks : target.HasRendBuff() ? target.GetRendBuff().Count : 0) - 1;
+            if (stacks > -1)
             {
-                return (RawRendDamage[Program.E.Level - 1] + RawRendDamageMultiplier[Program.E.Level - 1] * player.TotalAttackDamage()) +
-                       ((customStacks < 0 ? target.GetBuffCount("kalistaexpungemarker") : customStacks) - 1) *
-                       (RawRendDamagePerSpear[Program.E.Level - 1] + RawRendDamagePerSpearMultiplier[Program.E.Level - 1] * player.TotalAttackDamage());
+                var index = Program.E.Level - 1;
+                return RawRendDamage[index] + stacks * RawRendDamagePerSpear[index] +
+                       ObjectManager.Player.TotalAttackDamage * (RawRendDamageMultiplier[index] + stacks * RawRendDamagePerSpearMultiplier[index]);
             }
 
             return 0;
