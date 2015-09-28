@@ -60,13 +60,13 @@ namespace HERMES_Kalista.MyInitializer
                     switch (Program.SkinhackMenu.Item("skin").GetValue<StringList>().SelectedValue)
                     {
                         case "Classic":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 0);
-                            break;
-                        case "BloodMoon":
                             Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 1);
                             break;
-                        case "Championship":
+                        case "BloodMoon":
                             Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 2);
+                            break;
+                        case "Championship":
+                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 3);
                             break;
                     }
                 };
