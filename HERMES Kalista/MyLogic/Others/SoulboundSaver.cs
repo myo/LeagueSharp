@@ -88,29 +88,37 @@ namespace HERMES_Kalista.MyLogic.Others
             }
             else
             {
-                if (_connectedAlly.HealthPercent < 10 && _connectedAlly.CountEnemiesInRange(500) > 0)
+                if (IncomingDamage > _connectedAlly.Health || _connectedAlly.HealthPercent < 10 && _connectedAlly.CountEnemiesInRange(500) > 0)
                 {
                     Program.R.Cast();
                 }
                 else
                 {
-                    foreach (
-                        var unit in
-                            ObjectManager.Get<Obj_AI_Hero>()
-                                .Where(h => h.IsEnemy && h.IsHPBarRendered && _connectedAlly.Distance(h.Position) > 800))
+                    if ((_connectedAlly.ChampionName == "Blitzcrank" || _connectedAlly.ChampionName == "Skarner" ||
+                         _connectedAlly.ChampionName == "TahmKench"))
                     {
-                        // Get buffs
-                        for (int i = 0; i < unit.Buffs.Count(); i++)
+                        foreach (
+                            var unit in
+                                ObjectManager.Get<Obj_AI_Hero>()
+                                    .Where(
+                                        h => h.IsEnemy && h.IsHPBarRendered && _connectedAlly.Distance(h.Position) > 800)
+                            )
                         {
-                            // Check if the Soulbound is in a good range
-                            var enemy = HeroManager.Enemies.Where(x => _connectedAlly.Distance(unit.Position) > 800);
-                            // Check if the Soulbound is a Blitzcrank
-                            // Check if the enemy is hooked
-                            // Check if target was far enough for ult
-                            if (_connectedAlly.ChampionName == "Blitzcrank" && unit.Buffs[i].Name == "rocketgrab2" &&
-                                unit.Buffs[i].IsActive && enemy.Count() > 0)
+                            // Get buffs
+                            for (int i = 0; i < unit.Buffs.Count(); i++)
                             {
-                                Program.R.Cast();
+                                // Check if the Soulbound is in a good range
+                                var enemy = HeroManager.Enemies.Where(x => _connectedAlly.Distance(unit.Position) > 800);
+                                // Check if the Soulbound is a Blitzcrank
+                                // Check if the enemy is hooked
+                                // Check if target was far enough for ult
+                                if ((unit.Buffs[i].Name.ToLower() == "rocketgrab2" ||
+                                     unit.Buffs[i].Name == "skarnerimpale".ToLower() ||
+                                     unit.Buffs[i].Name.ToLower() == "tahmkenchwdevoured") &&
+                                    unit.Buffs[i].IsActive && enemy.Count() > 0)
+                                {
+                                    Program.R.Cast();
+                                }
                             }
                         }
                     }
