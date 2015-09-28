@@ -53,11 +53,22 @@ namespace HERMES_Kalista.MyInitializer
                 new MenuItem("skin", "Skin: ").SetValue(
                     new StringList(new[]
                     {
-                        "Classic", "Blood Moon"//, "Championship", "Lunar"
+                        "Classic", "BloodMoon", "Championship" //, "Lunar"
                     }))).DontSave().ValueChanged +=
                 (sender, args) =>
                 {
-                    Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, Program.SkinhackMenu.Item("skin").GetValue<StringList>().SelectedIndex + 1);
+                    switch (Program.SkinhackMenu.Item("skin").GetValue<StringList>().SelectedValue)
+                    {
+                        case "Classic":
+                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 0);
+                            break;
+                        case "BloodMoon":
+                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 1);
+                            break;
+                        case "Championship":
+                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 2);
+                            break;
+                    }
                 };
             }
             catch (Exception e)
