@@ -42,17 +42,21 @@ namespace HERMES_Kalista.MyLogic
                 {
                     return;
                 }
-                if (Program.ComboMenu.Item("EComboMinionReset").GetValue<bool>() && MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()) &&
+                if (Program.ComboMenu.Item("EComboMinionReset").GetValue<bool>() &&
+                    MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()) &&
                     HeroManager.Enemies.Any(e =>
                     {
                         var buf = Extensions.GetRendBuff(e);
-                        return buf != null && buf.Count >= Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value && Program.E.IsInRange(e);
+                        return buf != null &&
+                               buf.Count >= Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value &&
+                               Program.E.IsInRange(e);
                     }) && Program.E.Cast())
                 {
                     return;
                 }
-                if (ObjectManager.Player.Level > 1 && MinionManager.GetMinions(Program.Q.Range, MinionTypes.All, MinionTeam.Neutral)
-                    .Any(m => m.IsRendKillable()) && Program.E.Cast())
+                if (ObjectManager.Player.Level > 1 &&
+                    MinionManager.GetMinions(Program.Q.Range, MinionTypes.All, MinionTeam.Neutral)
+                        .Any(m => m.IsRendKillable()) && Program.E.Cast()) //TODO: check for jungler
                 {
                     return;
                 }
@@ -100,7 +104,8 @@ namespace HERMES_Kalista.MyLogic
                     }
                 }
             }
-            else if (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear)
+            else if (Program.LaneClearMenu.Item("LaneclearE").GetValue<bool>()
+                     && Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear)
             {
                 if (ObjectManager.Player.ManaPercent < 50)
                 {

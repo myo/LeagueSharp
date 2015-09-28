@@ -19,7 +19,8 @@ namespace HERMES_Kalista.MyLogic.Others
 
         public static bool IsRendKillable(this Obj_AI_Base target)
         {
-            return GetRendDamage(target) - Program.ComboMenu.Item("DamageReductionE").GetValue<Slider>().Value > GetActualHealth(target);
+            return GetRendDamage(target) - Program.ComboMenu.Item("DamageReductionE").GetValue<Slider>().Value +
+                   Program.ComboMenu.Item("DamageAdditionerE").GetValue<Slider>().Value > GetActualHealth(target);
         }
 
         /// <summary>

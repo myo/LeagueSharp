@@ -24,7 +24,7 @@ namespace HERMES_Kalista.MyInitializer
             try
             {
                 Program.MainMenu = new Menu("HERMES Kalista", "pradamenu", true);
-                Program.ComboMenu = new Menu("Combo Settings", "combomenu");
+                Program.ComboMenu = new Menu("General Settings", "combomenu");
                 Program.LaneClearMenu = new Menu("Laneclear Settings", "laneclearmenu");
                 Program.EscapeMenu = new Menu("Escape Settings", "escapemenu");
 
@@ -42,11 +42,14 @@ namespace HERMES_Kalista.MyInitializer
                         33)));
                 Program.ComboMenu.AddItem(
                     new MenuItem("DamageReductionE", "Reduce E dmg by").SetValue(
-                        new Slider(0, 0, 300)));;
-                Program.ComboMenu.AddItem(new MenuItem("RComboSelf", "USE R TO SELF-PEEL").SetValue(false));
-                Program.ComboMenu.AddItem(new MenuItem("RComboSupport", "USE R TO SAVE SUPP").SetValue(false));
+                        new Slider(0, 0, 300))); 
+                Program.ComboMenu.AddItem(
+                      new MenuItem("DamageAdditionerE", "Increase E dmg by").SetValue(
+                          new Slider(0, 0, 300)));
+                Program.ComboMenu.AddItem(new MenuItem("RComboSelf", "USE R TO SELF-PEEL").SetValue(true));
+                Program.ComboMenu.AddItem(new MenuItem("RComboSupport", "USE R TO SAVE SUPP").SetValue(true));
                 Program.ComboMenu.AddItem(new MenuItem("AutoBuy", "Auto-Swap Trinkets?").SetValue(true));
-                Program.EscapeMenu.AddItem(new MenuItem("SOON", "SOON").SetValue(true));
+                Program.LaneClearMenu.AddItem(new MenuItem("LaneclearE", "Use E").SetValue(true));
                 var antigcmenu = Program.EscapeMenu.AddSubMenu(new Menu("Anti-Gapcloser", "antigapcloser"));
                 foreach (var hero in Heroes.EnemyHeroes)
                 {
