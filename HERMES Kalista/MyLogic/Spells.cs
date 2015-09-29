@@ -36,28 +36,34 @@ namespace HERMES_Kalista.MyLogic
 
         private static void OnUpdate(EventArgs args)
         {
+            if (Program.E.IsReady())
+            {
+                //KS
+                if (
+                    HeroManager.Enemies.Any(
+                        en => Program.E.IsInRange(en) && en.IsRendKillable() && en.Health > 0))
+                {
+                    Program.E.Cast();
+                }
+                //worm/drake stealer
+                if (
+                    ObjectManager.Get<Obj_AI_Minion>()
+                        .Any(
+                            m =>
+                                m.Distance(ObjectManager.Player) < 1000 && m.IsRendKillable() &&
+                                (m.Name == "SRU_Dragon6.1.1" || m.Name == "SRU_Baron12.1.1" || m.Name == "SRU_Red10.1.1" ||
+                                 m.Name == "SRU_Red10.1.1" || m.Name == "SRU_Red4.1.1")))
+                {
+                    Program.E.Cast();
+                }
+            }
+
             switch (Program.Orbwalker.ActiveMode)
             {
                 case MyOrbwalker.OrbwalkingMode.Combo:
                 {
                     if (Program.E.IsReady())
                     {
-                        //KS
-                        if (
-                            HeroManager.Enemies.Any(
-                                en => Program.E.IsInRange(en) && en.IsRendKillable() && en.Health > 0))
-                        {
-                            Program.E.Cast();
-                        }
-                        //worm/drake stealer
-                        if (
-                            MinionManager.GetMinions(1000, MinionTypes.All, MinionTeam.Neutral)
-                                .Any(m => (m.Name == "SRU_Dragon" || m.Name == "SRU_Baron") && m.IsRendKillable()))
-                            //TODO: check for jungler
-                        {
-                            Program.E.Cast();
-                            return;
-                        }
                         //Minion Resets
                         if (Program.ComboMenu.Item("EComboMinionReset").GetValue<bool>() &&
                             MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()))

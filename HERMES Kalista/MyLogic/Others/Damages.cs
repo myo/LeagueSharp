@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using HERMES_Kalista.MyUtils;
@@ -13,12 +14,24 @@ namespace HERMES_Kalista.MyLogic.Others
     {
         public static bool IsRendKillable(this Obj_AI_Base target)
         {
-            var dmg = Program.E.GetDamage(target);
-            if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
+            if (target.Health > 1)
             {
-                dmg *= 0.6f;
+                if (target is Obj_AI_Hero)
+                {
+                    var objaihero_target = target as Obj_AI_Hero;
+                    if (objaihero_target.HasSpellShield() || objaihero_target.HasUndyingBuff())
+                    {
+                        return false;
+                    }
+                }
+                var dmg = Program.E.GetDamage(target);
+                if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
+                {
+                    dmg *= 0.6f;
+                }
+                return dmg > target.Health;
             }
-            return dmg > target.Health;
+            return false;
         }
         public static BuffInstance GetRendBuff(this Obj_AI_Base target)
         {
