@@ -678,7 +678,7 @@ namespace HERMES_Kalista.MyUtils
 
                         if (minion.Team != GameObjectTeam.Neutral && MinionManager.IsMinion(minion, true))
                         {
-                            if (predHealth <= 0)
+                            if (predHealth < 0 && minion.Health > 20) //#TODO
                             {
                                 FireOnNonKillableMinion(minion);
                             }
