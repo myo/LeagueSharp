@@ -659,7 +659,7 @@ namespace HERMES_Kalista.MyUtils
 
                 /*Killable Minion*/
                 if (ActiveMode == OrbwalkingMode.LaneClear || ActiveMode == OrbwalkingMode.Mixed ||
-                    ActiveMode == OrbwalkingMode.LastHit)
+                    ActiveMode == OrbwalkingMode.LastHit || Program.ComboMenu.Item("MinionOrbwalking").GetValue<bool>())
                 {
                     var MinionList =
                         ObjectManager.Get<Obj_AI_Minion>()
