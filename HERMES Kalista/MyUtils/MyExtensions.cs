@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HERMES_Kalista.MyLogic.Others;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -105,11 +106,6 @@ namespace HERMES_Kalista.MyUtils
         public static bool HasRendBuff(this Obj_AI_Base target)
         {
             return target.GetRendBuff() != null;
-        }
-
-        public static BuffInstance GetRendBuff(this Obj_AI_Base target)
-        {
-            return target.Buffs.Find(b => b.Caster.IsMe && b.IsValid && b.DisplayName == "KalistaExpungeMarker");
         }
 
         public static bool HasUndyingBuff(this Obj_AI_Hero target)

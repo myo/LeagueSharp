@@ -41,6 +41,8 @@ namespace HERMES_Kalista.MyInitializer
                     new MenuItem("EComboMinionResetStacks", "Min enemy stacks for SMART RESET").SetValue(new Slider(3, 1,
                         33)));
                 Program.ComboMenu.AddItem(
+                    new MenuItem("EComboMinStacks", "Min stacks for E poke").SetValue(new Slider(5, 1, 30)));
+                Program.ComboMenu.AddItem(
                     new MenuItem("DamageReductionE", "Reduce E dmg by").SetValue(
                         new Slider(0, 0, 300))); 
                 Program.ComboMenu.AddItem(
@@ -52,6 +54,8 @@ namespace HERMES_Kalista.MyInitializer
                 Program.ComboMenu.AddItem(new MenuItem("AutoBuy", "Auto-Swap Trinkets?").SetValue(true));
                 Program.LaneClearMenu.AddItem(new MenuItem("LaneclearE", "Use E").SetValue(true));
                 Program.LaneClearMenu.AddItem(new MenuItem("LaneclearEMinMana", "Min Mana% for E Laneclear").SetValue(new Slider(50)));
+                Program.LaneClearMenu.AddItem(
+                    new MenuItem("LaneclearEMinions", "Min minions killable by E").SetValue(new Slider(2, 1, 6)));
                 var antigcmenu = Program.EscapeMenu.AddSubMenu(new Menu("Anti-Gapcloser", "antigapcloser"));
                 foreach (var hero in Heroes.EnemyHeroes)
                 {

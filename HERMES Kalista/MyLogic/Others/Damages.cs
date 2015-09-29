@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HERMES_Kalista.MyUtils;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -10,95 +11,23 @@ namespace HERMES_Kalista.MyLogic.Others
 {
     public static class Damages
     {
-        private static Obj_AI_Hero player = ObjectManager.Player;
-
-        private static readonly float[] RawRendDamage = { 20, 30, 40, 50, 60 };
-        private static readonly float[] RawRendDamageMultiplier = { 0.6f, 0.6f, 0.6f, 0.6f, 0.6f };
-        private static readonly float[] RawRendDamagePerSpear = { 10, 14, 19, 25, 32 };
-        private static readonly float[] RawRendDamagePerSpearMultiplier = { 0.2f, 0.225f, 0.25f, 0.275f, 0.3f };
-
         public static bool IsRendKillable(this Obj_AI_Base target)
         {
-            return GetRendDamage(target) - Program.ComboMenu.Item("DamageReductionE").GetValue<Slider>().Value +
-                   Program.ComboMenu.Item("DamageAdditionerE").GetValue<Slider>().Value > GetActualHealth(target);
-        }
-
-        /// <summary>
-        ///     Gets the targets health including the shield amount
-        /// </summary>
-        /// <param name="target">
-        ///     The Target
-        /// </param>
-        /// <returns>
-        ///     The targets health
-        /// </returns>
-        public static float GetActualHealth(Obj_AI_Base target)
-        {
-            return target.Health;
-        }
-
-        public static float GetRendDamage(Obj_AI_Hero target)
-        {
-            return (float)GetRendDamage(target, -1);
-        }
-
-        public static float GetRendDamage(Obj_AI_Base target, int customStacks = -1)
-        {
-            var damage = (float)player.CalcDamage(target, Damage.DamageType.Physical, GetRawRendDamage(target, customStacks));
+            var h = target as Obj_AI_Hero;
+            if (h.IsValid<Obj_AI_Hero>())
+            {
+                if (h.HasSpellShield() || h.HasUndyingBuff()) return false;
+            }
+            var dmg = Program.E.GetDamage(target);
             if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
             {
-                return 0.6f*damage;
+                dmg *= 0.6f;
             }
-            if (target.Name == "SRU_Baron" && ObjectManager.Player.HasBuff("barontarget"))
-            {
-                return 0.5f*damage;
-            }
-            if (target.Name == "SRU_Dragon" && ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
-            {
-                return 0.8f*damage;
-            }
-            return damage;
+            return dmg > target.Health;
         }
-
-        public static bool HasRendBuff(this Obj_AI_Base target)
-        {
-            return target.GetRendBuff() != null;
-        }
-
         public static BuffInstance GetRendBuff(this Obj_AI_Base target)
         {
-            return target.Buffs.Find(b => b.Caster.IsMe && b.IsValidBuff() && b.DisplayName == "kalistaexpungemarker");
-        }
-
-        public static float GetRawRendDamage(Obj_AI_Base target, int customStacks = -1)
-        {
-            var stacks = (customStacks > -1 ? customStacks : target.HasRendBuff() ? target.GetRendBuff().Count : 0) - 1;
-            if (stacks > -1)
-            {
-                var index = Program.E.Level - 1;
-                return RawRendDamage[index] + stacks * RawRendDamagePerSpear[index] +
-                       ObjectManager.Player.TotalAttackDamage * (RawRendDamageMultiplier[index] + stacks * RawRendDamagePerSpearMultiplier[index]);
-            }
-
-            return 0;
-        }
-
-        public static float GetTotalDamage(Obj_AI_Hero target)
-        {
-            double damage = player.GetAutoAttackDamage(target);
-
-            if (Program.Q.IsReady())
-                damage += player.GetSpellDamage(target, SpellSlot.Q);
-
-            if (Program.E.IsReady())
-                damage += GetRendDamage(target);
-
-            return (float)damage;
-        }
-
-        public static float TotalAttackDamage(this Obj_AI_Base target)
-        {
-            return target.BaseAttackDamage + target.FlatPhysicalDamageMod;
+            return target.Buffs.Find(b => b.Caster.IsMe && b.IsValidBuff() && b.DisplayName.ToLower() == "kalistaexpungemarker");
         }
     }
 }

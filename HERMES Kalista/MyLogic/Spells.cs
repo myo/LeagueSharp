@@ -12,6 +12,7 @@ using HERMES_Kalista.MyUtils;
 using LeagueSharp;
 using LeagueSharp.Common;
 using TargetSelector = LeagueSharp.Common.TargetSelector;
+using HERMES_Kalista.MyLogic.Others;
 
 namespace HERMES_Kalista.MyLogic
 {
@@ -27,9 +28,9 @@ namespace HERMES_Kalista.MyLogic
         private static void OnNonKillableMinion(AttackableUnit minion)
         {
             var objaiminion = (Obj_AI_Base) minion;
-            if (objaiminion.IsValidTarget() && objaiminion.IsRendKillable() && Program.E.Cast())
+            if (objaiminion.IsRendKillable())
             {
-                return;
+                Program.E.Cast();
             }
         }
 
@@ -37,122 +38,65 @@ namespace HERMES_Kalista.MyLogic
         {
             if (Program.E.IsReady())
             {
-                if (HeroManager.Enemies.Any(e => e.IsRendKillable()) &&
-                    Program.E.Cast())
+                //KS
+                if (HeroManager.Enemies.Any(en => Program.E.IsInRange(en) && en.IsRendKillable()))
                 {
+                    Program.E.Cast();
+                }
+                //Jungle Clear
+                if (ObjectManager.Player.Level > 1 &&
+                    MinionManager.GetMinions(Program.Q.Range, MinionTypes.All, MinionTeam.Neutral)
+                        .Any(m => m.IsRendKillable())) //TODO: check for jungler
+                {
+                    Program.E.Cast();
                     return;
                 }
+                //Minion Resets
                 if (Program.ComboMenu.Item("EComboMinionReset").GetValue<bool>() &&
                     MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()))
                 {
-                    foreach (var en in HeroManager.Enemies)
+                    if (
+                        HeroManager.Enemies.Where(e => !e.HasUndyingBuff() && !e.HasSpellShield())
+                            .Select(en => en.GetRendBuff())
+                            .Any(buf => buf != null &&
+                                        buf.Count >=
+                                        Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value))
                     {
-                        var buf = Extensions.GetRendBuff(en);
-                        if (buf != null && buf.IsValidBuff() &&
-                            buf.Count >=
-                            Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value)
-                        {
-                            Program.E.Cast();
-                            return;
-                        }
-                    }
-                }
-                if (ObjectManager.Player.Level > 1 &&
-                    MinionManager.GetMinions(Program.Q.Range, MinionTypes.All, MinionTeam.Neutral)
-                        .Any(m => m.IsRendKillable()) && Program.E.Cast()) //TODO: check for jungler
-                {
-                    return;
-                }
-            }
-            if (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.Combo)
-            {
-                var target = TargetSelector.GetTarget((Program.Q.IsReady()) ? Program.Q.Range : (Program.E.Range*1.2f),
-                    TargetSelector.DamageType.Physical);
-                if (target != null)
-                {
-                    // Q usage
-                    if (Program.ComboMenu.Item("QCombo").GetValue<bool>() && Program.Q.IsReady())
-                    {
-                        Program.Q.Cast(target);
+                        Program.E.Cast();
                         return;
                     }
-
-                    // E usage
-                    var buff = Extensions.GetRendBuff(target);
-                    if (Program.E.IsReady() && buff != null && Program.E.IsInRange(target))
-                    {
-                        // Check if the target would die from E
-                        if (target.IsRendKillable())
-                        {
-                            Program.E.Cast();
-                            return;
-                        }
-
-                        // Check if target has the desired amount of E stacks on
-                        if (buff.Count >= 5)
-                        {
-                            // Check if target is about to leave our E range or the buff is about to run out
-                            if ((target.Distance(ObjectManager.Player, true) > Math.Pow(Program.E.Range*0.80, 2) ||
-                                 buff.EndTime - Game.Time < 0.3) && Program.E.Cast())
-                            {
-                                return;
-                            }
-                        }
-                    }
+                }
+                //E poke, slow
+                if ((from enemy in HeroManager.Enemies.Where(e => Program.E.IsInRange(e))
+                    let buff = enemy.GetRendBuff()
+                    where Program.E.IsReady() && buff != null && Program.E.IsInRange(enemy)
+                    where buff.Count >= Program.ComboMenu.Item("EComboMinStacks").GetValue<Slider>().Value
+                    where (enemy.Distance(ObjectManager.Player, true) > Math.Pow(Program.E.Range*0.80, 2) ||
+                           buff.EndTime - Game.Time < 0.3)
+                    select enemy).Any())
+                {
+                    Program.E.Cast();
+                    return;
+                }
+                //E Laneclear
+                if (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear &&
+                    Program.LaneClearMenu.Item("LaneclearE").GetValue<bool>() && ObjectManager.Player.ManaPercent <
+                    Program.LaneClearMenu.Item("LaneclearEMinMana").GetValue<Slider>().Value &&
+                    MinionManager.GetMinions(Program.E.Range).Count(m => m.IsRendKillable()) >
+                    Program.LaneClearMenu.Item("LaneclearEMinions").GetValue<Slider>().Value)
+                {
+                    Program.E.Cast();
                 }
             }
-            else if (Program.LaneClearMenu.Item("LaneclearE").GetValue<bool>()
-                     && Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear)
+            if (Program.ComboMenu.Item("QCombo").GetValue<bool>() && Program.Q.IsReady() &&
+                Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.Combo)
             {
-                if (ObjectManager.Player.ManaPercent < Program.LaneClearMenu.Item("LaneclearEMinMana").GetValue<Slider>().Value)
+                var target = TargetSelector.GetTarget(Program.Q.Range, TargetSelector.DamageType.Physical);
+                if (target.IsValidTarget())
                 {
+                    Program.Q.Cast(target);
                     return;
                 }
-                if (!Program.Q.IsReady() && !Program.E.IsReady())
-                {
-                    return;
-                }
-
-                // Minions around
-                var minions = MinionManager.GetMinions(Program.Q.Range);
-                if (minions.Count == 0)
-                {
-                    return;
-                }
-
-                // TODO: C+P his Q logic XD
-
-                #region E usage
-
-                if (Program.E.IsReady())
-                {
-                    // Get minions in E range
-                    var minionsInRange = minions.Where(m => Program.E.IsInRange(m)).ToArray();
-
-                    // Validate available minions
-                    if (minionsInRange.Length >= 2)
-                    {
-                        // Check if enough minions die with E
-                        var killableNum = 0;
-                        foreach (var minion in minionsInRange)
-                        {
-                            if (minion.IsRendKillable())
-                            {
-                                // Increase kill number
-                                killableNum++;
-
-                                // Cast on condition met
-                                if (killableNum >= 2)
-                                {
-                                    Program.E.Cast();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                #endregion
             }
         }
     }

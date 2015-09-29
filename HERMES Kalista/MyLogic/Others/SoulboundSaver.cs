@@ -69,22 +69,13 @@ namespace HERMES_Kalista.MyLogic.Others
 
         public static void OnUpdate(EventArgs args)
         {
-            if (!Program.ComboMenu.Item("RComboSupport").GetValue<bool>() || ObjectManager.Player.IsRecalling() || ObjectManager.Player.InFountain() || !_connectedAlly.HasBuff("Recall"))
+            if (!Program.ComboMenu.Item("RComboSupport").GetValue<bool>() || ObjectManager.Player.IsRecalling() || ObjectManager.Player.InFountain())
                 return;
 
             if (_connectedAlly == null)
             {
-                foreach (
-                    var cAlly in
-                        from ally in ObjectManager.Get<Obj_AI_Hero>().Where(b => b.IsAlly && !b.IsDead && !b.IsMe)
-                        where ObjectManager.Player.Distance(ally) < Program.R.Range
-                        from buff in ally.Buffs
-                        where ally.HasBuff("kalistacoopstrikeally")
-                        select ally)
-                {
-                    _connectedAlly = cAlly;
-                    break;
-                }
+                _connectedAlly = HeroManager.Allies.FirstOrDefault(a => a.HasBuff("kalistacoopstrikeally"));
+                return;
             }
             else
             {
