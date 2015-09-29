@@ -13,11 +13,6 @@ namespace HERMES_Kalista.MyLogic.Others
     {
         public static bool IsRendKillable(this Obj_AI_Base target)
         {
-            var h = target as Obj_AI_Hero;
-            if (h.IsValid<Obj_AI_Hero>())
-            {
-                if (h.HasSpellShield() || h.HasUndyingBuff()) return false;
-            }
             var dmg = Program.E.GetDamage(target);
             if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
             {

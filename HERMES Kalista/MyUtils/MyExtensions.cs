@@ -103,11 +103,6 @@ namespace HERMES_Kalista.MyUtils
             return objListTeam.Count(hero => checkteam ? hero.Team != target.Team : hero.Team == target.Team);
         }
 
-        public static bool HasRendBuff(this Obj_AI_Base target)
-        {
-            return target.GetRendBuff() != null;
-        }
-
         public static bool HasUndyingBuff(this Obj_AI_Hero target)
         {
             // Various buffs

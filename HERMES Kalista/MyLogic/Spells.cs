@@ -36,67 +36,77 @@ namespace HERMES_Kalista.MyLogic
 
         private static void OnUpdate(EventArgs args)
         {
-            if (Program.E.IsReady())
+            switch (Program.Orbwalker.ActiveMode)
             {
-                //KS
-                if (HeroManager.Enemies.Any(en => Program.E.IsInRange(en) && en.IsRendKillable()))
+                case MyOrbwalker.OrbwalkingMode.Combo:
                 {
-                    Program.E.Cast();
-                }
-                //Jungle Clear
-                if (ObjectManager.Player.Level > 1 &&
-                    MinionManager.GetMinions(Program.Q.Range, MinionTypes.All, MinionTeam.Neutral)
-                        .Any(m => m.IsRendKillable())) //TODO: check for jungler
-                {
-                    Program.E.Cast();
-                    return;
-                }
-                //Minion Resets
-                if (Program.ComboMenu.Item("EComboMinionReset").GetValue<bool>() &&
-                    MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()))
-                {
-                    if (
-                        HeroManager.Enemies.Where(e => !e.HasUndyingBuff() && !e.HasSpellShield())
-                            .Select(en => en.GetRendBuff())
-                            .Any(buf => buf != null &&
-                                        buf.Count >=
-                                        Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value))
+                    if (Program.E.IsReady())
                     {
-                        Program.E.Cast();
-                        return;
+                        //KS
+                        if (
+                            HeroManager.Enemies.Any(
+                                en => Program.E.IsInRange(en) && en.IsRendKillable() && en.Health > 0))
+                        {
+                            Program.E.Cast();
+                        }
+                        //worm/drake stealer
+                        if (MinionManager.GetMinions(1000, MinionTypes.All, MinionTeam.Neutral).Any(m=>(m.Name == "SRU_Dragon" || m.Name == "SRU_Baron") && m.IsRendKillable())) //TODO: check for jungler
+                        {
+                            Program.E.Cast();
+                            return;
+                        }
+                        //Minion Resets
+                        if (Program.ComboMenu.Item("EComboMinionReset").GetValue<bool>() &&
+                            MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()))
+                        {
+                            if (
+                                HeroManager.Enemies.Where(e => !e.HasUndyingBuff() && !e.HasSpellShield())
+                                    .Select(en => en.GetRendBuff())
+                                    .Any(buf => buf != null &&
+                                                buf.Count >=
+                                                Program.ComboMenu.Item("EComboMinionResetStacks")
+                                                    .GetValue<Slider>()
+                                                    .Value))
+                            {
+                                Program.E.Cast();
+                                return;
+                            }
+                        }
+                        //E poke, slow
+                        if ((from enemy in HeroManager.Enemies.Where(e => Program.E.IsInRange(e))
+                            let buff = enemy.GetRendBuff()
+                            where Program.E.IsReady() && buff != null && Program.E.IsInRange(enemy)
+                            where buff.Count >= Program.ComboMenu.Item("EComboMinStacks").GetValue<Slider>().Value
+                            where (enemy.Distance(ObjectManager.Player, true) > Math.Pow(Program.E.Range*0.80, 2) ||
+                                   buff.EndTime - Game.Time < 0.3)
+                            select enemy).Any())
+                        {
+                            Program.E.Cast();
+                            return;
+                        }
+                    }
+                    if (Program.ComboMenu.Item("QCombo").GetValue<bool>() && Program.Q.IsReady())
+                    {
+                        var target = TargetSelector.GetTarget(Program.Q.Range, TargetSelector.DamageType.Physical);
+                        if (target.IsValidTarget())
+                        {
+                            Program.Q.Cast(target);
+                            return;
+                        }
                     }
                 }
-                //E poke, slow
-                if ((from enemy in HeroManager.Enemies.Where(e => Program.E.IsInRange(e))
-                    let buff = enemy.GetRendBuff()
-                    where Program.E.IsReady() && buff != null && Program.E.IsInRange(enemy)
-                    where buff.Count >= Program.ComboMenu.Item("EComboMinStacks").GetValue<Slider>().Value
-                    where (enemy.Distance(ObjectManager.Player, true) > Math.Pow(Program.E.Range*0.80, 2) ||
-                           buff.EndTime - Game.Time < 0.3)
-                    select enemy).Any())
-                {
-                    Program.E.Cast();
-                    return;
-                }
-                //E Laneclear
-                if (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear &&
-                    Program.LaneClearMenu.Item("LaneclearE").GetValue<bool>() && ObjectManager.Player.ManaPercent <
-                    Program.LaneClearMenu.Item("LaneclearEMinMana").GetValue<Slider>().Value &&
-                    MinionManager.GetMinions(Program.E.Range).Count(m => m.IsRendKillable()) >
-                    Program.LaneClearMenu.Item("LaneclearEMinions").GetValue<Slider>().Value)
-                {
-                    Program.E.Cast();
-                }
-            }
-            if (Program.ComboMenu.Item("QCombo").GetValue<bool>() && Program.Q.IsReady() &&
-                Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.Combo)
-            {
-                var target = TargetSelector.GetTarget(Program.Q.Range, TargetSelector.DamageType.Physical);
-                if (target.IsValidTarget())
-                {
-                    Program.Q.Cast(target);
-                    return;
-                }
+                    break;
+                case MyOrbwalker.OrbwalkingMode.LaneClear:
+                    //E Laneclear
+                    if (Program.LaneClearMenu.Item("LaneclearE").GetValue<bool>() &&
+                        (ObjectManager.Player.ManaPercent <
+                        Program.LaneClearMenu.Item("LaneclearEMinMana").GetValue<Slider>().Value &&
+                        MinionManager.GetMinions(1000f).Count(m => m.IsRendKillable()) >
+                        Program.LaneClearMenu.Item("LaneclearEMinions").GetValue<Slider>().Value) || MinionManager.GetMinions(1000f, MinionTypes.All, MinionTeam.Neutral).Any(m => m.IsRendKillable()))
+                    {
+                        Program.E.Cast();
+                    }
+                    break;
             }
         }
     }
