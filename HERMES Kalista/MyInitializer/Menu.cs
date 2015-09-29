@@ -51,6 +51,7 @@ namespace HERMES_Kalista.MyInitializer
                 Program.ComboMenu.AddItem(new MenuItem("MinionOrbwalking", "ORBWALK ON MINIONS?").SetValue(false));
                 Program.ComboMenu.AddItem(new MenuItem("AutoBuy", "Auto-Swap Trinkets?").SetValue(true));
                 Program.LaneClearMenu.AddItem(new MenuItem("LaneclearE", "Use E").SetValue(true));
+                Program.LaneClearMenu.AddItem(new MenuItem("LaneclearEMinMana", "Min Mana% for E Laneclear").SetValue(new Slider(50)));
                 var antigcmenu = Program.EscapeMenu.AddSubMenu(new Menu("Anti-Gapcloser", "antigapcloser"));
                 foreach (var hero in Heroes.EnemyHeroes)
                 {

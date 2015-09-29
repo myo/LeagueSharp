@@ -71,7 +71,7 @@ namespace HERMES_Kalista.MyLogic
                 if (target != null)
                 {
                     // Q usage
-                    if (Program.Q.IsReady())
+                    if (Program.ComboMenu.Item("QCombo").GetValue<bool>() && Program.Q.IsReady())
                     {
                         Program.Q.Cast(target);
                         return;
@@ -82,8 +82,9 @@ namespace HERMES_Kalista.MyLogic
                     if (Program.E.IsReady() && buff != null && Program.E.IsInRange(target))
                     {
                         // Check if the target would die from E
-                        if (target.IsRendKillable() && Program.E.Cast())
+                        if (target.IsRendKillable())
                         {
+                            Program.E.Cast();
                             return;
                         }
 
@@ -97,20 +98,13 @@ namespace HERMES_Kalista.MyLogic
                                 return;
                             }
                         }
-
-                        // E to slow
-                        if (ObjectManager.Get<Obj_AI_Base>().Any(o => Program.E.IsInRange(o) && o.IsRendKillable()) &&
-                            Program.E.Cast())
-                        {
-                            return;
-                        }
                     }
                 }
             }
             else if (Program.LaneClearMenu.Item("LaneclearE").GetValue<bool>()
                      && Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear)
             {
-                if (ObjectManager.Player.ManaPercent < 50)
+                if (ObjectManager.Player.ManaPercent < Program.LaneClearMenu.Item("LaneclearEMinMana").GetValue<Slider>().Value)
                 {
                     return;
                 }
