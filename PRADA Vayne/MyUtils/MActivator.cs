@@ -40,29 +40,7 @@ namespace PRADA_Vayne.MyUtils
         MItem exhaust = new MItem("Exhaust", "Exhaust", "SummonerExhaust", 0, ItemTypeId.OffensiveSpell, 650); //summonerexhaust, low, debuff (buffs)
         MItem barrier = new MItem("Barrier", "Barrier", "SummonerBarrier", 0, ItemTypeId.DeffensiveSpell);
         MItem cleanse = new MItem("Cleanse", "Cleanse", "SummonerBoost", 0, ItemTypeId.PurifierSpell);
-        MItem clarity = new MItem("Clarity", "Clarity", "SummonerMana", 0, ItemTypeId.ManaRegeneratorSpell, 600);
         MItem ignite = new MItem("Ignite", "Ignite", "SummonerDot", 0, ItemTypeId.OffensiveSpell, 600);
-        MItem smite = new MItem("Smite", "Smite", "SummonerSmite", 0, ItemTypeId.OffensiveSpell, 500);
-        MItem smiteAOE = new MItem("SmiteAOE", "smite AOE", "itemsmiteaoe", 0, ItemTypeId.OffensiveSpell, 500);
-        MItem smiteDuel = new MItem("SmiteDuel", "smite Duel", "s5_summonersmiteduel", 0, ItemTypeId.OffensiveSpell, 500);
-        MItem smiteQuick = new MItem("SmiteQuick", "smite Quick", "s5_summonersmitequick", 0, ItemTypeId.OffensiveSpell, 500);
-        MItem smiteGanker = new MItem("SmiteGanker", "smite Ganker", "s5_summonersmiteplayerganker", 0, ItemTypeId.OffensiveSpell, 500);
-        #endregion
-
-        #region Jungle Minions
-        MMinion blue = new MMinion("SRU_Blue", "Blue", 6, 143);
-        MMinion red = new MMinion("SRU_Red", "Red", 6, 143);
-        MMinion dragon = new MMinion("SRU_Dragon", "Dragon", 6, 143);
-        MMinion baron = new MMinion("SRU_Baron", "Baron", -18, 192);
-        MMinion wolf = new MMinion("SRU_Murkwolf", "Murkwolf", 41, 74);
-        MMinion razor = new MMinion("SRU_Razorbeak", "Razor", 39, 74); // Ghosts
-        MMinion krug = new MMinion("SRU_Krug", "Krug", 38, 80);
-        MMinion crab = new MMinion("Sru_Crab", "Crab", 43, 62);
-        MMinion gromp = new MMinion("SRU_Gromp", "Gromp", 32, 87); // Ghost
-        MMinion tVilemaw = new MMinion("TT_Spiderboss", "Vilemaw", 45, 67);
-        MMinion tWraith = new MMinion("TT_NWraith", "Wraith", 45, 67);
-        MMinion tGolem = new MMinion("TT_NGolem", "Golem", 45, 67);
-        MMinion tWolf = new MMinion("TT_NWolf", "Wolf", 45, 67);
         #endregion
 
         public MActivator()
@@ -100,51 +78,6 @@ namespace PRADA_Vayne.MyUtils
                 {
                     Drawing.DrawText(Drawing.Width - 120, 80, Config.Item("enabled").IsActive() ? System.Drawing.Color.Green : System.Drawing.Color.Red, "MActivator");
                 }
-
-                if (Config.Item("dSmite").GetValue<bool>())
-                {
-                    MMinion[] jungleMinions;
-                    if (Utility.Map.GetMap().Type.Equals(Utility.Map.MapType.TwistedTreeline))
-                    {
-                        jungleMinions = new MMinion[] { tVilemaw, tWraith, tWolf, tGolem };
-                    }
-                    else
-                    {
-                        jungleMinions = new MMinion[] { blue, red, razor, baron, krug, wolf, dragon, gromp, crab };
-                    }
-
-                    var minions = MinionManager.GetMinions(_player.Position, 1500, MinionTypes.All, MinionTeam.Neutral);
-                    if (minions.Count() > 0)
-                    {
-                        foreach (Obj_AI_Base minion in minions)
-                        {
-                            if (minion.IsHPBarRendered && !minion.IsDead)
-                            {
-                                foreach (MMinion jMinion in jungleMinions)
-                                {
-                                    if (minion.Name.StartsWith(jMinion.name) && ((minion.Name.Length - jMinion.name.Length) <= 6) && Config.Item(jMinion.name).GetValue<bool>() && Config.Item("justAS").GetValue<bool>() ||
-                                    minion.Name.StartsWith(jMinion.name) && ((minion.Name.Length - jMinion.name.Length) <= 6) && !Config.Item("justAS").GetValue<bool>())
-                                    {
-                                        Vector2 hpBarPos = minion.HPBarPosition;
-                                        hpBarPos.X += jMinion.preX;
-                                        hpBarPos.Y += 18;
-
-                                        int smiteDmg = getSmiteDmg();
-                                        var damagePercent = smiteDmg / minion.MaxHealth;
-                                        float hpXPos = hpBarPos.X + (jMinion.width * damagePercent);
-                                        Drawing.DrawLine(hpXPos, hpBarPos.Y, hpXPos, hpBarPos.Y + 5, 2, smiteDmg >= minion.Health ? System.Drawing.Color.Lime : System.Drawing.Color.WhiteSmoke);
-
-                                        // Draw camp
-                                        if (Config.Item("dCamp").IsActive())
-                                        {
-                                            Drawing.DrawCircle(minion.Position, minion.BoundingRadius + smite.range + _player.BoundingRadius, _player.Distance(minion, false) <= (smite.range + minion.BoundingRadius + _player.BoundingRadius) ? System.Drawing.Color.Lime : System.Drawing.Color.WhiteSmoke);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
             catch (Exception e)
             {
@@ -159,7 +92,6 @@ namespace PRADA_Vayne.MyUtils
             {
                 try
                 {
-                    checkAndUse(clarity);
                     if (!_player.InFountain() && !Config.Item("justPredHeal").GetValue<bool>())
                     {
                         teamCheckAndUse(heal, Config.Item("useWithHealDebuff").GetValue<bool>() ? "" : "summonerhealcheck");
@@ -180,12 +112,6 @@ namespace PRADA_Vayne.MyUtils
                         checkAndUse(barrier);
                     }
 
-                    checkAndUse(smite);
-                    checkAndUse(smiteAOE);
-                    checkAndUse(smiteDuel);
-                    checkAndUse(smiteGanker);
-                    checkAndUse(smiteQuick);
-
                     if (Config.Item("comboModeActive").GetValue<KeyBind>().Active)
                     {
                         combo();
@@ -193,8 +119,8 @@ namespace PRADA_Vayne.MyUtils
                 }
                 catch
                 {
-                    Console.WriteLine("MasterActivator presented a problem, and has been disabled!");
-                    Config.Item("enabled").SetValue<KeyBind>(new KeyBind('L', KeyBindType.Toggle, false)); // Check
+                    /*Console.WriteLine("MasterActivator presented a problem, and has been disabled!");
+                    Config.Item("enabled").SetValue<KeyBind>(new KeyBind('L', KeyBindType.Toggle, false)); // Check*/
                 }
             }
         }
@@ -207,86 +133,13 @@ namespace PRADA_Vayne.MyUtils
             checkAndUse(king);
         }
 
-        private void ksDrawDmg(MItem item, Obj_AI_Base minion, MMinion jMinion, Vector2 hpBarPos, float hpXPos)
-        {
-            if (Config.Item(item.menuVariable) != null)
-            {
-                if (Config.Item(item.menuVariable).GetValue<bool>() && Config.Item(item.menuVariable + "drawBar").GetValue<bool>())
-                {
-                    float spellDmg = (float)Damage.GetSpellDamage(_player, minion, item.abilitySlot);
-                    var spellDmgPercent = spellDmg / minion.MaxHealth;
-
-                    hpXPos = hpBarPos.X + (jMinion.width * spellDmgPercent);
-                    Drawing.DrawLine(hpXPos, hpBarPos.Y, hpXPos, hpBarPos.Y + 5, 2, spellDmg >= minion.Health ? System.Drawing.Color.BlueViolet : System.Drawing.Color.Black);
-                }
-            }
-        }
-
-        // And about ignore HP% check?
-        private void justUseAgainstCheck(MItem item, double incDmg, Obj_AI_Base attacker = null, Obj_AI_Base attacked = null, SpellSlot attackerSpellSlot = SpellSlot.Unknown, AttackId attackId = AttackId.Unknown)
-        {
-            // Se tem o spell
-            if (Utility.GetSpellSlot(_player, item.name) != SpellSlot.Unknown)
-            {
-                if (attacker != null && attacked != null)
-                {
-                    bool use = false;
-                    if (attackId != AttackId.Unknown)
-                    {
-                        switch (attackId)
-                        {
-                            case AttackId.Basic:
-                                use = Config.Item("basic" + item.menuVariable).GetValue<bool>();
-                                break;
-                            case AttackId.Ignite:
-                                use = Config.Item("king" + item.menuVariable).GetValue<bool>();
-                                break;
-                            case AttackId.King:
-                                use = Config.Item("ignite" + item.menuVariable).GetValue<bool>();
-                                break;
-                            case AttackId.Tower:
-                                use = Config.Item("tower" + item.menuVariable).GetValue<bool>();
-                                break;
-                            case AttackId.Spell:
-                                use = Config.Item(item.menuVariable + attacker.BaseSkinName).GetValue<bool>() && Config.Item(attackerSpellSlot + item.menuVariable + attacker.BaseSkinName).GetValue<bool>();
-                                break;
-                        }
-                    }
-
-                    if (use)
-                    {
-                        bool ignoreHP = false;
-                        if (attackId == AttackId.Spell)
-                        {
-                            ignoreHP = Config.Item("ignore" + item.menuVariable + attacker.BaseSkinName).GetValue<bool>();
-                        }
-
-                        if (item.type == ItemTypeId.Ability && attacked.IsMe)
-                        {
-                            checkAndUse(item, "", incDmg, ignoreHP);
-                        }
-                        else if (item.type == ItemTypeId.TeamAbility)
-                        {
-                            teamCheckAndUse(item, "", incDmg, attacked, attacker, ignoreHP);
-                        }
-                    }
-                }
-                // OFF JustPred
-                else
-                {
-                    checkAndUse(item, "", incDmg);
-                    teamCheckAndUse(item, "", incDmg, attacked);
-                }
-            }
-        }
-
         private bool checkBuff(String name)
         {
             var searchedBuff = from buff in _player.Buffs
                                where buff.Name == name
                                select buff;
 
-            return searchedBuff.Count() <= 0 ? false : true;
+            return searchedBuff.Count() > 0;
         }
 
         private void createMenuItem(MItem item, String parent, int defaultValue = 0, bool mana = false, int minManaPct = 0)
@@ -313,7 +166,7 @@ namespace PRADA_Vayne.MyUtils
                                     where hero.Team != _player.Team
                                     select hero;
 
-                    if (enemyHero.Count() > 0)
+                    if (enemyHero.Any())
                     {
                         foreach (Obj_AI_Hero hero in enemyHero)
                         {
@@ -637,53 +490,6 @@ namespace PRADA_Vayne.MyUtils
                                             }
                                         }
                                         #endregion
-                                        else
-                                        {
-                                            try
-                                            {
-                                                string[] jungleMinions;
-                                                if (Utility.Map.GetMap().Type.Equals(Utility.Map.MapType.TwistedTreeline))
-                                                {
-                                                    jungleMinions = new string[] { tVilemaw.name, tWraith.name, tGolem.name, tWolf.name };
-                                                }
-                                                else
-                                                {
-                                                    jungleMinions = new string[] { blue.name, red.name, razor.name, baron.name, krug.name, wolf.name, dragon.name, gromp.name, crab.name };
-                                                }
-
-                                                float searchRange = (item.range + 300); // Get minions in 800 range
-
-                                                var minions = MinionManager.GetMinions(_player.Position, searchRange, MinionTypes.All, MinionTeam.Neutral);
-                                                if (minions.Count() > 0)
-                                                {
-                                                    int smiteDmg = getSmiteDmg();
-
-                                                    foreach (Obj_AI_Base minion in minions)
-                                                    {
-                                                        float range = item.range + minion.BoundingRadius + _player.BoundingRadius;
-                                                        if (_player.Distance(minion, false) <= range)
-                                                        {
-                                                            int dmg = item.type == ItemTypeId.OffensiveSpell ? smiteDmg : (int)Damage.GetSpellDamage(_player, minion, spellSlot);
-                                                            if (minion.Health <= dmg && jungleMinions.Any(name => minion.Name.StartsWith(name) && ((minion.Name.Length - name.Length) <= 6) && Config.Item(name).GetValue<bool>()))
-                                                            {
-                                                                if (item.spellType == SpellType.SkillShotLine || item.spellType == SpellType.SkillShotCone || item.spellType == SpellType.SkillShotCircle)
-                                                                {
-                                                                    _player.Spellbook.CastSpell(spellSlot, minion.Position);
-                                                                }
-                                                                else
-                                                                {
-                                                                    _player.Spellbook.CastSpell(spellSlot, item.spellType == SpellType.Self ? null : minion);
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            catch
-                                            {
-                                                Console.WriteLine("Problem with MasterActivator(Smite).");
-                                            }
-                                        }
                                     }
                                 }
                             }
@@ -861,15 +667,6 @@ namespace PRADA_Vayne.MyUtils
             }
         }
 
-        private int getSmiteDmg()
-        {
-            int level = _player.Level;
-            int index = _player.Level / 5;
-            float[] dmgs = { 370 + 20 * level, 330 + 30 * level, 240 + 40 * level, 100 + 50 * level };
-            return (int)dmgs[index];
-        }
-
-
         private bool checkUsePercent(MItem item, int actualPercent)
         {
             int usePercent = Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
@@ -914,44 +711,6 @@ namespace PRADA_Vayne.MyUtils
             Config.SubMenu("purify").AddItem(new MenuItem("dispellExhaust", "Exhaust")).SetValue(false);
             Config.SubMenu("purify").AddItem(new MenuItem("dispellEsNumeroUno", "Es Numero Uno")).SetValue(false);
 
-            Config.AddSubMenu(new Menu("Smite", "smiteCfg"));
-            var menuSmiteSpell = new Menu("Spell", "smiteSpell");
-            menuSmiteSpell.AddItem(new MenuItem(smite.menuVariable, smite.menuName).SetValue(true));
-            menuSmiteSpell.AddItem(new MenuItem(smiteAOE.menuVariable, smiteAOE.menuName).SetValue(true));
-            menuSmiteSpell.AddItem(new MenuItem(smiteDuel.menuVariable, smiteDuel.menuName).SetValue(true));
-            menuSmiteSpell.AddItem(new MenuItem(smiteGanker.menuVariable, smiteGanker.menuName).SetValue(true));
-            menuSmiteSpell.AddItem(new MenuItem(smiteQuick.menuVariable, smiteQuick.menuName).SetValue(true));
-            Config.SubMenu("smiteCfg").AddSubMenu(menuSmiteSpell);
-
-            var menuSmiteMobs = new Menu("Mob", "smiteMobs");
-            if (Utility.Map.GetMap().Type.Equals(Utility.Map.MapType.TwistedTreeline))
-            {
-                menuSmiteMobs.AddItem(new MenuItem("TT_Spiderboss", "Vilemaw")).SetValue(true);
-                menuSmiteMobs.AddItem(new MenuItem("TT_NWraith", "Wraith")).SetValue(false);
-                menuSmiteMobs.AddItem(new MenuItem("TT_NGolem", "Golem")).SetValue(true);
-                menuSmiteMobs.AddItem(new MenuItem("TT_NWolf", "Wolf")).SetValue(true);
-            }
-            else
-            {
-                menuSmiteMobs.AddItem(new MenuItem(blue.name, blue.menuName)).SetValue(true);
-                menuSmiteMobs.AddItem(new MenuItem(red.name, red.menuName)).SetValue(true);
-                menuSmiteMobs.AddItem(new MenuItem(dragon.name, dragon.menuName)).SetValue(true);
-                menuSmiteMobs.AddItem(new MenuItem(baron.name, baron.menuName)).SetValue(true);
-                menuSmiteMobs.AddItem(new MenuItem(razor.name, razor.menuName)).SetValue(false);
-                menuSmiteMobs.AddItem(new MenuItem(krug.name, krug.menuName)).SetValue(false);
-                menuSmiteMobs.AddItem(new MenuItem(wolf.name, wolf.menuName)).SetValue(false);
-                menuSmiteMobs.AddItem(new MenuItem(gromp.name, gromp.menuName)).SetValue(false);
-                menuSmiteMobs.AddItem(new MenuItem(crab.name, crab.menuName)).SetValue(false);
-
-            }
-            Config.SubMenu("smiteCfg").AddSubMenu(menuSmiteMobs);
-
-            var menuSmiteDraw = new Menu("Draw", "smiteDraw");
-            menuSmiteDraw.AddItem(new MenuItem("dSmite", "Enabled")).SetValue(true);
-            menuSmiteDraw.AddItem(new MenuItem("dCamp", "Camp")).SetValue(true);
-            menuSmiteDraw.AddItem(new MenuItem("justAS", "Just Selected Mobs")).SetValue(false);
-            Config.SubMenu("smiteCfg").AddSubMenu(menuSmiteDraw);
-
             Config.AddSubMenu(new Menu("Offensive", "offensive"));
             createMenuItem(ignite, "offensive");
             Config.SubMenu("offensive").SubMenu("menu" + ignite.menuVariable).AddItem(new MenuItem("overIgnite", "Over Ignite")).SetValue(false);
@@ -967,7 +726,6 @@ namespace PRADA_Vayne.MyUtils
             createMenuItem(heal, "regenerators", 35);
             Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("useWithHealDebuff", "Use with debuff")).SetValue(true);
             Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("justPredHeal", "Just predicted")).SetValue(false);
-            createMenuItem(clarity, "regenerators", 25, true);
             createMenuItem(hpPot, "regenerators", 55);
             createMenuItem(manaPot, "regenerators", 55, true);
             createMenuItem(biscuit, "regenerators", 55);
