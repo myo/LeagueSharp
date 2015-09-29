@@ -28,7 +28,7 @@ namespace HERMES_Kalista.MyLogic
         private static void OnNonKillableMinion(AttackableUnit minion)
         {
             var objaiminion = (Obj_AI_Base) minion;
-            if (objaiminion.IsRendKillable())
+            if (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.LaneClear && objaiminion.IsRendKillable())
             {
                 Program.E.Cast();
             }
