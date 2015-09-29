@@ -43,16 +43,19 @@ namespace HERMES_Kalista.MyLogic
                     return;
                 }
                 if (Program.ComboMenu.Item("EComboMinionReset").GetValue<bool>() &&
-                    MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()) &&
-                    HeroManager.Enemies.Any(e =>
-                    {
-                        var buf = Extensions.GetRendBuff(e);
-                        return buf != null &&
-                               buf.Count >= Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value &&
-                               Program.E.IsInRange(e);
-                    }) && Program.E.Cast())
+                    MinionManager.GetMinions(Program.E.Range).Any(m => m.IsRendKillable()))
                 {
-                    return;
+                    foreach (var en in HeroManager.Enemies)
+                    {
+                        var buf = Extensions.GetRendBuff(en);
+                        if (buf != null && buf.IsValidBuff() &&
+                            buf.Count >=
+                            Program.ComboMenu.Item("EComboMinionResetStacks").GetValue<Slider>().Value)
+                        {
+                            Program.E.Cast();
+                            return;
+                        }
+                    }
                 }
                 if (ObjectManager.Player.Level > 1 &&
                     MinionManager.GetMinions(Program.Q.Range, MinionTypes.All, MinionTeam.Neutral)
