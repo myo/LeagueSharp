@@ -17,6 +17,7 @@ namespace HERMES_Kalista.MyInitializer
                     LoadSpells();
                     LoadLogic();
                     ShowNotifications();
+                    Draw();
                 }
             };
         }
