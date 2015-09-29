@@ -14,7 +14,7 @@ namespace HERMES_Kalista.MyLogic.Others
     {
         public static bool IsRendKillable(this Obj_AI_Base target)
         {
-            if (target.Health > 1)
+            if (target.Name == "SRU_Baron12.1.1" || target.Name == "SRU_Dragon6.1.1" || target.Health > 32)
             {
                 if (target is Obj_AI_Hero)
                 {
