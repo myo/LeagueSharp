@@ -162,7 +162,6 @@ namespace HERMES_Kalista.MyUtils
 
         public MActivator()
         {
-            return;
             CustomEvents.Game.OnGameLoad += onLoad;
         }
 
