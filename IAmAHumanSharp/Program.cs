@@ -6,6 +6,7 @@ namespace Humanizer
     public static class Program
     {
         public static Menu Config;
+        public static int ProcessedMovementCommandTick;
         public static void Main(string[] args)
         {
 
@@ -16,17 +17,15 @@ namespace Humanizer
             };
             Obj_AI_Base.OnIssueOrder += (sender, eventArgs) =>
             {
-                if (sender.IsMe)
+                if (sender.IsMe && eventArgs.Order == GameObjectOrder.MoveTo)
                 {
-                    if (eventArgs.Order == GameObjectOrder.AttackUnit)
+                    if (Utils.TickCount - ProcessedMovementCommandTick < Config.Item("delay").GetValue<Slider>().Value)
                     {
-                        Utility.DelayAction.Add(Config.Item("delay").GetValue<Slider>().Value,
-                            () => ObjectManager.Player.IssueOrder(eventArgs.Order, eventArgs.Target));
+                        eventArgs.Process = false;
                     }
-                    if (eventArgs.Order == GameObjectOrder.MoveTo)
+                    else
                     {
-                        Utility.DelayAction.Add(Config.Item("delay").GetValue<Slider>().Value,
-                            () => ObjectManager.Player.IssueOrder(eventArgs.Order, eventArgs.TargetPosition));
+                        ProcessedMovementCommandTick = Utils.TickCount;
                     }
                 }
             };
