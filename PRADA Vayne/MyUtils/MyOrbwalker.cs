@@ -429,7 +429,7 @@ namespace PRADA_Vayne.MyUtils
 
                 if (spellName == "vaynetumble" && unit.IsMe)
                 {
-                    Utility.DelayAction.Add(100, ResetAutoAttackTimer);
+                    Utility.DelayAction.Add(100, () => ObjectManager.Player.IssueOrder(GameObjectOrder.AttackUnit, _lastTarget));
                 }
 
                 if (!IsAutoAttack(spellName))
