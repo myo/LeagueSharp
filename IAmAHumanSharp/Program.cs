@@ -13,7 +13,7 @@ namespace Humanizer
             CustomEvents.Game.OnGameLoad += eventArgs =>
             {
                 Config = new Menu("IAmAHumanSharp", "iamhumansharp", true);
-                Config.AddItem(new MenuItem("delay", "Delay (in milliseconds):").SetValue(new Slider(50, 0, 100)));
+                Config.AddItem(new MenuItem("delay", "Delay (in milliseconds):").SetValue(new Slider(100, 0, 125)));
             };
             Obj_AI_Base.OnIssueOrder += (sender, eventArgs) =>
             {
