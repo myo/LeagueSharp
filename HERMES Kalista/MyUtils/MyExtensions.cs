@@ -26,7 +26,6 @@ namespace HERMES_Kalista.MyUtils
 
             var aRC = new Geometry.Circle(Heroes.Player.ServerPosition.To2D(), 300).ToPolygon().ToClipperPath();
             var cursorPos = Game.CursorPos;
-            if (!cursorPos.IsDangerousPosition()) return cursorPos;
             var targetPosition = target.ServerPosition;
             var pList = new List<Vector3>();
             var additionalDistance = (0.106 + Game.Ping/2000f)*target.MoveSpeed;
@@ -50,13 +49,13 @@ namespace HERMES_Kalista.MyUtils
             {
                 return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
             }
-            //if (!cursorPos.IsDangerousPosition())
-            //{
+            if (!cursorPos.IsDangerousPosition())
+            {
                 return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
-            //}
-            /*return pList.Count > 1
+            }
+            return pList.Count > 1
                 ? pList.OrderByDescending(el => el.Distance(cursorPos)).FirstOrDefault()
-                : Vector3.Zero;*/
+                : Vector3.Zero;
         }
 
         public static Vector3 Randomize(this Vector3 pos)
