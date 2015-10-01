@@ -246,7 +246,7 @@ namespace HERMES_Kalista.MyUtils
         /// </summary>
         public static bool CanAttack()
         {
-            return LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping / 2 + 25 >= LastAATick + Player.AttackDelay * 1000 && Attack;
+            return LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping / 2 >= LastAATick + Player.AttackDelay * 1000 && Attack;
         }
 
         /// <summary>
