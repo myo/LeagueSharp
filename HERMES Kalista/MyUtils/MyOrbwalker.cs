@@ -822,7 +822,7 @@ namespace HERMES_Kalista.MyUtils
 
                     var target = GetTarget();
                     Orbwalk(
-                        target, (_orbwalkingPoint.To2D().IsValid()) ? _orbwalkingPoint : (target is Obj_AI_Base ? target.GetKitePos() : Game.CursorPos),
+                        target, Game.CursorPos,
                         _config.Item("ExtraWindup").GetValue<Slider>().Value,
                         _config.Item("HoldPosRadius").GetValue<Slider>().Value);
                 }
