@@ -293,7 +293,7 @@ namespace HERMES_Kalista.MyUtils
             bool useFixedDistance = true,
             bool randomizeMinDistance = true)
         {
-            if (LeagueSharp.Common.Utils.GameTimeTickCount - LastMoveCommandT < _delay && !overrideTimer)
+            if (LeagueSharp.Common.Utils.GameTimeTickCount - LastMoveCommandT < _delay +_random.Next(-10, 10) && !overrideTimer)
             {
                 return;
             }

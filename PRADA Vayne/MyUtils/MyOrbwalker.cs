@@ -255,7 +255,7 @@ namespace PRADA_Vayne.MyUtils
         /// </summary>
         public static bool CanAttack()
         {
-            return LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping / 2 + 25 >= LastAATick + Player.AttackDelay * 1000 && Attack;
+            return LeagueSharp.Common.Utils.GameTimeTickCount + Game.Ping / 2 + 25 >= LastAATick + Player.AttackDelay * 1000 + _random.Next(-10, 10) && Attack;
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace PRADA_Vayne.MyUtils
             bool useFixedDistance = true,
             bool randomizeMinDistance = true)
         {
-            if (LeagueSharp.Common.Utils.GameTimeTickCount - LastMoveCommandT < _delay && !overrideTimer)
+            if (LeagueSharp.Common.Utils.GameTimeTickCount - LastMoveCommandT < _delay + _random.Next(-10, 10) && !overrideTimer)
             {
                 return;
             }
