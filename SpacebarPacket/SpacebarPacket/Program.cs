@@ -49,8 +49,8 @@ namespace SpacebarPacket
                 {
                     Drawing.DrawText(Drawing.Width - 200, 100, Color.LimeGreen, "Normal packets: " + NormalPackets.Count);
                     Drawing.DrawText(Drawing.Width - 200, 110, Color.LimeGreen, "Spacebar packets: " + SpacebarPackets.Count);
-                    Drawing.DrawText(Drawing.Width - 200, 110, Color.Crimson, "Total unique packets: " + DiffPackets.Count);
-                    Drawing.DrawText(Drawing.Width - 200, 110, Color.Crimson, "Not unique packets: " + (SpacebarPackets.Count + NormalPackets.Count - DiffPackets.Count));
+                    Drawing.DrawText(Drawing.Width - 200, 120, Color.Crimson, "Total unique packets: " + DiffPackets.Count);
+                    Drawing.DrawText(Drawing.Width - 200, 130, Color.Crimson, "Not unique packets: " + (SpacebarPackets.Count + NormalPackets.Count - DiffPackets.Count));
                 };
                 Game.OnUpdate += a =>
                 {
