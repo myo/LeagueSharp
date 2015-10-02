@@ -21,30 +21,34 @@ namespace SpacebarPacket
         {
             CustomEvents.Game.OnGameLoad += e =>
             {
-                OrbwalkerMenu = new Menu("Orbwalker", "orbwalker");
+                OrbwalkerMenu = new Menu("Orbwalker", "orbwalker", true);
                 Orbwalker = new Orbwalking.Orbwalker(OrbwalkerMenu);
-            };
-            Game.OnProcessPacket += eventArgs =>
-            {
-                if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo)
+                OrbwalkerMenu.AddToMainMenu();
+                NormalPackets = new Dictionary<int, byte[]>();
+                SpacebarPackets = new Dictionary<int, byte[]>();
+
+                Game.OnProcessPacket += eventArgs =>
                 {
-                    if (!NormalPackets.Any(pair => pair.Key == eventArgs.PacketData.Length))
+                    if (Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo)
                     {
-                        NormalPackets.Add(eventArgs.PacketData.Length, eventArgs.PacketData);
+                        if (!NormalPackets.Any(pair => pair.Key == eventArgs.PacketData.Length))
+                        {
+                            NormalPackets.Add(eventArgs.PacketData.Length, eventArgs.PacketData);
+                        }
                     }
-                }
-                else
+                    else
+                    {
+                        if (!SpacebarPackets.Any(pair => pair.Key == eventArgs.PacketData.Length))
+                        {
+                            SpacebarPackets.Add(eventArgs.PacketData.Length, eventArgs.PacketData);
+                        }
+                    }
+                };
+                Drawing.OnDraw += d =>
                 {
-                    if (!SpacebarPackets.Any(pair => pair.Key == eventArgs.PacketData.Length))
-                    {
-                        SpacebarPackets.Add(eventArgs.PacketData.Length, eventArgs.PacketData);
-                    }
-                }
-            };
-            Drawing.OnDraw += d =>
-            {
-                Drawing.DrawText(Drawing.Width - 200, 100, Color.LimeGreen, "Normal packets: " + NormalPackets.Count);
-                Drawing.DrawText(Drawing.Width - 200, 110, Color.Crimson, "[32] packets: " + SpacebarPackets.Count);
+                    Drawing.DrawText(Drawing.Width - 200, 100, Color.LimeGreen, "Normal packets: " + NormalPackets.Count);
+                    Drawing.DrawText(Drawing.Width - 200, 110, Color.Crimson, "[32] packets: " + SpacebarPackets.Count);
+                };
             };
         }
     }
