@@ -14,6 +14,7 @@ namespace SpacebarPacket
     {
         public static Dictionary<int, byte[]> NormalPackets;
         public static Dictionary<int, byte[]> SpacebarPackets;
+        public static Dictionary<int, byte[]> DiffPackets;
         public static Menu OrbwalkerMenu;
         public static Orbwalking.Orbwalker Orbwalker;
 
@@ -47,7 +48,26 @@ namespace SpacebarPacket
                 Drawing.OnDraw += d =>
                 {
                     Drawing.DrawText(Drawing.Width - 200, 100, Color.LimeGreen, "Normal packets: " + NormalPackets.Count);
-                    Drawing.DrawText(Drawing.Width - 200, 110, Color.Crimson, "[32] packets: " + SpacebarPackets.Count);
+                    Drawing.DrawText(Drawing.Width - 200, 110, Color.LimeGreen, "Spacebar packets: " + SpacebarPackets.Count);
+                    Drawing.DrawText(Drawing.Width - 200, 110, Color.Crimson, "Total unique packets: " + DiffPackets.Count);
+                    Drawing.DrawText(Drawing.Width - 200, 110, Color.Crimson, "Not unique packets: " + (SpacebarPackets.Count + NormalPackets.Count - DiffPackets.Count));
+                };
+                Game.OnUpdate += a =>
+                {
+                    foreach (var np in NormalPackets)
+                    {
+                        if (!DiffPackets.Any(r => r.Key == np.Key))
+                        {
+                            DiffPackets.Add(np.Key, np.Value);
+                        }
+                    }
+                    foreach (var sp in SpacebarPackets)
+                    {
+                        if (!DiffPackets.Any(r => r.Key == sp.Key))
+                        {
+                            DiffPackets.Add(sp.Key, sp.Value);
+                        }
+                    }
                 };
             };
         }
