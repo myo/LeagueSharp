@@ -27,6 +27,7 @@ namespace SpacebarPacket
                 OrbwalkerMenu.AddToMainMenu();
                 NormalPackets = new Dictionary<int, byte[]>();
                 SpacebarPackets = new Dictionary<int, byte[]>();
+                DiffPackets = new Dictionary<int, byte[]>();
 
                 Game.OnProcessPacket += eventArgs =>
                 {
