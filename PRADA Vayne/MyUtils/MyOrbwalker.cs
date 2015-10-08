@@ -98,7 +98,7 @@ namespace PRADA_Vayne.MyUtils
         private static AttackableUnit _lastTarget;
         private static readonly Obj_AI_Hero Player;
         private static int _delay;
-        private static float _minDistance = 400;
+        private static float _minDistance = 300;
         private static bool _missileLaunched;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
 
