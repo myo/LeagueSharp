@@ -20,7 +20,7 @@ namespace PRADA_Poppy.MyLogic.R
                     case "SUPPORTS":
                         Program.R.Cast(
                             ObjectManager.Get<Obj_AI_Hero>()
-                                .Where(h => h.IsEnemy && h.Distance(ObjectManager.Player) < Program.R.Range)
+                                .Where(h => h.IsEnemy && !h.HasBuffOfType(BuffType.SpellShield) && h.Distance(ObjectManager.Player) < Program.R.Range)
                                 .OrderBy(e => e.TotalAttackDamage + e.TotalMagicalDamage)
                                 .FirstOrDefault());
                         break;
@@ -28,7 +28,7 @@ namespace PRADA_Poppy.MyLogic.R
                         Program.R.Cast(ObjectManager.Get<Obj_AI_Hero>().
                             Where(
                                 h =>
-                                    h.IsEnemy &&
+                                    h.IsEnemy && !h.HasBuffOfType(BuffType.SpellShield) &&
                                     h.Distance(ObjectManager.Player) <
                                     Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))
                             .OrderByDescending(e => e.TotalAttackDamage + e.TotalMagicalDamage)
