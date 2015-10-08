@@ -44,7 +44,7 @@ namespace PRADA_Poppy.MyInitializer
                         new StringList(new[] {"PRADASMART", "PRADAPERFECT", "MARKSMAN", "SHARPSHOOTER", "GOSU", "VHR", "PRADALEGACY", "FASTEST", "OLDPRADA"})));
                 Program.ComboMenu.AddItem(
                     new MenuItem("EPushDist", "E Push Distance").SetValue(new Slider(450, 300, 475)));
-                Program.ComboMenu.AddItem(new MenuItem("RCombo", "Auto Ult Mode").SetValue(new StringList(new []{ "SUPPORTS", "CARRIES" })));
+                Program.ComboMenu.AddItem(new MenuItem("RCombo", "Auto Ult Mode").SetValue(new StringList(new []{ "SUPPORTS", "CARRIES", "NONE" })));
                 Program.ComboMenu.AddItem(new MenuItem("AutoBuy", "Auto-Swap Trinkets?").SetValue(true));
             }
             catch (Exception e)
