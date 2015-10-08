@@ -98,7 +98,7 @@ namespace HERMES_Kalista.MyUtils
         private static AttackableUnit _lastTarget;
         private static readonly Obj_AI_Hero Player;
         private static int _delay;
-        private static float _minDistance = 400;
+        private static float _minDistance = 300;
         private static bool _missileLaunched;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
 
@@ -524,7 +524,7 @@ namespace HERMES_Kalista.MyUtils
                     new MenuItem("ExtraWindup", "Extra windup time").SetValue(new Slider(0, 0, 200)));
                 _config.AddItem(new MenuItem("FarmDelay", "Farm delay").SetShared().SetValue(new Slider(25, 0, 200)));
                 _config.AddItem(
-                    new MenuItem("MovementDelay", "Movement delay").SetValue(new Slider(100, 0, 250)))
+                    new MenuItem("MovementDelay", "Movement delay").SetValue(new Slider(100, 50, 250)))
                     .ValueChanged += (sender, args) => SetMovementDelay(args.GetNewValue<Slider>().Value);
 
 
@@ -821,8 +821,9 @@ namespace HERMES_Kalista.MyUtils
                     }
 
                     var target = GetTarget();
+                    var objaihero_target = target as Obj_AI_Hero;
                     Orbwalk(
-                        target, Game.CursorPos,
+                        target, objaihero_target.IsValidTarget() ? objaihero_target.GetKitePos() : Game.CursorPos,
                         _config.Item("ExtraWindup").GetValue<Slider>().Value,
                         _config.Item("HoldPosRadius").GetValue<Slider>().Value);
                 }

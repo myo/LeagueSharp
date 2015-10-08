@@ -20,6 +20,11 @@ namespace HERMES_Kalista.MyUtils
 
         public static Vector3 GetKitePos(this AttackableUnit t)
         {
+            if (!Program.ComboMenu.Item("KiteOrbwalker").GetValue<bool>())
+            {
+                return Game.CursorPos;
+            }
+
             var target = t as Obj_AI_Base;
             //if the target is not a melee and he's alone he's not really a danger to us, proceed to 1v1 him :^ )
             if (!target.IsMelee && Heroes.Player.CountEnemiesInRange(800) == 1) return Game.CursorPos;
@@ -45,17 +50,15 @@ namespace HERMES_Kalista.MyUtils
                         pList.Add(v3);
                 }
             }
+            if (!pList.Any())
+            {
+                return Game.CursorPos;
+            }
             if (Heroes.Player.UnderTurret() || Heroes.Player.CountEnemiesInRange(800) == 1)
             {
-                return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
+                return pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault();
             }
-            if (!cursorPos.IsDangerousPosition())
-            {
-                return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
-            }
-            return pList.Count > 1
-                ? pList.OrderByDescending(el => el.Distance(cursorPos)).FirstOrDefault()
-                : Vector3.Zero;
+            return pList.OrderBy(el => el.Distance(ObjectManager.Player.ServerPosition)).FirstOrDefault();
         }
 
         public static Vector3 Randomize(this Vector3 pos)

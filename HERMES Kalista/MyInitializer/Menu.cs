@@ -35,6 +35,7 @@ namespace HERMES_Kalista.MyInitializer
                 Program.DrawingsMenu.AddItem(new MenuItem("drawenemywaypoints", "Draw Enemy Waypoints").SetValue(true));
                 Program.SkinhackMenu = new Menu("Skin Hack", "skinhackmenu");
                 Program.OrbwalkerMenu = new Menu("Orbwalker", "orbwalkermenu");
+                Program.ComboMenu.AddItem(new MenuItem("KiteOrbwalker", "USE KITING ORBWALKER LOGIC").SetValue(false));
                 Program.ComboMenu.AddItem(new MenuItem("QCombo", "USE Q").SetValue(true));
                 Program.ComboMenu.AddItem(new MenuItem("EComboMinionReset", "USE SMART E RESET").SetValue(true));
                 Program.ComboMenu.AddItem(
