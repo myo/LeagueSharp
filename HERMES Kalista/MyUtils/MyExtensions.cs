@@ -58,7 +58,7 @@ namespace HERMES_Kalista.MyUtils
             {
                 return pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault();
             }
-            return pList.OrderBy(el => el.Distance(ObjectManager.Player.ServerPosition)).FirstOrDefault();
+            return pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault();
         }
 
         public static Vector3 Randomize(this Vector3 pos)
