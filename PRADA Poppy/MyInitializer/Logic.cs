@@ -14,7 +14,7 @@ namespace PRADA_Poppy.MyInitializer
         public static void LoadLogic()
         {
             #region Q
-            MyOrbwalker.BeforeAttack += MyLogic.Q.Events.BeforeAttack;
+            MyOrbwalker.AfterAttack += MyLogic.Q.Events.AfterAttack;
             #endregion
 
             #region W

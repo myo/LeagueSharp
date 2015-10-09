@@ -12,13 +12,14 @@ namespace PRADA_Poppy.MyLogic.Q
 {
     public static partial class Events
     {
-        public static void BeforeAttack(Orbwalker.BeforeAttackEventArgs args)
+        public static void AfterAttack(AttackableUnit sender, AttackableUnit target)
         {
-            if (args.Unit.IsMe && Program.Q.IsReady() && Program.ComboMenu.Item("QCombo").GetValue<bool>())
+            if (sender.IsMe && Program.Q.IsReady() && Program.ComboMenu.Item("QCombo").GetValue<bool>())
             {
-                if (args.Target.IsValid<Obj_AI_Hero>())
+                if (target.IsValid<Obj_AI_Hero>())
                 {
                     Program.Q.Cast();
+                    Utility.DelayAction.Add(100, MyOrbwalker.ResetAutoAttackTimer);
                 }
             }
         }

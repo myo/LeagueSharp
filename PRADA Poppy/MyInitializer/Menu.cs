@@ -45,6 +45,12 @@ namespace PRADA_Poppy.MyInitializer
                 Program.ComboMenu.AddItem(
                     new MenuItem("EPushDist", "E Push Distance").SetValue(new Slider(450, 300, 475)));
                 Program.ComboMenu.AddItem(new MenuItem("RCombo", "Auto Ult Mode").SetValue(new StringList(new []{ "SUPPORTS", "CARRIES", "NONE" })));
+                var dontultmenu = Program.ComboMenu.AddSubMenu(new Menu("Do not ult: ", "dontult"));
+                foreach (var hero in ObjectManager.Get<Obj_AI_Hero>().Where(h=>h.IsEnemy))
+                {
+                    var championName = hero.CharData.BaseSkinName;
+                    dontultmenu.AddItem(new MenuItem("dontult" + championName, championName).SetValue(false));
+                }
                 Program.ComboMenu.AddItem(new MenuItem("AutoBuy", "Auto-Swap Trinkets?").SetValue(true));
             }
             catch (Exception e)

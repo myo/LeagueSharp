@@ -20,7 +20,10 @@ namespace PRADA_Poppy.MyLogic.R
                     case "SUPPORTS":
                         Program.R.Cast(
                             ObjectManager.Get<Obj_AI_Hero>()
-                                .Where(h => h.IsEnemy && !h.HasBuffOfType(BuffType.SpellShield) && h.Distance(ObjectManager.Player) < Program.R.Range)
+                                .Where(h => h.IsEnemy && !Program.ComboMenu.SubMenu("dontult")
+                                    .Item("dontult" + h.ChampionName)
+                                    .GetValue<bool>() && !h.HasBuffOfType(BuffType.SpellShield) &&
+                                            h.Distance(ObjectManager.Player) < Program.R.Range)
                                 .OrderBy(e => e.TotalAttackDamage + e.TotalMagicalDamage)
                                 .FirstOrDefault());
                         break;
@@ -28,19 +31,23 @@ namespace PRADA_Poppy.MyLogic.R
                         Program.R.Cast(ObjectManager.Get<Obj_AI_Hero>().
                             Where(
                                 h =>
-                                    h.IsEnemy && !h.HasBuffOfType(BuffType.SpellShield) &&
+                                    h.IsEnemy && !Program.ComboMenu.SubMenu("dontult")
+                                        .Item("dontult" + h.ChampionName)
+                                        .GetValue<bool>() && !h.HasBuffOfType(BuffType.SpellShield) &&
                                     h.Distance(ObjectManager.Player) <
                                     Orbwalking.GetRealAutoAttackRange(ObjectManager.Player))
                             .OrderByDescending(e => e.TotalAttackDamage + e.TotalMagicalDamage)
                             .FirstOrDefault());
                         break;
                 }
-                if (ObjectManager.Player.UnderTurret(true))
+                if (ObjectManager.Player.UnderTurret(true) &&
+                    Program.ComboMenu.Item("RCombo").GetValue<StringList>().SelectedValue != "NONE")
                 {
                     Program.R.Cast(
                         ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(h => h.IsEnemy &&
                                                                              h.Distance(ObjectManager.Player) <
-                                                                             Orbwalking.GetRealAutoAttackRange(ObjectManager.Player)));
+                                                                             Orbwalking.GetRealAutoAttackRange(
+                                                                                 ObjectManager.Player)));
                 }
             }
         }
