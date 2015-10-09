@@ -31,13 +31,15 @@ namespace Brain.TheBrain.Activator
                         }
                         if (Items.CanUseItem((int) ItemId.Mercurial_Scimitar))
                         {
-                            Utility.DelayAction.Add(buffMenu.Item("delay").GetValue<Slider>().Value, () => Items.UseItem((int) ItemId.Mercurial_Scimitar));
+                            Utility.DelayAction.Add(buffMenu.Item("delay").GetValue<Slider>().Value,
+                                () => Items.UseItem((int) ItemId.Mercurial_Scimitar));
                             return;
                         }
                     }
                     if (Core.SummonerCleanse.IsReady() && buffMenu.Item("summonercleanse").GetValue<bool>())
                     {
-                        Utility.DelayAction.Add(buffMenu.Item("delay").GetValue<Slider>().Value, () => ObjectManager.Player.Spellbook.CastSpell(Core.SummonerCleanse));
+                        Utility.DelayAction.Add(buffMenu.Item("delay").GetValue<Slider>().Value,
+                            () => ObjectManager.Player.Spellbook.CastSpell(Core.SummonerCleanse));
                         return;
                     }
                 }
