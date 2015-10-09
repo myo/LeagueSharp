@@ -71,7 +71,7 @@
     <Compile Include="MyLogic\Others\OnProcessSpellcast.cs" />
     <Compile Include="MyLogic\Others\OnUpdate.cs" />
     <Compile Include="MyLogic\Others\SkinHack.cs" />
-    <Compile Include="MyLogic\Q\BeforeAttack.cs" />
+    <Compile Include="MyLogic\Q\AfterAttack.cs" />
     <Compile Include="MyLogic\R\OnUpdate.cs" />
     <Compile Include="MyLogic\W\OnProcessSpellCast.cs" />
     <Compile Include="MyUtils\HealthPrediction.cs" />
