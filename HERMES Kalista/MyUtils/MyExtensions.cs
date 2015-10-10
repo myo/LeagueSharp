@@ -20,7 +20,7 @@ namespace HERMES_Kalista.MyUtils
 
         public static Vector3 GetKitePos(this AttackableUnit t)
         {
-            if (!Program.ComboMenu.Item("KiteOrbwalker").GetValue<bool>())
+            if (!Program.ComboMenu.Item("KiteOrbwalker").GetValue<bool>() || !Game.CursorPos.IsDangerousPosition())
             {
                 return Game.CursorPos;
             }
@@ -53,10 +53,6 @@ namespace HERMES_Kalista.MyUtils
             if (!pList.Any())
             {
                 return Game.CursorPos;
-            }
-            if (Heroes.Player.UnderTurret() || Heroes.Player.CountEnemiesInRange(800) == 1)
-            {
-                return pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault();
             }
             return pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault();
         }
