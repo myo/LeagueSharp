@@ -70,7 +70,7 @@ namespace Kindred_Chanel.MyLogic.Others
             if (ObjectManager.Player.IsRecalling() || ObjectManager.Player.InFountain())
                 return;
 
-                if (Program.ComboMenu.Item("RComboSelf").GetValue<bool>() && IncomingDamage > ObjectManager.Player.Health && ObjectManager.Player.CountEnemiesInRange(800) > 0)
+                if (Program.ComboMenu.Item("RComboSelf").GetValue<bool>() && IncomingDamage > ObjectManager.Player.Health && ObjectManager.Player.CountEnemiesInRange(700) > 0)
                 {
                     Program.R.Cast(ObjectManager.Player);
                 }
@@ -82,7 +82,7 @@ namespace Kindred_Chanel.MyLogic.Others
                                 h =>
                                     h.IsAlly &&
                                     h.HealthPercent < Program.ComboMenu.Item("RMinHP").GetValue<Slider>().Value &&
-                                    h.Distance(ObjectManager.Player) < 500);
+                                    h.Distance(ObjectManager.Player) < 500 && h.CountEnemiesInRange(700) > 0);
                     if (salvableAlly != null)
                     {
                         Program.R.Cast(salvableAlly);
