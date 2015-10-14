@@ -432,7 +432,7 @@ namespace PRADA_Vayne.MyUtils
                     Utility.DelayAction.Add(100, () =>
                     {
                         ObjectManager.Player.IssueOrder(GameObjectOrder.AttackUnit, _lastTarget);
-                        LastAATick = LeagueSharp.Common.Utils.GameTimeTickCount;
+                        ResetAutoAttackTimer();
                     });
                 }
 
