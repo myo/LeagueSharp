@@ -31,13 +31,13 @@ namespace Kindred_Chanel.MyLogic
                 var target = Program.Orbwalker.GetTarget() as Obj_AI_Base;
                 if (target.IsValidTarget())
                 {
-                    if (Program.ComboMenu.Item("QCombo").GetValue<bool>() && Program.Q.IsReady())
-                    {
-                        Program.Q.Cast(target.GetTumblePos());
-                    }
                     if (Program.ComboMenu.Item("WCombo").GetValue<bool>() && Program.W.IsReady())
                     {
                         Program.W.Cast();
+                    }
+                    if (Program.ComboMenu.Item("QCombo").GetValue<bool>() && Program.Q.IsReady())
+                    {
+                        Program.Q.Cast(target.GetTumblePos());
                     }
                     if (Program.ComboMenu.Item("ECombo").GetValue<bool>() && Program.E.IsReady() && !target.IsFacing(ObjectManager.Player))
                     {
