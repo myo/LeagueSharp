@@ -22,7 +22,7 @@ namespace Kindred_Chanel.MyInitializer
             {
                     Render.Circle.DrawCircle(
                         ObjectManager.Player.Position,
-                        1000,
+                        800,
                         Color.LightGreen);
 
                 CustomDamageIndicator.DrawingColor = Color.LightGreen;
