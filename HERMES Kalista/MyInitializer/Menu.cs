@@ -37,6 +37,7 @@ namespace HERMES_Kalista.MyInitializer
                 Program.OrbwalkerMenu = new Menu("Orbwalker", "orbwalkermenu");
                 Program.ComboMenu.AddItem(new MenuItem("KiteOrbwalker", "USE KITING ORBWALKER LOGIC").SetValue(false));
                 Program.ComboMenu.AddItem(new MenuItem("QCombo", "USE Q").SetValue(true));
+                Program.ComboMenu.AddItem(new MenuItem("QMinMana", "Min mana% for Q").SetValue(new Slider(10, 0, 100)));
                 Program.ComboMenu.AddItem(new MenuItem("EComboMinionReset", "USE SMART E RESET").SetValue(true));
                 Program.ComboMenu.AddItem(
                     new MenuItem("EComboMinionResetStacks", "Min enemy stacks for SMART RESET").SetValue(new Slider(3, 1,

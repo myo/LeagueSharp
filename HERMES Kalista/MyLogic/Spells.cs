@@ -82,7 +82,7 @@ namespace HERMES_Kalista.MyLogic
                             }
                         }
                     }
-                    if (Program.ComboMenu.Item("QCombo").GetValue<bool>() && Program.Q.IsReady())
+                    if (Program.ComboMenu.Item("QCombo").GetValue<bool>() && ObjectManager.Player.ManaPercent > Program.ComboMenu.Item("QMinMana").GetValue<Slider>().Value && Program.Q.IsReady())
                     {
                         var target = TargetSelector.GetTarget(Program.Q.Range, TargetSelector.DamageType.Physical);
                         if (target.IsValidTarget())
