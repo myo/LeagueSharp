@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PRADA_Vayne</RootNamespace>
     <AssemblyName>PRADA Vayne</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
     <PostBuildEvent />
@@ -82,7 +82,6 @@
     <Compile Include="MyLogic\Q\WallTumble.cs" />
     <Compile Include="MyLogic\R\BeforeAttack.cs" />
     <Compile Include="MyLogic\R\OnCastSpell.cs" />
-    <Compile Include="MyUtils\HealthPrediction.cs" />
     <Compile Include="MyUtils\MActivator.cs" />
     <Compile Include="MyUtils\MyCache.cs" />
     <Compile Include="MyUtils\MyExtensions.cs" />

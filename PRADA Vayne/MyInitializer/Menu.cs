@@ -76,43 +76,43 @@ namespace PRADA_Vayne.MyInitializer
                     new StringList(new[] { "Classic", "Vindicator", "Aristocrat", "Dragonslayer", "Heartseeker", "SKT T1", "Arclight", "Dragonslayer Green", "Dragonslayer Red", "Dragonslayer Azure" }))).DontSave().ValueChanged +=
                 (sender, args) =>
                 {
-                    /*
+
                     switch (Program.SkinhackMenu.Item("skin").GetValue<StringList>().SelectedValue)
                     {
                         case "Classic":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 1);
+                            Heroes.Player.SetSkin("Vayne", 1);
                             break;
                         case "Vindicator":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 2);
+                            Heroes.Player.SetSkin("Vayne", 2);
                             break;
                         case "Aristocrat":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 3);
+                            Heroes.Player.SetSkin("Vayne", 3);
                             break;
                         case "Dragonslayer":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 4);
+                            Heroes.Player.SetSkin("Vayne", 4);
                             break;
                         case "Heartseeker":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 5);
+                            Heroes.Player.SetSkin("Vayne", 5);
                             break;
                         case "SKT T1":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 6);
+                            Heroes.Player.SetSkin("Vayne", 6);
                             break;
                         case "Arclight":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 7);
+                            Heroes.Player.SetSkin("Vayne", 7);
                             break;
                         case "Dragonslayer Green":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 8);
+                            Heroes.Player.SetSkin("Vayne", 8);
                             break;
                         case "Dragonslayer Red":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 9);
+                            Heroes.Player.SetSkin("Vayne", 9);
                             break;
                         case "Dragonslayer Azure":
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 10);
+                            Heroes.Player.SetSkin("Vayne", 10);
                             break;
                         default:
-                            Heroes.Player.SetSkin(Heroes.Player.CharData.BaseSkinName, 10);
+                            Heroes.Player.SetSkin("Vayne", 10);
                             break;
-                    }*/
+                    }
                 };
             }
             catch (Exception e)
