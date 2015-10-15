@@ -20,10 +20,14 @@ namespace HERMES_Kalista.MyInitializer
             CustomDamageIndicator.Initialize(GetRealDamage);
             Drawing.OnDraw += args =>
             {
-                    Render.Circle.DrawCircle(
+                if (!Program.DrawingsMenu.Item("streamingmode").GetValue<bool>()) return;
+                    if (Program.DrawingsMenu.Item("EDraw").GetValue<bool>())
+                    {
+                        Render.Circle.DrawCircle(
                         ObjectManager.Player.Position,
                         1000,
                         Color.LightGreen);
+                    }
 
                 CustomDamageIndicator.DrawingColor = Color.LightGreen;
 
