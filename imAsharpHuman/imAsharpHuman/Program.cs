@@ -25,20 +25,19 @@ namespace imAsharpHuman
             };
             Obj_AI_Base.OnIssueOrder += (sender, issueOrderEventArgs) =>
             {
-                if (sender.IsMe && issueOrderEventArgs.Order != GameObjectOrder.HoldPosition && issueOrderEventArgs.Order != GameObjectOrder.Stop && issueOrderEventArgs.Order != GameObjectOrder.AutoAttack && issueOrderEventArgs.Order != GameObjectOrder.AutoAttackPet)
+                if (sender.IsMe && issueOrderEventArgs.Order != GameObjectOrder.HoldPosition &&
+                    issueOrderEventArgs.Order != GameObjectOrder.Stop &&
+                    issueOrderEventArgs.Order != GameObjectOrder.AutoAttack &&
+                    issueOrderEventArgs.Order != GameObjectOrder.AutoAttackPet)
                 {
                     if (Utils.GameTimeTickCount - _lastCommandT <
                         _random.Next(1000/_menu.Item("MaxClicks").GetValue<Slider>().Value,
                             1000/_menu.Item("MinClicks").GetValue<Slider>().Value))
                     {
                         issueOrderEventArgs.Process = false;
+                        return;
                     }
-                    if (issueOrderEventArgs.Order == GameObjectOrder.AttackTo ||
-                        issueOrderEventArgs.Order == GameObjectOrder.AttackUnit ||
-                        issueOrderEventArgs.Order == GameObjectOrder.MoveTo)
-                    {
-                        _lastCommandT = Utils.GameTimeTickCount;
-                    }
+                    _lastCommandT = Utils.GameTimeTickCount;
                 }
             };
         }
