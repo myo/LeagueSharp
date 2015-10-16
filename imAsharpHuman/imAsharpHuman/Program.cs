@@ -20,7 +20,7 @@ namespace imAsharpHuman
                 _random = new Random(Environment.TickCount - Utils.GameTimeTickCount);
                 _menu = new Menu("imAsharpHuman", "imasharphumanmenu", true);
                 _menu.AddItem(new MenuItem("MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(5, 6), 1, 6)));
-                _menu.AddItem(new MenuItem("MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(7, 10), 7, 20)));
+                _menu.AddItem(new MenuItem("MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(7, 10), 7, 15)));
                 _menu.AddToMainMenu();
             };
             Obj_AI_Base.OnIssueOrder += (sender, issueOrderEventArgs) =>
