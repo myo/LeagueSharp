@@ -380,6 +380,10 @@ namespace HERMES_Kalista.MyUtils
 
                 if ((!CanAttack() || !target.IsValidTarget()) && CanMove(extraWindup))
                 {
+                    if (Program.Q.IsReady() && Program.Orbwalker.ActiveMode == OrbwalkingMode.Combo && Program.ComboMenu.Item("AAResetQ").GetValue<bool>() && ObjectManager.Player.ManaPercent > Program.ComboMenu.Item("QMinMana").GetValue<Slider>().Value)
+                    {
+                        Program.Q.CastIfHitchanceEquals(target as Obj_AI_Base, HitChance.Medium);
+                    }
                     MoveTo(position, holdAreaRadius, false, useFixedDistance, randomizeMinDistance);
                 }
             }

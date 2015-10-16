@@ -37,7 +37,8 @@ namespace HERMES_Kalista.MyInitializer
                 Program.SkinhackMenu = new Menu("Skin Hack", "skinhackmenu");
                 Program.OrbwalkerMenu = new Menu("Orbwalker", "orbwalkermenu");
                 Program.ComboMenu.AddItem(new MenuItem("UseExploit", "USE EXPLOIT? ULL GET BANNED SON").SetValue(false));
-                Program.ComboMenu.AddItem(new MenuItem("KiteOrbwalker", "USE KITING ORBWALKER LOGIC").SetValue(false));
+                Program.ComboMenu.AddItem(new MenuItem("KiteOrbwalker", "USE KITING ORBWALKER LOGIC?").SetValue(false));
+                Program.ComboMenu.AddItem(new MenuItem("AAResetQ", "Use Q to reset AA? (UNTESTED)").SetValue(false));
                 Program.ComboMenu.AddItem(new MenuItem("QCombo", "USE Q").SetValue(true));
                 Program.ComboMenu.AddItem(new MenuItem("QMinMana", "Min mana% for Q").SetValue(new Slider(10, 0, 100)));
                 Program.ComboMenu.AddItem(new MenuItem("EComboMinionReset", "USE SMART E RESET").SetValue(true));
