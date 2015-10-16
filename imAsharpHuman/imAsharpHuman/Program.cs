@@ -12,7 +12,7 @@ namespace imAsharpHuman
     {
         static Menu _menu;
         static Random _random;
-        private static int _lastMoveT = 0;
+        private static int _lastCommandT = 0;
         static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += gameLoadEventArgs =>
@@ -25,11 +25,21 @@ namespace imAsharpHuman
             };
             Obj_AI_Base.OnIssueOrder += (sender, issueOrderEventArgs) =>
             {
-                if (sender.IsMe && Utils.GameTimeTickCount - _lastMoveT < _random.Next(1000 / _menu.Item("MaxClicks").GetValue<Slider>().Value, 1000 / _menu.Item("MinClicks").GetValue<Slider>().Value))
+                if (sender.IsMe)
                 {
-                    issueOrderEventArgs.Process = false;
+                    if (Utils.GameTimeTickCount - _lastCommandT <
+                        _random.Next(1000/_menu.Item("MaxClicks").GetValue<Slider>().Value,
+                            1000/_menu.Item("MinClicks").GetValue<Slider>().Value))
+                    {
+                        issueOrderEventArgs.Process = false;
+                    }
+                    if (sender.IsMe && issueOrderEventArgs.Order == GameObjectOrder.AttackTo ||
+                        issueOrderEventArgs.Order == GameObjectOrder.AttackUnit ||
+                        issueOrderEventArgs.Order == GameObjectOrder.MoveTo)
+                    {
+                        _lastCommandT = Utils.GameTimeTickCount;
+                    }
                 }
-                _lastMoveT = Utils.GameTimeTickCount;
             };
         }
     }
