@@ -20,7 +20,7 @@ namespace HERMES_Kalista.MyUtils
 
         public static Vector3 GetKitePos(this AttackableUnit t)
         {
-            if (!Program.ComboMenu.Item("KiteOrbwalker").GetValue<bool>() || !Game.CursorPos.IsDangerousPosition())
+            if (!Program.ComboMenu.Item("KiteOrbwalker").GetValue<bool>() || !Game.CursorPos.IsDangerousPosition() || ObjectManager.Player.UnderTurret())
             {
                 return Game.CursorPos;
             }
