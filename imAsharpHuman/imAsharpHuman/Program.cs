@@ -33,7 +33,7 @@ namespace imAsharpHuman
                     {
                         issueOrderEventArgs.Process = false;
                     }
-                    if (sender.IsMe && issueOrderEventArgs.Order == GameObjectOrder.AttackTo ||
+                    if (issueOrderEventArgs.Order == GameObjectOrder.AttackTo ||
                         issueOrderEventArgs.Order == GameObjectOrder.AttackUnit ||
                         issueOrderEventArgs.Order == GameObjectOrder.MoveTo)
                     {
