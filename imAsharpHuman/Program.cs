@@ -25,7 +25,7 @@ namespace imAsharpHuman
             };
             Obj_AI_Base.OnIssueOrder += (sender, issueOrderEventArgs) =>
             {
-                if (sender.IsMe && issueOrderEventArgs.Order == GameObjectOrder.AttackUnit || issueOrderEventArgs.Order == GameObjectOrder.MoveTo || issueOrderEventArgs.Order == GameObjectOrder.MovePet)
+                if (sender.IsMe && issueOrderEventArgs.Order == GameObjectOrder.AttackUnit || issueOrderEventArgs.Order == GameObjectOrder.MoveTo)
                 {
                     if (Utils.GameTimeTickCount - _lastCommandT <
                         _random.Next(1000/_menu.Item("MaxClicks").GetValue<Slider>().Value,
