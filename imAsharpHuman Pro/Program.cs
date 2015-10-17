@@ -23,7 +23,10 @@ namespace imAsharpHuman
                 foreach (var order in Enum.GetValues(typeof (GameObjectOrder)))
                 {
                     _lastCommandT.Add(order.ToString(), 0);
-                    Console.WriteLine(order.ToString());
+                }
+                foreach (var spellslot in Enum.GetValues(typeof (SpellSlot)))
+                {
+                    _lastCommandT.Add("spellcast"+spellslot.ToString(), 0);
                 }
                 _menu = new Menu("imAsharpHuman PRO", "iashpromenu", true);
                 _menu.AddItem(new MenuItem("iashpromenu.MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(3,6), 1, 6)).DontSave());
@@ -55,6 +58,26 @@ namespace imAsharpHuman
                         }
                     _lastCommandT.Remove(orderName);
                     _lastCommandT.Add(orderName, Utils.GameTimeTickCount);
+                }
+            };
+            Spellbook.OnCastSpell += (sender, eventArgs) =>
+            {
+                if (sender.Owner.IsMe &&
+                    eventArgs.StartPosition.Distance(ObjectManager.Player.ServerPosition, true) > 50*50 &&
+                    eventArgs.StartPosition.Distance(ObjectManager.Player.Position, true) > 50*50 &&
+                    eventArgs.Target == null)
+                {
+                    if (_lastCommandT.FirstOrDefault(e => e.Key == "spellcast" + eventArgs.Slot).Value == 0)
+                    {
+                        _lastCommandT.Remove("spellcast" + eventArgs.Slot);
+                        _lastCommandT.Add("spellcast" + eventArgs.Slot, Utils.GameTimeTickCount);
+                        eventArgs.Process = false;
+                        ObjectManager.Player.Spellbook.CastSpell(eventArgs.Slot,
+                            eventArgs.StartPosition.Randomize(-10, 10));
+                        return;
+                    }
+                    _lastCommandT.Remove("spellcast" + eventArgs.Slot);
+                    _lastCommandT.Add("spellcast" + eventArgs.Slot, 0);
                 }
             };
         }
