@@ -12,45 +12,82 @@ namespace imAsharpHuman
     {
         static Menu _menu;
         static Random _random;
-        private static int _lastMoveT = 0;
-        private static int _lastAttackT = 0;
+        private static Dictionary<string, int> _lastCommandT;
+        private static bool _thisMovementCommandHasBeenTamperedWith = false;
+        private static int _blockedCount = 0;
         static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += gameLoadEventArgs =>
             {
-                _random = new Random(Environment.TickCount);
-                _menu = new Menu("imAsharpHuman", "imasharphumanmenu", true);
+                _random = new Random(Environment.TickCount - Utils.GameTimeTickCount);
+                _lastCommandT = new Dictionary<string, int>();
+                foreach (var order in Enum.GetValues(typeof(GameObjectOrder)))
+                {
+                    _lastCommandT.Add(order.ToString(), 0);
+                }
+                foreach (var spellslot in Enum.GetValues(typeof(SpellSlot)))
+                {
+                    _lastCommandT.Add("spellcast" + spellslot.ToString(), 0);
+                }
+                _menu = new Menu("imAsharpHuman PRO", "iashmenu", true);
                 _menu.AddItem(new MenuItem("MinClicks", "Min clicks per second").SetValue(new Slider(6, 1, 6)));
-                _menu.AddItem(new MenuItem("MaxClicks", "Max clicks per second").SetValue(new Slider(9, 7, 15)));
+                _menu.AddItem(new MenuItem("MaxClicks", "Max clicks per second").SetValue(new Slider(10, 6, 15)));
+                _menu.AddItem(
+                    new MenuItem("ShowBlockedClicks", "Show me how many clicks you blocked!").SetValue(true));
                 _menu.AddToMainMenu();
+                Drawing.OnDraw += onDrawArgs =>
+                {
+                    if (_menu.Item("ShowBlockedClicks").GetValue<bool>())
+                    {
+                        Drawing.DrawText(Drawing.Width - 180, 100, System.Drawing.Color.Lime, "Blocked " + _blockedCount + " clicks");
+                    }
+                };
             };
             Obj_AI_Base.OnIssueOrder += (sender, issueOrderEventArgs) =>
             {
                 if (sender.IsMe)
                 {
-                    if (issueOrderEventArgs.Order == GameObjectOrder.MoveTo)
+                    var orderName = issueOrderEventArgs.Order.ToString();
+                    var order = _lastCommandT.FirstOrDefault(e => e.Key == orderName);
+                    if (Utils.GameTimeTickCount - order.Value <
+                        _random.Next(1000 / _menu.Item("MaxClicks").GetValue<Slider>().Value,
+                            1000 / _menu.Item("MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
                     {
-                        if (Utils.GameTimeTickCount - _lastMoveT <
-                            _random.Next(1000/_menu.Item("MaxClicks").GetValue<Slider>().Value,
-                                1000/_menu.Item("MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
-                        {
-                            issueOrderEventArgs.Process = false;
-                            return;
-                        }
-                        _lastMoveT = Utils.GameTimeTickCount;
+                        _blockedCount += 1;
+                        issueOrderEventArgs.Process = false;
+                        return;
                     }
-                    if (issueOrderEventArgs.Order == GameObjectOrder.AttackUnit)
+                    if (issueOrderEventArgs.Order == GameObjectOrder.MoveTo &&
+                        issueOrderEventArgs.TargetPosition.IsValid() && !_thisMovementCommandHasBeenTamperedWith)
                     {
-
-                        if (Utils.GameTimeTickCount - _lastAttackT <
-                            _random.Next(1000 / _menu.Item("MaxClicks").GetValue<Slider>().Value,
-                                1000 / _menu.Item("MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
-                        {
-                            issueOrderEventArgs.Process = false;
-                            return;
-                        }
-                        _lastAttackT = Utils.GameTimeTickCount;
+                        _thisMovementCommandHasBeenTamperedWith = true;
+                        issueOrderEventArgs.Process = false;
+                        ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo,
+                            issueOrderEventArgs.TargetPosition.Randomize(-10, 10));
                     }
+                    _thisMovementCommandHasBeenTamperedWith = false;
+                    _lastCommandT.Remove(orderName);
+                    _lastCommandT.Add(orderName, Utils.GameTimeTickCount);
+                }
+            };
+            Spellbook.OnCastSpell += (sender, eventArgs) =>
+            {
+                if (sender.Owner.IsMe &&
+                    eventArgs.StartPosition.Distance(ObjectManager.Player.ServerPosition, true) > 50 * 50 &&
+                    eventArgs.StartPosition.Distance(ObjectManager.Player.Position, true) > 50 * 50 &&
+                    eventArgs.Target == null)
+                {
+                    if (_lastCommandT.FirstOrDefault(e => e.Key == "spellcast" + eventArgs.Slot).Value == 0)
+                    {
+                        _lastCommandT.Remove("spellcast" + eventArgs.Slot);
+                        _lastCommandT.Add("spellcast" + eventArgs.Slot, Utils.GameTimeTickCount);
+                        eventArgs.Process = false;
+                        ObjectManager.Player.Spellbook.CastSpell(eventArgs.Slot,
+                            eventArgs.StartPosition.Randomize(-10, 10));
+                        return;
+                    }
+                    _lastCommandT.Remove("spellcast" + eventArgs.Slot);
+                    _lastCommandT.Add("spellcast" + eventArgs.Slot, 0);
                 }
             };
         }
