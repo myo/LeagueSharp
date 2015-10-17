@@ -13,6 +13,7 @@ namespace imAsharpHuman
         static Menu _menu;
         static Random _random;
         private static Dictionary<string, int> _lastCommandT;
+        private static bool _thisMovementCommandHasBeenTamperedWith = false;
         private static int _blockedCount = 0;
         static void Main(string[] args)
         {
@@ -56,6 +57,15 @@ namespace imAsharpHuman
                         issueOrderEventArgs.Process = false;
                         return;
                     }
+                    if (issueOrderEventArgs.Order == GameObjectOrder.MoveTo &&
+                        issueOrderEventArgs.TargetPosition.IsValid() && !_thisMovementCommandHasBeenTamperedWith)
+                    {
+                        _thisMovementCommandHasBeenTamperedWith = true;
+                        issueOrderEventArgs.Process = false;
+                        ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo,
+                            issueOrderEventArgs.TargetPosition.Randomize(-10, 10));
+                    }
+                    _thisMovementCommandHasBeenTamperedWith = false;
                     _lastCommandT.Remove(orderName);
                     _lastCommandT.Add(orderName, Utils.GameTimeTickCount);
                 }
