@@ -12,7 +12,8 @@ namespace imAsharpHuman
     {
         static Menu _menu;
         static Random _random;
-        private static int _lastCommandT = 0;
+        private static int _lastMoveT = 0;
+        private static int _lastAttackT = 0;
         static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += gameLoadEventArgs =>
@@ -25,16 +26,31 @@ namespace imAsharpHuman
             };
             Obj_AI_Base.OnIssueOrder += (sender, issueOrderEventArgs) =>
             {
-                if (sender.IsMe && issueOrderEventArgs.Order == GameObjectOrder.AttackUnit || issueOrderEventArgs.Order == GameObjectOrder.MoveTo)
+                if (sender.IsMe)
                 {
-                    if (Utils.GameTimeTickCount - _lastCommandT <
-                        _random.Next(1000/_menu.Item("MaxClicks").GetValue<Slider>().Value,
-                            1000/_menu.Item("MinClicks").GetValue<Slider>().Value))
+                    if (issueOrderEventArgs.Order == GameObjectOrder.MoveTo)
                     {
-                        issueOrderEventArgs.Process = false;
-                        return;
+                        if (Utils.GameTimeTickCount - _lastMoveT <
+                            _random.Next(1000/_menu.Item("MaxClicks").GetValue<Slider>().Value,
+                                1000/_menu.Item("MinClicks").GetValue<Slider>().Value))
+                        {
+                            issueOrderEventArgs.Process = false;
+                            return;
+                        }
+                        _lastMoveT = Utils.GameTimeTickCount;
                     }
-                    _lastCommandT = Utils.GameTimeTickCount;
+                    if (issueOrderEventArgs.Order == GameObjectOrder.AttackUnit)
+                    {
+
+                        if (Utils.GameTimeTickCount - _lastAttackT <
+                            _random.Next(1000 / _menu.Item("MaxClicks").GetValue<Slider>().Value,
+                                1000 / _menu.Item("MinClicks").GetValue<Slider>().Value))
+                        {
+                            issueOrderEventArgs.Process = false;
+                            return;
+                        }
+                        _lastAttackT = Utils.GameTimeTickCount;
+                    }
                 }
             };
         }
