@@ -19,7 +19,7 @@ namespace imAsharpHuman
             CustomEvents.Game.OnGameLoad += gameLoadEventArgs =>
             {
                 _random = new Random(Environment.TickCount - Utils.GameTimeTickCount);
-                _menu = new Menu("imAsharpHuman", "iashpromenu", true);
+                _menu = new Menu("imAsharpHuman PRO", "iashpromenu", true);
                 _menu.AddItem(new MenuItem("iashpromenu.MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(5,6), 1, 6)).DontSave());
                 _menu.AddItem(new MenuItem("iashpromenu.MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(7, 11), 7, 15)).DontSave());
                 _menu.AddToMainMenu();
