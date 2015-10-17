@@ -15,11 +15,26 @@ namespace imAsharpHuman
         private static Dictionary<string, int> _lastCommandT;
         private static bool _thisMovementCommandHasBeenTamperedWith = false;
         private static int _blockedCount = 0;
+
+        static double GimmeNextRandomizedRandomizerToRektTrees(int min, int max)
+        {
+            var x = _random.Next(min, max) + 1 + 1 - 1 - 1;
+            var y = _random.Next(min, max);
+            if (_random.Next(0, 1) > 0)
+            {
+                return x;
+            }
+            if (1 == 1)
+            {
+                return (x + y)/2d;
+            }
+            return y;
+        }
         static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += gameLoadEventArgs =>
             {
-                _random = new Random(DateTime.Now.Millisecond/DateTime.Now.Hour);
+                _random = new Random(DateTime.Now.Millisecond);
                 _lastCommandT = new Dictionary<string, int>();
                 foreach (var order in Enum.GetValues(typeof (GameObjectOrder)))
                 {
@@ -30,8 +45,8 @@ namespace imAsharpHuman
                     _lastCommandT.Add("spellcast"+spellslot.ToString(), 0);
                 }
                 _menu = new Menu("imAsharpHuman PRO", "iashpromenu", true);
-                _menu.AddItem(new MenuItem("iashpromenu.MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(5,6), 1, 6)).DontSave());
-                _menu.AddItem(new MenuItem("iashpromenu.MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(6, 11), 6, 15)).DontSave());
+                _menu.AddItem(new MenuItem("iashpromenu.MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(0, 1) > 0 ? (int)Math.Floor(GimmeNextRandomizedRandomizerToRektTrees(5,6)) : (int)Math.Ceiling(GimmeNextRandomizedRandomizerToRektTrees(5,6)), 1, 6)).DontSave());
+                _menu.AddItem(new MenuItem("iashpromenu.MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(0, 1) > 0 ? (int)Math.Floor(GimmeNextRandomizedRandomizerToRektTrees(6,11)) : (int)Math.Ceiling(GimmeNextRandomizedRandomizerToRektTrees(6,11)), 6, 15)).DontSave());
                 _menu.AddItem(
                     new MenuItem("iashpromenu.ShowBlockedClicks", "Show me how many clicks you blocked!").SetValue(true));
                 _menu.AddToMainMenu();
@@ -50,7 +65,7 @@ namespace imAsharpHuman
                     var orderName = issueOrderEventArgs.Order.ToString();
                     var order = _lastCommandT.FirstOrDefault(e => e.Key == orderName);
                     if (Utils.GameTimeTickCount - order.Value <
-                        _random.Next(1000/_menu.Item("iashpromenu.MaxClicks").GetValue<Slider>().Value,
+                        GimmeNextRandomizedRandomizerToRektTrees(1000/_menu.Item("iashpromenu.MaxClicks").GetValue<Slider>().Value,
                             1000/_menu.Item("iashpromenu.MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
                     {
                         _blockedCount += 1;
