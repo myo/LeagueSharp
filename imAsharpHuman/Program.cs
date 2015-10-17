@@ -32,7 +32,7 @@ namespace imAsharpHuman
                     {
                         if (Utils.GameTimeTickCount - _lastMoveT <
                             _random.Next(1000/_menu.Item("MaxClicks").GetValue<Slider>().Value,
-                                1000/_menu.Item("MinClicks").GetValue<Slider>().Value))
+                                1000/_menu.Item("MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
                         {
                             issueOrderEventArgs.Process = false;
                             return;
@@ -44,7 +44,7 @@ namespace imAsharpHuman
 
                         if (Utils.GameTimeTickCount - _lastAttackT <
                             _random.Next(1000 / _menu.Item("MaxClicks").GetValue<Slider>().Value,
-                                1000 / _menu.Item("MinClicks").GetValue<Slider>().Value))
+                                1000 / _menu.Item("MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
                         {
                             issueOrderEventArgs.Process = false;
                             return;
