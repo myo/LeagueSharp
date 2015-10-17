@@ -46,7 +46,7 @@ namespace imAsharpHuman
                 }
                 _lastCommandT.Add("lastchat", 0);
                 _menu = new Menu("imAsharpHuman PRO", "iashpromenu", true);
-                _menu.AddItem(new MenuItem("iashpromenu.MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(0, 1) > 0 ? (int)Math.Floor(GimmeNextRandomizedRandomizerToRektTrees(5,6)) : (int)Math.Ceiling(GimmeNextRandomizedRandomizerToRektTrees(5,6)), 1, 6)).DontSave());
+                _menu.AddItem(new MenuItem("iashpromenu.MinClicks", "Min clicks per second").SetValue(new Slider(6, 1, 6)).DontSave());
                 _menu.AddItem(new MenuItem("iashpromenu.MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(0, 1) > 0 ? (int)Math.Floor(GimmeNextRandomizedRandomizerToRektTrees(6,11)) : (int)Math.Ceiling(GimmeNextRandomizedRandomizerToRektTrees(6,11)), 6, 15)).DontSave());
                 _menu.AddItem(
                     new MenuItem("iashpromenu.ShowBlockedClicks", "Show me how many clicks you blocked!").SetValue(true));
