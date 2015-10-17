@@ -18,9 +18,9 @@ namespace imAsharpHuman
             CustomEvents.Game.OnGameLoad += gameLoadEventArgs =>
             {
                 _random = new Random(Environment.TickCount - Utils.GameTimeTickCount);
-                _menu = new Menu("imAsharpHuman", "imasharphumanmenu", true);
-                _menu.AddItem(new MenuItem("MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(5, 6), 1, 6)));
-                _menu.AddItem(new MenuItem("MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(7, 10), 7, 15)));
+                _menu = new Menu("imAsharpHuman", "iashpromenu", true);
+                _menu.AddItem(new MenuItem("iashpromenu.MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(5,6), 1, 6)).DontSave());
+                _menu.AddItem(new MenuItem("iashpromenu.MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(7, 11), 7, 15)).DontSave());
                 _menu.AddToMainMenu();
             };
             Obj_AI_Base.OnIssueOrder += (sender, issueOrderEventArgs) =>
@@ -28,8 +28,8 @@ namespace imAsharpHuman
                 if (sender.IsMe && issueOrderEventArgs.Order == GameObjectOrder.AttackUnit || issueOrderEventArgs.Order == GameObjectOrder.MoveTo || issueOrderEventArgs.Order == GameObjectOrder.MovePet)
                 {
                     if (Utils.GameTimeTickCount - _lastCommandT <
-                        _random.Next(1000/_menu.Item("MaxClicks").GetValue<Slider>().Value,
-                            1000/_menu.Item("MinClicks").GetValue<Slider>().Value))
+                        _random.Next(1000 / _menu.Item("iashpromenu.MaxClicks").GetValue<Slider>().Value,
+                            1000 / _menu.Item("iashpromenu.MinClicks").GetValue<Slider>().Value))
                     {
                         issueOrderEventArgs.Process = false;
                         return;
