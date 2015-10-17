@@ -19,7 +19,7 @@ namespace imAsharpHuman
         {
             CustomEvents.Game.OnGameLoad += gameLoadEventArgs =>
             {
-                _random = new Random(Environment.TickCount - Utils.GameTimeTickCount);
+                _random = new Random(DateTime.Now.Millisecond/DateTime.Now.Hour);
                 _lastCommandT = new Dictionary<string, int>();
                 foreach (var order in Enum.GetValues(typeof (GameObjectOrder)))
                 {
