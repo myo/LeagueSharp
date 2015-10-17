@@ -29,6 +29,7 @@ namespace imAsharpHuman
                 {
                     _lastCommandT.Add("spellcast" + spellslot.ToString(), 0);
                 }
+                _lastCommandT.Add("lastchat", 0);
                 _menu = new Menu("imAsharpHuman PRO", "iashmenu", true);
                 _menu.AddItem(new MenuItem("MinClicks", "Min clicks per second").SetValue(new Slider(6, 1, 6)));
                 _menu.AddItem(new MenuItem("MaxClicks", "Max clicks per second").SetValue(new Slider(10, 6, 15)));
@@ -88,6 +89,19 @@ namespace imAsharpHuman
                     }
                     _lastCommandT.Remove("spellcast" + eventArgs.Slot);
                     _lastCommandT.Add("spellcast" + eventArgs.Slot, 0);
+                }
+            };
+            Game.OnChat += gameChatEventArgs =>
+            {
+                if (gameChatEventArgs.Sender.IsMe)
+                {
+                    if (Utils.GameTimeTickCount - _lastCommandT.FirstOrDefault(e => e.Key == "lastchat").Value <
+                        _random.Next(100, 200))
+                    {
+                        gameChatEventArgs.Process = false;
+                    }
+                    _lastCommandT.Remove("lastchat");
+                    _lastCommandT.Add("lastchat", Utils.GameTimeTickCount);
                 }
             };
         }
