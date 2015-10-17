@@ -21,7 +21,7 @@ namespace PRADA_Vayne.MyLogic.Q
 
         public static void OnLoad(EventArgs args)
         {
-            _canWallTumble = (Utility.Map.GetMap().Type == Utility.Map.MapType.SummonersRift);
+            _canWallTumble = false; //(Utility.Map.GetMap().Type == Utility.Map.MapType.SummonersRift);
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
         }
