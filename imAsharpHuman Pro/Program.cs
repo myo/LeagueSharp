@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -88,7 +89,8 @@ namespace imAsharpHuman
             };
             Spellbook.OnCastSpell += (sender, eventArgs) =>
             {
-                if (sender.Owner.IsMe &&
+                var cN = ObjectManager.Player.ChampionName;
+                if (sender.Owner.IsMe && cN != "Viktor" && cN != "Rumble" &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.ServerPosition, true) > 50*50 &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.Position, true) > 50*50 &&
                     eventArgs.Target == null)
