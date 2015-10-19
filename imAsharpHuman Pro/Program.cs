@@ -62,7 +62,7 @@ namespace imAsharpHuman
             };
             Obj_AI_Base.OnIssueOrder += (sender, issueOrderEventArgs) =>
             {
-                if (sender.IsMe)
+                if (sender.IsMe && !issueOrderEventArgs.IsAttackMove)
                 {
                     var orderName = issueOrderEventArgs.Order.ToString();
                     var order = _lastCommandT.FirstOrDefault(e => e.Key == orderName);
