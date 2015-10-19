@@ -90,7 +90,7 @@ namespace imAsharpHuman
             Spellbook.OnCastSpell += (sender, eventArgs) =>
             {
                 var cN = ObjectManager.Player.ChampionName;
-                if (sender.Owner.IsMe && cN != "Viktor" && cN != "Rumble" &&
+                if (sender.Owner.IsMe && eventArgs.Slot != SpellSlot.Q && eventArgs.Slot != SpellSlot.W && eventArgs.Slot != SpellSlot.E && eventArgs.Slot != SpellSlot.R &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.ServerPosition, true) > 50*50 &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.Position, true) > 50*50 &&
                     eventArgs.Target == null)
