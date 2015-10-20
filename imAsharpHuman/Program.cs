@@ -52,7 +52,7 @@ namespace imAsharpHuman
                     var order = _lastCommandT.FirstOrDefault(e => e.Key == orderName);
                     if (Utils.GameTimeTickCount - order.Value <
                         _random.Next(1000 / _menu.Item("MaxClicks").GetValue<Slider>().Value,
-                            1000 / _menu.Item("MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
+                            1000 / _menu.Item("MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10) && !issueOrderEventArgs.TargetPosition.IsWall())
                     {
                         _blockedCount += 1;
                         issueOrderEventArgs.Process = false;
