@@ -49,6 +49,9 @@ namespace imAsharpHuman
                 _menu = new Menu("imAsharpHuman PRO", "iashpromenu", true);
                 _menu.AddItem(new MenuItem("iashpromenu.MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(6, 7), 1, 7)).DontSave());
                 _menu.AddItem(new MenuItem("iashpromenu.MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(0, 1) > 0 ? (int)Math.Floor(GimmeNextRandomizedRandomizerToRektTrees(7,11)) : (int)Math.Ceiling(GimmeNextRandomizedRandomizerToRektTrees(7,11)), 7, 15)).DontSave());
+                _menu.AddItem(new MenuItem("iashpromenu.Spells", "Humanize Spells?").SetValue(true));
+                _menu.AddItem(new MenuItem("iashpromenu.Attacks", "Humanize Attacks?").SetValue(true));
+                _menu.AddItem(new MenuItem("iashpromenu.Movement", "Humanize Movement?").SetValue(true));
                 _menu.AddItem(
                     new MenuItem("iashpromenu.ShowBlockedClicks", "Show me how many clicks you blocked!").SetValue(true));
                 _menu.AddToMainMenu();
@@ -64,10 +67,18 @@ namespace imAsharpHuman
             {
                 if (sender.IsMe && !issueOrderEventArgs.IsAttackMove)
                 {
+                    if (issueOrderEventArgs.Order == GameObjectOrder.AttackUnit ||
+                        issueOrderEventArgs.Order == GameObjectOrder.AttackTo &&
+                        !_menu.Item("iashpromenu.Attacks").GetValue<bool>()) return;
+                    if (issueOrderEventArgs.Order == GameObjectOrder.MoveTo &&
+                        !_menu.Item("iashpromenu.Movement").GetValue<bool>()) return;
+
+
                     var orderName = issueOrderEventArgs.Order.ToString();
                     var order = _lastCommandT.FirstOrDefault(e => e.Key == orderName);
                     if (Utils.GameTimeTickCount - order.Value <
-                        GimmeNextRandomizedRandomizerToRektTrees(1000/_menu.Item("iashpromenu.MaxClicks").GetValue<Slider>().Value,
+                        GimmeNextRandomizedRandomizerToRektTrees(
+                            1000/_menu.Item("iashpromenu.MaxClicks").GetValue<Slider>().Value,
                             1000/_menu.Item("iashpromenu.MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
                     {
                         _blockedCount += 1;
@@ -89,6 +100,9 @@ namespace imAsharpHuman
             };
             Spellbook.OnCastSpell += (sender, eventArgs) =>
             {
+                if (!_menu.Item("iashpromenu.Spells").GetValue<bool>()) return;
+
+
                 if (sender.Owner.IsMe && eventArgs.Slot != SpellSlot.Q && eventArgs.Slot != SpellSlot.W && eventArgs.Slot != SpellSlot.E && eventArgs.Slot != SpellSlot.R &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.ServerPosition, true) > 50*50 &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.Position, true) > 50*50 &&
