@@ -32,7 +32,11 @@ namespace imAsharpHuman
                 _lastCommandT.Add("lastchat", 0);
                 _menu = new Menu("imAsharpHuman PRO", "iashmenu", true);
                 _menu.AddItem(new MenuItem("MinClicks", "Min clicks per second").SetValue(new Slider(6, 1, 7)));
-                _menu.AddItem(new MenuItem("MaxClicks", "Max clicks per second").SetValue(new Slider(11, 7, 15)));
+                _menu.AddItem(new MenuItem("MaxClicks", "Max clicks per second").SetValue(new Slider(11, 7, 15))); 
+                _menu.AddItem(new MenuItem("Spells", "Humanize Spells?").SetValue(true));
+                _menu.AddItem(new MenuItem("Attacks", "Humanize Attacks?").SetValue(true));
+                _menu.AddItem(new MenuItem("Movement", "Humanize Movement?").SetValue(true));
+                _menu.AddItem(new MenuItem("Chat", "Humanize Chat?").SetValue(true));
                 _menu.AddItem(
                     new MenuItem("ShowBlockedClicks", "Show me how many clicks you blocked!").SetValue(true));
                 _menu.AddToMainMenu();
@@ -48,6 +52,13 @@ namespace imAsharpHuman
             {
                 if (sender.IsMe && !issueOrderEventArgs.IsAttackMove)
                 {
+                    if (issueOrderEventArgs.Order == GameObjectOrder.AttackUnit ||
+                        issueOrderEventArgs.Order == GameObjectOrder.AttackTo &&
+                        !_menu.Item("Attacks").GetValue<bool>()) return;
+                    if (issueOrderEventArgs.Order == GameObjectOrder.MoveTo &&
+                        !_menu.Item("Movement").GetValue<bool>()) return;
+
+
                     var orderName = issueOrderEventArgs.Order.ToString();
                     var order = _lastCommandT.FirstOrDefault(e => e.Key == orderName);
                     if (Utils.GameTimeTickCount - order.Value <
@@ -73,6 +84,9 @@ namespace imAsharpHuman
             };
             Spellbook.OnCastSpell += (sender, eventArgs) =>
             {
+                if (!_menu.Item("Spells").GetValue<bool>()) return;
+
+
                 var cN = ObjectManager.Player.ChampionName;
                 if (sender.Owner.IsMe && cN != "Viktor" && cN != "Rumble" &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.ServerPosition, true) > 50 * 50 &&
@@ -94,7 +108,7 @@ namespace imAsharpHuman
             };
             Game.OnChat += gameChatEventArgs =>
             {
-                if (gameChatEventArgs.Sender.IsMe)
+                if (gameChatEventArgs.Sender.IsMe && _menu.Item("Chat").GetValue<bool>())
                 {
                     if (Utils.GameTimeTickCount - _lastCommandT.FirstOrDefault(e => e.Key == "lastchat").Value <
                         _random.Next(100, 200))
