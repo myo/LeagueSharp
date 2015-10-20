@@ -52,6 +52,7 @@ namespace imAsharpHuman
                 _menu.AddItem(new MenuItem("iashpromenu.Spells", "Humanize Spells?").SetValue(true));
                 _menu.AddItem(new MenuItem("iashpromenu.Attacks", "Humanize Attacks?").SetValue(true));
                 _menu.AddItem(new MenuItem("iashpromenu.Movement", "Humanize Movement?").SetValue(true));
+                _menu.AddItem(new MenuItem("iashpromenu.Chat", "Humanize Chat?").SetValue(true));
                 _menu.AddItem(
                     new MenuItem("iashpromenu.ShowBlockedClicks", "Show me how many clicks you blocked!").SetValue(true));
                 _menu.AddToMainMenu();
@@ -123,7 +124,7 @@ namespace imAsharpHuman
             };
             Game.OnChat += gameChatEventArgs =>
             {
-                if (gameChatEventArgs.Sender.IsMe)
+                if (gameChatEventArgs.Sender.IsMe && _menu.Item("iashpromenu.Chat").GetValue<bool>())
                 {
                     if (Utils.GameTimeTickCount - _lastCommandT.FirstOrDefault(e => e.Key == "lastchat").Value <
                         _random.Next(100, 200))
