@@ -94,6 +94,13 @@ namespace SorakaToTheChallenger
             };
             AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+            GameObject.OnCreate += (sender, eventArgs) =>
+            {
+                if (sender.Name.Contains("Draven_Base_Q_reticle_self.troy"))
+                {
+                    E.Cast(sender.Position);
+                }
+            };
         }
 
         /// <summary>
