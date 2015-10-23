@@ -33,19 +33,19 @@ namespace imAsharpHuman
         }
         static void Main(string[] args)
         {
+            _random = new Random(DateTime.Now.Millisecond);
+            _lastCommandT = new Dictionary<string, int>();
+            foreach (var order in Enum.GetValues(typeof(GameObjectOrder)))
+            {
+                _lastCommandT.Add(order.ToString(), 0);
+            }
+            foreach (var spellslot in Enum.GetValues(typeof(SpellSlot)))
+            {
+                _lastCommandT.Add("spellcast" + spellslot.ToString(), 0);
+            }
+            _lastCommandT.Add("lastchat", 0);
             CustomEvents.Game.OnGameLoad += gameLoadEventArgs =>
             {
-                _random = new Random(DateTime.Now.Millisecond);
-                _lastCommandT = new Dictionary<string, int>();
-                foreach (var order in Enum.GetValues(typeof (GameObjectOrder)))
-                {
-                    _lastCommandT.Add(order.ToString(), 0);
-                }
-                foreach (var spellslot in Enum.GetValues(typeof (SpellSlot)))
-                {
-                    _lastCommandT.Add("spellcast"+spellslot.ToString(), 0);
-                }
-                _lastCommandT.Add("lastchat", 0);
                 _menu = new Menu("imAsharpHuman PRO", "iashpromenu", true);
                 _menu.AddItem(new MenuItem("iashpromenu.MinClicks", "Min clicks per second").SetValue(new Slider(_random.Next(6, 7), 1, 7)).DontSave());
                 _menu.AddItem(new MenuItem("iashpromenu.MaxClicks", "Max clicks per second").SetValue(new Slider(_random.Next(0, 1) > 0 ? (int)Math.Floor(GimmeNextRandomizedRandomizerToRektTrees(7,11)) : (int)Math.Ceiling(GimmeNextRandomizedRandomizerToRektTrees(7,11)), 7, 15)).DontSave());
@@ -60,7 +60,7 @@ namespace imAsharpHuman
                 {
                     if (_menu.Item("iashpromenu.ShowBlockedClicks").GetValue<bool>())
                     {
-                        Drawing.DrawText(Drawing.Width - 180, 100, System.Drawing.Color.Lime, "Blocked " + _blockedCount + " clicks");
+                        Drawing.DrawText(Drawing.Width - 190, 100, System.Drawing.Color.Lime, "Blocked " + _blockedCount + " clicks");
                     }
                 };
             };
