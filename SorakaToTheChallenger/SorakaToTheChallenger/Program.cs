@@ -96,7 +96,7 @@ namespace SorakaToTheChallenger
 
         private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsAlly || sender.Type != GameObjectType.obj_AI_Hero) return;
+            if (sender.Type != GameObjectType.obj_AI_Hero) return;
             var target = sender as Obj_AI_Hero;
             var pos = sender.ServerPosition;
             if (sender.CharData.BaseSkinName == "Yasuo")
