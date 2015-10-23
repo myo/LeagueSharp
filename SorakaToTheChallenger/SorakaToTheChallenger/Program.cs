@@ -94,6 +94,11 @@ namespace SorakaToTheChallenger
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
         }
 
+        /// <summary>
+        /// The On Process Spell Cast
+        /// </summary>
+        /// <param name="sender">The Sender</param>
+        /// <param name="args">The Args</param>
         private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (sender.Type != GameObjectType.obj_AI_Hero) return;
