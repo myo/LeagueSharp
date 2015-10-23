@@ -51,6 +51,7 @@ namespace SorakaToTheChallenger
         /// <param name="args">The args</param>
         public static void Load(EventArgs args)
         {
+            if (ObjectManager.Player.CharData.BaseSkinName != "Soraka") return;
             Q = new Spell(SpellSlot.Q, 950, TargetSelector.DamageType.Magical);
             W = new Spell(SpellSlot.W, 550);
             E = new Spell(SpellSlot.E, 900, TargetSelector.DamageType.Magical);
@@ -91,7 +92,20 @@ namespace SorakaToTheChallenger
                     }
                 }
             };
+            AntiGapcloser.OnEnemyGapcloser += OnEnemyGapcloser;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+        }
+
+        /// <summary>
+        /// The On Enemy Gapcloser
+        /// </summary>
+        /// <param name="gapcloser">The Gapcloser</param>
+        private static void OnEnemyGapcloser(ActiveGapcloser gapcloser)
+        {
+            if (gapcloser.Sender.IsMelee && HeroManager.Allies.Any(a => a.Distance(gapcloser.End) < 200) && ObjectManager.Player.Distance(gapcloser.Sender) < 900)
+            {
+                E.Cast(gapcloser.End);
+            }
         }
 
         /// <summary>
@@ -201,7 +215,7 @@ namespace SorakaToTheChallenger
             } 
             foreach (var enemyMinion in ObjectManager.Get<Obj_AI_Base>().Where(m => m.IsEnemy && m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900 && m.HasBuff("teleport_target", true) || m.HasBuff("Pantheon_GrandSkyfall_Jump", true)))
             {
-                E.Cast(enemyMinion.Position);
+                E.Cast(enemyMinion.ServerPosition);
             }
         }
 
