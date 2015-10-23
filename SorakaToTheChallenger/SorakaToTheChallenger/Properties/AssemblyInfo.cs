@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SpacebarPacket")]
+[assembly: AssemblyTitle("SorakaToTheChallenger")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SpacebarPacket")]
+[assembly: AssemblyProduct("SorakaToTheChallenger")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4e27d6a3-20d1-4607-aed4-7aa24ad6fff6")]
+[assembly: Guid("e3d495c8-00ac-407d-9e4a-8791c86526d4")]
 
 // Version information for an assembly consists of the following four values:
 //
