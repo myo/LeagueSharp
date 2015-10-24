@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SorakaToTheChallenger.Utils;
 using Orbwalking = SorakaToTheChallenger.Utils.Orbwalking;
 
 namespace SorakaToTheChallenger
@@ -37,6 +38,10 @@ namespace SorakaToTheChallenger
         /// The Orbwalker
         /// </summary>
         public static Orbwalking.Orbwalker Orbwalker;
+        /// <summary>
+        /// The Priority Menu
+        /// </summary>
+        public static Menu PriorityMenu;
 
         /// <summary>
         /// The Frankfurt
@@ -63,7 +68,9 @@ namespace SorakaToTheChallenger
             E.SetSkillshot(0.5f, 70f, 1750, false, SkillshotType.SkillshotCircle);
 
             Menu = new Menu("Soraka To The Challenger", "sttc", true);
-            BlacklistMenu = Menu.AddSubMenu(new Menu("Heal blacklist", "sttc.blacklist"));
+            PriorityMenu = Menu.AddSubMenu(new Menu("Heal Priority", "sttc.priority"));
+            STTCSelector.Initialize();
+            BlacklistMenu = Menu.AddSubMenu(new Menu("Heal Blacklist", "sttc.blacklist"));
             foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly && !h.IsMe))
             {
                 var championName = ally.CharData.BaseSkinName;
@@ -113,13 +120,13 @@ namespace SorakaToTheChallenger
                 {
                     Render.Circle.DrawCircle(ObjectManager.Player.Position, 950,
                         Menu.Item("sttc.drawq").GetValue<Circle>().Color,
-                        3);
+                        7);
                 } 
                 if (Menu.Item("sttc.draww").GetValue<Circle>().Active)
                 {
                     Render.Circle.DrawCircle(ObjectManager.Player.Position, 550, W.IsReady() ?
                         Menu.Item("sttc.draww").GetValue<Circle>().Color : Color.Red,
-                        3);
+                        7);
                 }
             };
         }
@@ -215,7 +222,7 @@ namespace SorakaToTheChallenger
                         !a.IsMe && a.Distance(ObjectManager.Player) < 550 &&
                         !BlacklistMenu.Item("dontheal" + a.CharData.BaseSkinName).GetValue<bool>() &&
                         a.MaxHealth - a.Health > GetWHealingAmount())
-                    .OrderByDescending(TargetSelector.GetPriority)
+                    .OrderByDescending(STTCSelector.GetPriority)
                     .ThenBy(ally => ally.Health).FirstOrDefault();
             if (bestHealingCandidate != null)
             {
