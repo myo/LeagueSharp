@@ -166,7 +166,7 @@ namespace SorakaToTheChallenger
         /// </summary>
         public static void QLogic()
         {
-            if (!Q.IsReady() || (ObjectManager.Player.Mana < 3 * GetWManaCost() && ObjectManager.Player.Health - GetWHealthCost() > Menu.Item("sttc.wmyhp").GetValue<Slider>().Value * ObjectManager.Player.MaxHealth)) return;
+            if (!Q.IsReady()) return;// || (ObjectManager.Player.Mana < 3 * GetWManaCost() && ObjectManager.Player.Health - GetWHealthCost() > Menu.Item("sttc.wmyhp").GetValue<Slider>().Value * ObjectManager.Player.MaxHealth)) return;
             switch (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue)
             {
                 case "SMART":
@@ -192,7 +192,7 @@ namespace SorakaToTheChallenger
         /// </summary>
         public static void WLogic()
         {
-            if (!W.IsReady() || ObjectManager.Player.Health - GetWHealthCost() < Menu.Item("sttc.wmyhp").GetValue<Slider>().Value * ObjectManager.Player.MaxHealth) return;
+            if (!W.IsReady()) return; // || ObjectManager.Player.Health - GetWHealthCost() < Menu.Item("sttc.wmyhp").GetValue<Slider>().Value * ObjectManager.Player.MaxHealth) return;
             var bestHealingCandidate =
                 HeroManager.Allies.Where(
                     a =>
