@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -99,6 +100,17 @@ namespace SorakaToTheChallenger
                 if (sender.Name.Contains("Draven_Base_Q_reticle_self.troy"))
                 {
                     E.Cast(sender.Position);
+                }
+            };
+            Drawing.OnDraw += eventArgs =>
+            {
+                if (Program.W.IsReady())
+                {
+                    Drawing.DrawCircle(ObjectManager.Player.ServerPosition, 550, Color.DeepSkyBlue);
+                }
+                else
+                {
+                    Drawing.DrawCircle(ObjectManager.Player.ServerPosition, 550, Color.Red);
                 }
             };
         }
