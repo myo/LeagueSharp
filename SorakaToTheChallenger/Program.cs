@@ -294,7 +294,7 @@ namespace SorakaToTheChallenger
 
         public static int GetWHealthCost()
         {
-            return (int)(0.1*ObjectManager.Player.Health);
+            return (int)(0.1*ObjectManager.Player.MaxHealth);
         }
     }
 }
