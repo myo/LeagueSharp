@@ -104,14 +104,7 @@ namespace SorakaToTheChallenger
             };
             Drawing.OnDraw += eventArgs =>
             {
-                if (Program.W.IsReady())
-                {
-                    Drawing.DrawCircle(ObjectManager.Player.ServerPosition, 550, Color.DeepSkyBlue);
-                }
-                else
-                {
-                    Drawing.DrawCircle(ObjectManager.Player.ServerPosition, 550, Color.Red);
-                }
+                Drawing.DrawCircle(ObjectManager.Player.ServerPosition, 550, W.IsReady() ? Color.DeepSkyBlue : Color.Red);
             };
         }
 
