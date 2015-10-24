@@ -81,9 +81,9 @@ namespace SorakaToTheChallenger
             Menu.AddItem(new MenuItem("sttc.ultallyhp", "ULT if an ally is below HP%").SetValue(new Slider(15)));
             Menu.AddItem(new MenuItem("sttc.blockaa", "Block AutoAttacks?").SetValue(false));
             Menu.AddItem(new MenuItem("sttc.drawq", "Draw Q?")
-                .SetValue(new Circle(false, Color.DarkMagenta)));
+                .SetValue(new Circle(true, Color.DarkMagenta)));
             Menu.AddItem(new MenuItem("sttc.draww", "Draw W?")
-                 .SetValue(new Circle(false, Color.Turquoise)));
+                 .SetValue(new Circle(true, Color.Turquoise)));
 
             Menu.AddToMainMenu();
             Game.OnUpdate += OnUpdate;
