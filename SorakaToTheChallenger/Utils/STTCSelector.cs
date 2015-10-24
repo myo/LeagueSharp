@@ -2,7 +2,7 @@
 
 /*
  Copyright 2014 - 2014 LeagueSharp
- TargetSelector.cs is part of LeagueSharp.Common.
+ STTCSelector.cs is part of LeagueSharp.Common.
  
  LeagueSharp.Common is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -47,13 +47,13 @@ namespace SorakaToTheChallenger.Utils
         /// </summary>
         public static void SetPriority(Obj_AI_Hero hero, int newPriority)
         {
-            if (Program.PriorityMenu.Item("TargetSelector" + hero.ChampionName + "Priority") == null)
+            if (Program.PriorityMenu.Item("STTCSelector" + hero.ChampionName + "Priority") == null)
             {
                 return;
             }
-            var p = Program.PriorityMenu.Item("TargetSelector" + hero.ChampionName + "Priority").GetValue<Slider>();
+            var p = Program.PriorityMenu.Item("STTCSelector" + hero.ChampionName + "Priority").GetValue<Slider>();
             p.Value = Math.Max(1, Math.Min(5, newPriority));
-            Program.PriorityMenu.Item("TargetSelector" + hero.ChampionName + "Priority").SetValue(p);
+            Program.PriorityMenu.Item("STTCSelector" + hero.ChampionName + "Priority").SetValue(p);
         }
 
         /// <summary>
@@ -62,9 +62,9 @@ namespace SorakaToTheChallenger.Utils
         public static float GetPriority(Obj_AI_Hero hero)
         {
             var p = 1;
-            if (Program.PriorityMenu.Item("TargetSelector" + hero.ChampionName + "Priority") != null)
+            if (Program.PriorityMenu.Item("STTCSelector" + hero.ChampionName + "Priority") != null)
             {
-                p = Program.PriorityMenu.Item("TargetSelector" + hero.ChampionName + "Priority").GetValue<Slider>().Value;
+                p = Program.PriorityMenu.Item("STTCSelector" + hero.ChampionName + "Priority").GetValue<Slider>().Value;
             }
 
             switch (p)
@@ -138,24 +138,11 @@ namespace SorakaToTheChallenger.Utils
                 foreach (var ally in HeroManager.Allies.Where(a => !a.IsMe))
                 {
                     Program.PriorityMenu.AddItem(
-                        new MenuItem("TargetSelector" + ally.ChampionName + "Priority", ally.ChampionName)
+                        new MenuItem("STTCSelector" + ally.ChampionName + "Priority", ally.ChampionName)
                             .SetValue(
                                 new Slider(GetPriorityFromDb(ally.ChampionName), 1, 5)));
                 }
             };
-        }
-
-        private static void autoPriorityItem_ValueChanged(object sender, OnValueChangeEventArgs e)
-        {
-            if (!e.GetNewValue<bool>())
-            {
-                return;
-            }
-            foreach (var ally in HeroManager.Enemies)
-            {
-                Program.PriorityMenu.Item("TargetSelector" + ally.ChampionName + "Priority")
-                    .SetValue(new Slider(GetPriorityFromDb(ally.ChampionName), 5, 1));
-            }
         }
     }
 }
