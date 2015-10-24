@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Orbwalking = SorakaToTheChallenger.Utils.Orbwalking;
 
 namespace SorakaToTheChallenger
 {
@@ -79,6 +80,10 @@ namespace SorakaToTheChallenger
             Menu.AddItem(new MenuItem("sttc.ultmyhp", "ULT if I'm below HP%").SetValue(new Slider(20, 1)));
             Menu.AddItem(new MenuItem("sttc.ultallyhp", "ULT if an ally is below HP%").SetValue(new Slider(15)));
             Menu.AddItem(new MenuItem("sttc.blockaa", "Block AutoAttacks?").SetValue(false));
+            Menu.AddItem(new MenuItem("sttc.drawq", "Draw Q?")
+                .SetValue(new Circle(false, Color.DarkMagenta)));
+            Menu.AddItem(new MenuItem("sttc.draww", "Draw W?")
+                 .SetValue(new Circle(false, Color.Turquoise)));
 
             Menu.AddToMainMenu();
             Game.OnUpdate += OnUpdate;
@@ -104,7 +109,18 @@ namespace SorakaToTheChallenger
             };
             Drawing.OnDraw += eventArgs =>
             {
-                Drawing.DrawCircle(ObjectManager.Player.ServerPosition, 550, W.IsReady() ? Color.DeepSkyBlue : Color.Red);
+                if (Menu.Item("sttc.drawq").GetValue<Circle>().Active)
+                {
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, 950,
+                        Menu.Item("sttc.drawq").GetValue<Circle>().Color,
+                        3);
+                } 
+                if (Menu.Item("sttc.draww").GetValue<Circle>().Active)
+                {
+                    Render.Circle.DrawCircle(ObjectManager.Player.Position, 550, W.IsReady() ?
+                        Menu.Item("sttc.draww").GetValue<Circle>().Color : Color.Red,
+                        3);
+                }
             };
         }
 
@@ -166,7 +182,7 @@ namespace SorakaToTheChallenger
         /// </summary>
         public static void QLogic()
         {
-            if (!Q.IsReady() && (ObjectManager.Player.Mana < 3*GetWManaCost() && CanW())) return;
+            if (!Q.IsReady() || (ObjectManager.Player.Mana < 3*GetWManaCost() && CanW())) return;
             switch (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue)
             {
                 case "SMART":
@@ -227,7 +243,13 @@ namespace SorakaToTheChallenger
             } 
             foreach (var enemyMinion in ObjectManager.Get<Obj_AI_Base>().Where(m => m.IsEnemy && m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900 && m.HasBuff("teleport_target", true) || m.HasBuff("Pantheon_GrandSkyfall_Jump", true)))
             {
-                E.Cast(enemyMinion.ServerPosition);
+                Utility.DelayAction.Add(2000, () =>
+                {
+                    if (enemyMinion.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900)
+                    {
+                        E.Cast(enemyMinion.ServerPosition);
+                    }
+                });
             }
         }
 
