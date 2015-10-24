@@ -166,7 +166,7 @@ namespace SorakaToTheChallenger
         /// </summary>
         public static void QLogic()
         {
-            if (!Q.IsReady() || ObjectManager.Player.Mana < 3*GetWManaCost()) return;
+            if (!Q.IsReady() || (ObjectManager.Player.Mana < 3 * GetWManaCost() && ObjectManager.Player.HealthPercent - GetWHealthCost() > Menu.Item("sttc.wmyhp").GetValue<Slider>().Value)) return;
             switch (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue)
             {
                 case "SMART":
