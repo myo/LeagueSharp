@@ -215,7 +215,7 @@ namespace SorakaToTheChallenger
         /// </summary>
         public static void WLogic()
         {
-            if (!W.IsReady() || !CanW()) return;
+            if (!W.IsReady() || !CanW() || ObjectManager.Player.InFountain()) return;
             var bestHealingCandidate =
                 HeroManager.Allies.Where(
                     a =>
