@@ -55,6 +55,7 @@ namespace PRADA_Vayne.MyInitializer
             AntiGapcloser.OnEnemyGapcloser += MyLogic.E.Events.OnGapcloserVHRPlugin;
             Game.OnUpdate += MyLogic.E.Events.OnUpdateVHRPlugin;
             Interrupter2.OnInterruptableTarget += MyLogic.E.Events.OnPossibleToInterrupt;
+            Game.OnUpdate += MyLogic.Others.Events.OnUpdateVHRPlugin;
 
             LeagueSharp.Common.Orbwalking.AfterAttack += MyLogic.Q.Events.AfterAttackVHRPlugin;
             LeagueSharp.Common.Orbwalking.BeforeAttack += MyLogic.Q.Events.BeforeAttackVHRPlugin;

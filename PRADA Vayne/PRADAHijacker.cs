@@ -51,6 +51,7 @@ namespace PRADA_Vayne
             HijackedMenu.AddItem(new MenuItem("usepradae", "Use PRADA E").SetValue(true));
             HijackedMenu.AddItem(new MenuItem("EPushDist", "E Push Distance").SetValue(new Slider(420, 325, 480)));
             HijackedMenu.AddItem(new MenuItem("EHitchance", "E Hitchance").SetValue(new Slider(50, 1, 100)));
+            HijackedMenu.AddItem(new MenuItem("AutoBuy", "Auto Swap Trinkets").SetValue(true));
             Game.PrintChat("<font color='#f4ff1c'><b>[PRADA Vayne]</b></font> VHR assembly succesfully hijacked! Enjoy!");
             HijackedMenu.AddSubMenu(MyUtils.EarlyEvade.MenuLocal);
             Game.OnUpdate += UpdateVHRSettings;
@@ -70,7 +71,7 @@ namespace PRADA_Vayne
 
         public enum Skills
         {
-            Q, W, E, R
+            Q, E
         }
 
         public static void DongerSkill(this Menu menu, Skills skill, Orbwalking.OrbwalkingMode mode)
