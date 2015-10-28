@@ -86,7 +86,7 @@ namespace PRADA_Vayne.MyLogic.Q
             {
                 var tg = target as Obj_AI_Hero;
                 if (tg == null) return;
-                Tumble.Cast(tg.GetTumblePos());
+                Program.Q.Cast(tg.GetTumblePos());
             }
         }
     }

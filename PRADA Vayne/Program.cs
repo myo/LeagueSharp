@@ -11,6 +11,7 @@ namespace PRADA_Vayne
 
         public static MActivator Activator;
         public static MyOrbwalker.Orbwalker Orbwalker;
+        public static LeagueSharp.Common.Orbwalking.Orbwalker VHROrbwalker;
 
         #region Menu
 
