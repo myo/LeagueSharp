@@ -87,6 +87,7 @@ namespace PRADA_Vayne.MyUtils
         {
             if (Config.Item("enabled").GetValue<KeyBind>().Active)
             {
+                if (ObjectManager.Player.InFountain() || ObjectManager.Player.CountEnemiesInRange(1400) < 1) return;
                 checkAndUse(cleanse);
                 checkAndUse(qss);
                 checkAndUse(mercurial);
@@ -107,94 +108,32 @@ namespace PRADA_Vayne.MyUtils
 
         private void combo()
         {
-            checkAndUse(ignite);
-            checkAndUse(youmus);
-            checkAndUse(bilgewater);
-            checkAndUse(king);
+            if (ObjectManager.Player.CountEnemiesInRange(600) >= 1)
+            {
+                checkAndUse(ignite);
+                checkAndUse(youmus);
+                checkAndUse(bilgewater);
+                checkAndUse(king);
+            }
         }
 
-        private bool checkBuff(String name)
+        private bool checkBuff(string name)
         {
-            var searchedBuff = from buff in _player.Buffs
-                               where buff.Name == name
-                               select buff;
-
-            return searchedBuff.Count() > 0;
+            return _player.Buffs.Any(buf => buf.Name == name);
         }
 
-        private void createMenuItem(MItem item, String parent, int defaultValue = 0, bool mana = false, int minManaPct = 0)
+        private void createMenuItem(MItem item, String parent, int defaultValue = 0, bool mana = false,
+            int minManaPct = 0)
         {
-            if (item.type == ItemTypeId.Ability)
-            {
-                var abilitySlot = Utility.GetSpellSlot(_player, item.name);
-                if (abilitySlot != SpellSlot.Unknown && abilitySlot == item.abilitySlot)
-                {
-                    var menu = new Menu(item.menuName, "menu" + item.menuVariable);
-                    menu.AddItem(new MenuItem(item.menuVariable, "Enable").SetValue(true));
-                    menu.AddItem(new MenuItem(item.menuVariable + "UseOnPercent", "Use on HP%")).SetValue(new Slider(defaultValue, 0, 100));
-                    if (minManaPct > 0)
-                    {
-                        menu.AddItem(new MenuItem(item.menuVariable + "UseManaPct", "Min Mana%")).SetValue(new Slider(minManaPct, 0, 100));
-                    }
-                    var menuUseAgainst = new Menu("Filter", "UseAgainst");
-                    menuUseAgainst.AddItem(new MenuItem("tower" + item.menuVariable, "Tower").SetValue(true));
-                    menuUseAgainst.AddItem(new MenuItem("ignite" + item.menuVariable, "Ignite").SetValue(true));
-                    menuUseAgainst.AddItem(new MenuItem("king" + item.menuVariable, "BoRKing").SetValue(false));
-                    menuUseAgainst.AddItem(new MenuItem("basic" + item.menuVariable, "Basic ATK").SetValue(false));
+            var menu = new Menu(item.menuName, "menu" + item.menuVariable);
+            menu.AddItem(new MenuItem(item.menuVariable, "Enable").SetValue(true));
 
-                    var enemyHero = from hero in ObjectManager.Get<Obj_AI_Hero>()
-                                    where hero.Team != _player.Team
-                                    select hero;
-
-                    if (enemyHero.Any())
-                    {
-                        foreach (Obj_AI_Hero hero in enemyHero)
-                        {
-                            var menuUseAgainstHero = new Menu(hero.BaseSkinName, "useAgainst" + hero.BaseSkinName);
-                            menuUseAgainstHero.AddItem(new MenuItem(item.menuVariable + hero.BaseSkinName, "Enabled").SetValue(true));
-                            menuUseAgainstHero.AddItem(new MenuItem(SpellSlot.Q + item.menuVariable + hero.BaseSkinName, "Q").SetValue(false));
-                            menuUseAgainstHero.AddItem(new MenuItem(SpellSlot.W + item.menuVariable + hero.BaseSkinName, "W").SetValue(false));
-                            menuUseAgainstHero.AddItem(new MenuItem(SpellSlot.E + item.menuVariable + hero.BaseSkinName, "E").SetValue(false));
-                            menuUseAgainstHero.AddItem(new MenuItem(SpellSlot.R + item.menuVariable + hero.BaseSkinName, "R").SetValue(false));
-                            menuUseAgainstHero.AddItem(new MenuItem("ignore" + item.menuVariable + hero.BaseSkinName, "Ignore %HP").SetValue(true));
-                            menuUseAgainst.AddSubMenu(menuUseAgainstHero);
-                        }
-                    }
-                    menu.AddSubMenu(menuUseAgainst);
-                    Config.SubMenu(parent).AddSubMenu(menu);
-                }
-            }
-            else if (item.type == ItemTypeId.KSAbility)
+            if (defaultValue != 0)
             {
-                var abilitySlot = Utility.GetSpellSlot(_player, item.name);
-                if (abilitySlot != SpellSlot.Unknown && abilitySlot == item.abilitySlot)
-                {
-                    var ksAbMenu = new Menu(item.menuName, "menu" + item.menuVariable);
-                    ksAbMenu.AddItem(new MenuItem(item.menuVariable, "Enable").SetValue(true));
-                    //choRMenu.AddItem(new MenuItem(choR.menuVariable + "plus", "Plus").SetValue(false));
-                    ksAbMenu.AddItem(new MenuItem(item.menuVariable + "drawRange", "Draw Range").SetValue(true));
-                    ksAbMenu.AddItem(new MenuItem(item.menuVariable + "drawBar", "Draw Bar").SetValue(true));
-                    Config.SubMenu(parent).AddSubMenu(ksAbMenu);
-                }
+                menu.AddItem(new MenuItem(item.menuVariable + "UseOnPercent",
+                    "Use on " + (mana == false ? "%HP" : "%Mana"))).SetValue(new Slider(defaultValue, 0, 100));
             }
-            else
-            {
-                var menu = new Menu(item.menuName, "menu" + item.menuVariable);
-                menu.AddItem(new MenuItem(item.menuVariable, "Enable").SetValue(true));
-
-                if (defaultValue != 0)
-                {
-                    if (item.type == ItemTypeId.OffensiveAOE)
-                    {
-                        menu.AddItem(new MenuItem(item.menuVariable + "UseXUnits", "On X Units")).SetValue(new Slider(defaultValue, 1, 5));
-                    }
-                    else
-                    {
-                        menu.AddItem(new MenuItem(item.menuVariable + "UseOnPercent", "Use on " + (mana == false ? "%HP" : "%Mana"))).SetValue(new Slider(defaultValue, 0, 100));
-                    }
-                }
-                Config.SubMenu(parent).AddSubMenu(menu);
-            }
+            Config.SubMenu(parent).AddSubMenu(menu);
         }
 
         private void checkAndUse(MItem item, String buff = "", double incDamage = 0, bool ignoreHP = false)
@@ -210,9 +149,8 @@ namespace PRADA_Vayne.MyUtils
 
                     #region DeffensiveSpell ManaRegeneratorSpell PurifierSpell OffensiveSpell KSAbility
 
-                    if (item.type == ItemTypeId.DeffensiveSpell || item.type == ItemTypeId.ManaRegeneratorSpell ||
-                        item.type == ItemTypeId.PurifierSpell || item.type == ItemTypeId.OffensiveSpell ||
-                        item.type == ItemTypeId.KSAbility)
+                    if (item.type == ItemTypeId.DeffensiveSpell ||
+                        item.type == ItemTypeId.PurifierSpell || item.type == ItemTypeId.OffensiveSpell)
                     {
                         var spellSlot = Utility.GetSpellSlot(_player, item.menuVariable);
                         if (spellSlot != SpellSlot.Unknown)
@@ -224,15 +162,6 @@ namespace PRADA_Vayne.MyUtils
                                     int usePercent =
                                         Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
                                     if (actualHeroHpPercent <= usePercent)
-                                    {
-                                        _player.Spellbook.CastSpell(spellSlot);
-                                    }
-                                }
-                                else if (item.type == ItemTypeId.ManaRegeneratorSpell)
-                                {
-                                    int usePercent =
-                                        Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
-                                    if (actualHeroManaPercent <= usePercent && !_player.InFountain())
                                     {
                                         _player.Spellbook.CastSpell(spellSlot);
                                     }
@@ -249,59 +178,6 @@ namespace PRADA_Vayne.MyUtils
                                             checkCCTick = LeagueSharp.Common.Utils.TickCount + 2500;
                                         }
                                     }
-                                }
-                                else if (item.type == ItemTypeId.OffensiveSpell || item.type == ItemTypeId.KSAbility)
-                                {
-                                    #region Ignite
-
-                                    if (item == ignite)
-                                    {
-                                        // TargetSelector.TargetingMode.LowHP FIX/Check
-                                        Obj_AI_Hero target = TargetSelector.GetTarget(item.range);
-                                            // Check about DamageType
-                                        if (target != null)
-                                        {
-
-                                            var aaspeed = _player.AttackSpeedMod;
-                                            float aadmg = 0;
-
-                                            // attack speed checks
-                                            if (aaspeed < 0.8f)
-                                                aadmg = _player.FlatPhysicalDamageMod*3;
-                                            else if (aaspeed > 1f && aaspeed < 1.3f)
-                                                aadmg = _player.FlatPhysicalDamageMod*5;
-                                            else if (aaspeed > 1.3f && aaspeed < 1.5f)
-                                                aadmg = _player.FlatPhysicalDamageMod*7;
-                                            else if (aaspeed > 1.5f && aaspeed < 1.7f)
-                                                aadmg = _player.FlatPhysicalDamageMod*9;
-                                            else if (aaspeed > 2.0f)
-                                                aadmg = _player.FlatPhysicalDamageMod*11;
-
-                                            // Will calculate for base hp regen, currenthp, etc
-                                            float dmg = (_player.Level*20) + 50;
-                                            float regenpersec = (target.FlatHPRegenMod +
-                                                                 (target.HPRegenRate*target.Level));
-                                            float dmgafter = (dmg - ((regenpersec*5)/2));
-
-                                            float aaleft = (dmgafter + target.Health/_player.FlatPhysicalDamageMod);
-                                            //var pScreen = Drawing.WorldToScreen(target.Position);
-
-                                            if (target.Health < (dmgafter + aadmg) &&
-                                                _player.Distance(target, false) <= item.range)
-                                            {
-                                                bool overIgnite = Config.Item("overIgnite").GetValue<bool>();
-                                                if ((!overIgnite && !target.HasBuff("summonerdot")) || overIgnite)
-                                                {
-                                                    _player.Spellbook.CastSpell(spellSlot, target);
-                                                    //Drawing.DrawText(pScreen[0], pScreen[1], System.Drawing.Color.Crimson, "Kill in " + aaleft);
-                                                }
-
-                                            }
-
-                                        }
-                                    }
-
-                                    #endregion
                                 }
                             }
                         }
@@ -321,19 +197,6 @@ namespace PRADA_Vayne.MyUtils
                                     {
                                         int actualTargetHpPercent = (int) ((target.Health/target.MaxHealth)*100);
                                         if (checkUsePercent(item, actualTargetHpPercent))
-                                        {
-                                            useItem(item.id,
-                                                (item.range == 0 || item.spellType == SpellType.Self) ? null : target);
-                                        }
-                                    }
-                                }
-                                else if (item.type == ItemTypeId.OffensiveAOE)
-                                {
-                                    if (checkTarget(item.range))
-                                    {
-                                        // FIX-ME: In frost case, we must check the affected area, not just ppl in range(item).
-                                        if (Utility.CountEnemiesInRange(_player, (int) item.range) >=
-                                            Config.Item(item.menuVariable + "UseXUnits").GetValue<Slider>().Value)
                                         {
                                             useItem(item.id,
                                                 (item.range == 0 || item.spellType == SpellType.Self) ? null : target);
@@ -603,7 +466,7 @@ namespace PRADA_Vayne.MyUtils
         public SpellSlot abilitySlot { get; set; }
         public SpellType spellType { get; set; }
 
-        public MItem(String name, String menuName, String menuVariable, int id, ItemTypeId type, float range = 0, SpellSlot abilitySlot = SpellSlot.Unknown, SpellType spellType = SpellType.TargetAll)
+        public MItem(String name, String menuName, String menuVariable, int id, ItemTypeId type, float range = 0)
         {
             this.name = name;
             this.menuVariable = menuVariable;
@@ -651,28 +514,9 @@ namespace PRADA_Vayne.MyUtils
         Offensive = 0,
         Purifier = 1,
         HPRegenerator = 2,
-        ManaRegenerator = 3,
-        Deffensive = 4,
-        Buff = 5,
-        DeffensiveSpell = 6,
-        PurifierSpell = 7,
-        ManaRegeneratorSpell = 8,
-        OffensiveSpell = 9,
-        Ability = 10,
-        OffensiveAOE = 11,
-        Ward = 13,
-        VisionWard = 14,
-        KSAbility = 15
-    }
-
-    public enum SpellType
-    {
-        SkillShotCircle = 0,
-        SkillShotCone = 1,
-        SkillShotLine = 2,
-        TargetAll = 3,
-        TargetEnemy = 4,
-        TargetTeam = 5,
-        Self = 6
+        Deffensive = 3,
+        DeffensiveSpell = 4,
+        PurifierSpell = 5,
+        OffensiveSpell = 6,
     }
 }
