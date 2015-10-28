@@ -353,7 +353,7 @@ namespace PRADA_Vayne.MyUtils
         public static bool IsCollisionable(this Vector3 pos)
         {
             return NavMesh.GetCollisionFlags(pos).HasFlag(CollisionFlags.Wall) ||
-                (Program.Orbwalker.ActiveMode == MyOrbwalker.OrbwalkingMode.Combo && NavMesh.GetCollisionFlags(pos).HasFlag(CollisionFlags.Building));
+                (NavMesh.GetCollisionFlags(pos).HasFlag(CollisionFlags.Building));
         }
         public static bool IsValidState(this Obj_AI_Hero target)
         {
