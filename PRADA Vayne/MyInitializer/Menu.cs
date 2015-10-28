@@ -139,6 +139,7 @@ namespace PRADA_Vayne.MyInitializer
             Program.MainMenu.AddSubMenu(Program.ActivatorMenu);
             Program.MainMenu.AddSubMenu(Program.SkinhackMenu); // XD
             Program.MainMenu.AddSubMenu(Program.DrawingsMenu);
+            Program.MainMenu.AddSubMenu(MyUtils.EarlyEvade.MenuLocal);
             Program.MainMenu.AddSubMenu(Program.OrbwalkerMenu);
             Program.MainMenu.AddToMainMenu();
         }

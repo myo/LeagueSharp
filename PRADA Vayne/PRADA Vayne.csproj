@@ -48,6 +48,9 @@
     <Reference Include="SharpDX">
       <HintPath>C:\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX.Direct3D9">
+      <HintPath>C:\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -82,6 +85,7 @@
     <Compile Include="MyLogic\Q\WallTumble.cs" />
     <Compile Include="MyLogic\R\BeforeAttack.cs" />
     <Compile Include="MyLogic\R\OnCastSpell.cs" />
+    <Compile Include="MyUtils\EarlyEvade.cs" />
     <Compile Include="MyUtils\MActivator.cs" />
     <Compile Include="MyUtils\MyCache.cs" />
     <Compile Include="MyUtils\MyExtensions.cs" />
@@ -91,6 +95,7 @@
     <Compile Include="MyUtils\MySpellDb.cs" />
     <Compile Include="MyUtils\MyTS.cs" />
     <Compile Include="MyUtils\MyWizard.cs" />
+    <Compile Include="MyUtils\Others.cs" />
     <Compile Include="PRADAHijacker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

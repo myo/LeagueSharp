@@ -12,6 +12,7 @@ namespace PRADA_Vayne
         public static MActivator Activator;
         public static MyOrbwalker.Orbwalker Orbwalker;
         public static LeagueSharp.Common.Orbwalking.Orbwalker VHROrbwalker;
+        public static EarlyEvade EarlyEvade;
 
         #region Menu
 
@@ -43,6 +44,7 @@ namespace PRADA_Vayne
             {
                 if (ObjectManager.Player.CharData.BaseSkinName == "Vayne")
                 {
+                    EarlyEvade = new EarlyEvade();
                     PRADAHijacker.AttemptHijack();
                 }
             };
