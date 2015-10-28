@@ -114,6 +114,7 @@ namespace PRADA_Vayne.MyUtils
                 checkAndUse(youmus);
                 checkAndUse(bilgewater);
                 checkAndUse(king);
+                checkAndUse(heal);
             }
         }
 
