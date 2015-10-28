@@ -91,7 +91,6 @@
     <Compile Include="MyUtils\MyExtensions.cs" />
     <Compile Include="MyUtils\MyGeometry.cs" />
     <Compile Include="MyUtils\MyLists.cs" />
-    <Compile Include="MyUtils\MyOrbwalker.cs" />
     <Compile Include="MyUtils\MySpellDb.cs" />
     <Compile Include="MyUtils\MyTS.cs" />
     <Compile Include="MyUtils\MyWizard.cs" />

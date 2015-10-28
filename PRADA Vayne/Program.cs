@@ -10,7 +10,7 @@ namespace PRADA_Vayne
         #region Fields and Objects
 
         public static MActivator Activator;
-        public static MyOrbwalker.Orbwalker Orbwalker;
+        public static Orbwalking.Orbwalker Orbwalker;
         public static LeagueSharp.Common.Orbwalking.Orbwalker VHROrbwalker;
         public static EarlyEvade EarlyEvade;
 
