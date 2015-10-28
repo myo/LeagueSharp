@@ -1,4 +1,5 @@
 ﻿using System;
+using LeagueSharp;
 using LeagueSharp.Common;
 using PRADA_Vayne.MyUtils;
 
@@ -37,7 +38,13 @@ namespace PRADA_Vayne
 
         private static void Main(string[] args)
         {
-            MyInitializer.PRADALoader.Init();
+            CustomEvents.Game.OnGameLoad += onGameLoadArgs =>
+            {
+                if (ObjectManager.Player.CharData.BaseSkinName == "Vayne")
+                {
+                    PRADAHijacker.AttemptHijack();
+                }
+            };
         }
     }
 }

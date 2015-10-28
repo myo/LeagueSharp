@@ -48,5 +48,20 @@ namespace PRADA_Vayne.MyLogic.E
                 }
             }
         }
+
+        public static void OnUpdateVHRPlugin(EventArgs args)
+        {
+
+            if (PRADAHijacker.HijackedMenu.Item("usepradae").GetValue<bool>())
+            {
+                foreach (var enemy in Heroes.EnemyHeroes.Where(e => e.IsValidTarget(550)))
+                {
+                    if (enemy.IsCondemnable())
+                    {
+                        Program.E.Cast(enemy);
+                    }
+                }
+            }
+        }
     }
 }

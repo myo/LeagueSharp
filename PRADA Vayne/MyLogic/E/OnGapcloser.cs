@@ -22,5 +22,17 @@ namespace PRADA_Vayne.MyLogic.E
                 }
             }
         }
+        public static void OnGapcloserVHRPlugin(ActiveGapcloser gapcloser)
+        {
+            if (PRADAHijacker.HijackedMenu.SubMenu("antigapcloser")
+                .Item("antigc" + gapcloser.Sender.ChampionName)
+                .GetValue<bool>())
+            {
+                if (Heroes.Player.Distance(gapcloser.End) < 425)
+                {
+                    Program.E.Cast(gapcloser.Sender);
+                }
+            }
+        }
     }
 }

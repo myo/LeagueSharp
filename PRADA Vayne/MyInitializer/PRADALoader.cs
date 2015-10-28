@@ -8,17 +8,11 @@ namespace PRADA_Vayne.MyInitializer
     {
         public static void Init()
         {
-            CustomEvents.Game.OnGameLoad += args =>
-            {
-                if (ObjectManager.Player.CharData.BaseSkinName == "Vayne")
-                {
-                    MyUtils.Cache.Load();
-                    LoadMenu();
-                    LoadSpells();
-                    LoadLogic();
-                    ShowNotifications();
-                }
-            };
+            MyUtils.Cache.Load();
+            LoadMenu();
+            LoadSpells();
+            LoadLogic();
+            ShowNotifications();
         }
     }
 }

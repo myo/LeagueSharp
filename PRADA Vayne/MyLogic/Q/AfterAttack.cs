@@ -77,5 +77,17 @@ namespace PRADA_Vayne.MyLogic.Q
                 }
             }
         }
+
+        public static void AfterAttackVHRPlugin(AttackableUnit sender, AttackableUnit target)
+        {
+
+            if (!Program.Q.IsReady() || !PRADAHijacker.HijackedMenu.Item("usepradaq").GetValue<bool>()) return;
+            if (sender.IsMe && target.IsValid<Obj_AI_Hero>())
+            {
+                var tg = target as Obj_AI_Hero;
+                if (tg == null) return;
+                Tumble.Cast(tg.GetTumblePos());
+            }
+        }
     }
 }

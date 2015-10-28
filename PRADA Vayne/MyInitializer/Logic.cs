@@ -48,5 +48,16 @@ namespace PRADA_Vayne.MyInitializer
 
             #endregion
         }
+
+        public static void LoadVHRPluginLogic()
+        {
+            GameObject.OnCreate += MyLogic.E.AntiAssasins.OnCreateGameObject;
+            AntiGapcloser.OnEnemyGapcloser += MyLogic.E.Events.OnGapcloserVHRPlugin;
+            Game.OnUpdate += MyLogic.E.Events.OnUpdateVHRPlugin;
+            Interrupter2.OnInterruptableTarget += MyLogic.E.Events.OnPossibleToInterrupt;
+
+            LeagueSharp.Common.Orbwalking.AfterAttack += MyLogic.Q.Events.AfterAttackVHRPlugin;
+            LeagueSharp.Common.Orbwalking.BeforeAttack += MyLogic.Q.Events.BeforeAttackVHRPlugin;
+        }
     }
 }

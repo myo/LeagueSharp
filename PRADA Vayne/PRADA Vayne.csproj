@@ -91,6 +91,7 @@
     <Compile Include="MyUtils\MySpellDb.cs" />
     <Compile Include="MyUtils\MyTS.cs" />
     <Compile Include="MyUtils\MyWizard.cs" />
+    <Compile Include="PRADAHijacker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

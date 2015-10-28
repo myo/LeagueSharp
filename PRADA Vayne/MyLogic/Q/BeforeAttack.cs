@@ -39,5 +39,24 @@ namespace PRADA_Vayne.MyLogic.Q
                 }
             }
         }
+        public static void BeforeAttackVHRPlugin(Orbwalking.BeforeAttackEventArgs args)
+        {
+            if (args.Unit.IsMe && Program.Q.IsReady() && PRADAHijacker.HijackedMenu.Item("usepradaq").GetValue<bool>())
+            {
+                if (args.Target.IsValid<Obj_AI_Hero>())
+                {
+                    var target = (Obj_AI_Hero)args.Target;
+                    if (target.IsMelee && target.IsFacing(Heroes.Player))
+                    {
+                        if (target.Distance(Heroes.Player.ServerPosition) < 325)
+                        {
+                            var tumblePosition = target.GetTumblePos();
+                            args.Process = false;
+                            Tumble.Cast(tumblePosition);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
