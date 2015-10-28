@@ -225,6 +225,65 @@ namespace PRADA_Vayne.MyUtils
             return false;
         }
 
+        public static bool IsCondemnableVHRPlugin(this Obj_AI_Hero hero)
+        {
+            if (!hero.IsValidTarget(550f) || hero.HasBuffOfType(BuffType.SpellShield) ||
+                hero.HasBuffOfType(BuffType.SpellImmunity) || hero.IsDashing()) return false;
+
+            //values for pred calc pP = player position; p = enemy position; pD = push distance
+            var pP = Heroes.Player.ServerPosition;
+            var p = hero.ServerPosition;
+            var pD = PRADAHijacker.HijackedMenu.Item("EPushDist").GetValue<Slider>().Value;
+
+
+            if ((p.Extend(pP, -pD).IsCollisionable() || p.Extend(pP, -pD / 2f).IsCollisionable() ||
+                 p.Extend(pP, -pD / 3f).IsCollisionable()))
+            {
+                if (!hero.CanMove ||
+                    (hero.IsWindingUp))
+                    return true;
+
+                var enemiesCount = ObjectManager.Player.CountEnemiesInRange(1200);
+                if (enemiesCount > 1 && enemiesCount <= 3)
+                {
+                    var prediction = Program.E.GetPrediction(hero);
+                    for (var i = 15; i < pD; i += 75)
+                    {
+                        var posFlags = NavMesh.GetCollisionFlags(
+                            prediction.UnitPosition.To2D()
+                                .Extend(
+                                    pP.To2D(),
+                                    -i)
+                                .To3D());
+                        if (posFlags.HasFlag(CollisionFlags.Wall) || posFlags.HasFlag(CollisionFlags.Building))
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                else
+                {
+                    var hitchance = PRADAHijacker.HijackedMenu.Item("EHitchance").GetValue<Slider>().Value;
+                    var angle = 0.20 * hitchance;
+                    const float travelDistance = 0.5f;
+                    var alpha = new Vector2((float)(p.X + travelDistance * Math.Cos(Math.PI / 180 * angle)),
+                        (float)(p.X + travelDistance * Math.Sin(Math.PI / 180 * angle)));
+                    var beta = new Vector2((float)(p.X - travelDistance * Math.Cos(Math.PI / 180 * angle)),
+                        (float)(p.X - travelDistance * Math.Sin(Math.PI / 180 * angle)));
+
+                    for (var i = 15; i < pD; i += 100)
+                    {
+                        if (pP.To2D().Extend(alpha,
+                                i)
+                            .To3D().IsCollisionable() && pP.To2D().Extend(beta, i).To3D().IsCollisionable()) return true;
+                    }
+                    return false;
+                }
+            }
+            return false;
+        }
+
         public static Vector3 GetTumblePos(this Obj_AI_Base target)
         {
             var cursorPos = Game.CursorPos;

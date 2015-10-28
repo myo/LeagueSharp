@@ -56,7 +56,7 @@ namespace PRADA_Vayne.MyLogic.E
             {
                 foreach (var enemy in Heroes.EnemyHeroes.Where(e => e.IsValidTarget(550)))
                 {
-                    if (enemy.IsCondemnable())
+                    if (enemy.IsCondemnableVHRPlugin())
                     {
                         Program.E.Cast(enemy);
                     }

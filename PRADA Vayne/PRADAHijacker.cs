@@ -49,6 +49,8 @@ namespace PRADA_Vayne
             }
             HijackedMenu.AddItem(new MenuItem("usepradaq", "Use PRADA Q").SetValue(false));
             HijackedMenu.AddItem(new MenuItem("usepradae", "Use PRADA E").SetValue(true));
+            HijackedMenu.AddItem(new MenuItem("EPushDist", "E Push Distance").SetValue(new Slider(420, 325, 480)));
+            HijackedMenu.AddItem(new MenuItem("EHitchance", "E Hitchance").SetValue(new Slider(50, 1, 100)));
             Game.PrintChat("<font color='#f4ff1c'><b>[PRADA Vayne]</b></font> VHR assembly succesfully hijacked! Enjoy!");
             Game.OnUpdate += UpdateVHRSettings;
         }
