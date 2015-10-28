@@ -17,7 +17,6 @@ namespace PRADA_Vayne.MyUtils
         public Menu Config = Program.ActivatorMenu;
         private Obj_AI_Hero _player;
         private Obj_AI_Hero target;
-        //private StreamWriter log;
         private int checkCCTick;
 
         #region Items
@@ -47,39 +46,21 @@ namespace PRADA_Vayne.MyUtils
 
         private void onLoad(EventArgs args)
         {
-            try
-            {
-                _player = ObjectManager.Player;
-                checkCCTick = LeagueSharp.Common.Utils.TickCount;
-                createMenu();
+            _player = ObjectManager.Player;
+            checkCCTick = LeagueSharp.Common.Utils.TickCount;
+            createMenu();
 
-                LeagueSharp.Drawing.OnDraw += onDraw;
-                Game.OnUpdate += onGameUpdate;
-                Game.OnEnd += Game_OnGameEnd;
-            }
-            catch
-            {
-                Console.WriteLine("MasterActivator error creating menu!");
-            }
+            Drawing.OnDraw += onDraw;
+            Game.OnUpdate += onGameUpdate;
         }
 
-        private void Game_OnGameEnd(GameEndEventArgs args)
-        {
-            //log.Close();
-        }
         private void onDraw(EventArgs args)
         {
-            try
+            if (Config.Item("drawStatus").IsActive())
             {
-                if (Config.Item("drawStatus").IsActive())
-                {
-                    Drawing.DrawText(Drawing.Width - 120, 80, Config.Item("enabled").IsActive() ? System.Drawing.Color.Green : System.Drawing.Color.Red, "MActivator");
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                Console.WriteLine("Problem with MasterActivator(Drawing).");
+                Drawing.DrawText(Drawing.Width - 120, 80,
+                    Config.Item("enabled").IsActive() ? System.Drawing.Color.Green : System.Drawing.Color.Red,
+                    "MActivator");
             }
         }
 
