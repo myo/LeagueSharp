@@ -27,10 +27,7 @@ namespace PRADA_Vayne.MyUtils
         MItem king = new MItem("ItemSwordOfFeastAndFamine", "BoRKing", "king", 3153, ItemTypeId.Offensive, 450);
         MItem youmus = new MItem("YoumusBlade", "Youmuu's", "youmus", 3142, ItemTypeId.Offensive);
         MItem hpPot = new MItem("Health Potion", "HP Pot", "hpPot", 2003, ItemTypeId.HPRegenerator);
-        MItem manaPot = new MItem("Mana Potion", "Mana Pot", "manaPot", 2004, ItemTypeId.ManaRegenerator);
         MItem biscuit = new MItem("Total Biscuit of Rejuvenation", "Biscuit", "biscuit", 2010, ItemTypeId.HPRegenerator);
-        MItem cFlaskHP = new MItem("Crystalline Flask", "Cryst. Flask HP", "cFlaskHP", 2041, ItemTypeId.HPRegenerator);
-        MItem cFlaskMP = new MItem("Crystalline Flask", "Cryst. Flask MP", "cFlaskMP", 2041, ItemTypeId.ManaRegenerator);
         #endregion
 
         #region SummonerSpells
@@ -90,37 +87,20 @@ namespace PRADA_Vayne.MyUtils
         {
             if (Config.Item("enabled").GetValue<KeyBind>().Active)
             {
-                try
+                checkAndUse(cleanse);
+                checkAndUse(qss);
+                checkAndUse(mercurial);
+                checkAndUse(hpPot, "RegenerationPotion");
+                checkAndUse(biscuit, "ItemMiniRegenPotion");
+
+                if (!Config.Item("justPred").GetValue<bool>() || !Config.Item("predict").GetValue<bool>())
                 {
-                    if (!_player.InFountain() && !Config.Item("justPredHeal").GetValue<bool>())
-                    {
-                        teamCheckAndUse(heal, Config.Item("useWithHealDebuff").GetValue<bool>() ? "" : "summonerhealcheck");
-                    }
-
-                    checkAndUse(cleanse);
-                    checkAndUse(qss);
-                    checkAndUse(mercurial);
-
-                    checkAndUse(manaPot, "FlaskOfCrystalWater");
-                    checkAndUse(hpPot, "RegenerationPotion");
-                    checkAndUse(biscuit, "ItemMiniRegenPotion");
-                    checkAndUse(cFlaskHP, "RegenerationPotion");
-                    checkAndUse(cFlaskMP, "FlaskOfCrystalWater");
-
-                    if (!Config.Item("justPred").GetValue<bool>() || !Config.Item("predict").GetValue<bool>())
-                    {
-                        checkAndUse(barrier);
-                    }
-
-                    if (Config.Item("comboModeActive").GetValue<KeyBind>().Active)
-                    {
-                        combo();
-                    }
+                    checkAndUse(barrier);
                 }
-                catch
+
+                if (Config.Item("comboModeActive").GetValue<KeyBind>().Active)
                 {
-                    /*Console.WriteLine("MasterActivator presented a problem, and has been disabled!");
-                    Config.Item("enabled").SetValue<KeyBind>(new KeyBind('L', KeyBindType.Toggle, false)); // Check*/
+                    combo();
                 }
             }
         }
@@ -144,7 +124,7 @@ namespace PRADA_Vayne.MyUtils
 
         private void createMenuItem(MItem item, String parent, int defaultValue = 0, bool mana = false, int minManaPct = 0)
         {
-            if (item.type == ItemTypeId.Ability || item.type == ItemTypeId.TeamAbility)
+            if (item.type == ItemTypeId.Ability)
             {
                 var abilitySlot = Utility.GetSpellSlot(_player, item.name);
                 if (abilitySlot != SpellSlot.Unknown && abilitySlot == item.abilitySlot)
@@ -178,21 +158,6 @@ namespace PRADA_Vayne.MyUtils
                             menuUseAgainstHero.AddItem(new MenuItem(SpellSlot.R + item.menuVariable + hero.BaseSkinName, "R").SetValue(false));
                             menuUseAgainstHero.AddItem(new MenuItem("ignore" + item.menuVariable + hero.BaseSkinName, "Ignore %HP").SetValue(true));
                             menuUseAgainst.AddSubMenu(menuUseAgainstHero);
-                            // Bring all, passives, summoners spells, etc;
-                            /*if (hero.Spellbook.Spells.Count() > 0)
-                            {
-                                var menuUseAgainstHero = new Menu(hero.BaseSkinName, "useAgainst" + hero.BaseSkinName);
-                                menuUseAgainstHero.AddItem(new MenuItem(item.menuVariable, "Enable").SetValue(true));
-                                foreach(SpellDataInst spell in hero.Spellbook.Spells)
-                                {
-                                    menuUseAgainstHero.AddItem(new MenuItem("useAgainstSpell" + spell.Name, spell.Name).SetValue(true));
-                                }
-                                menuUseAgainst.AddSubMenu(menuUseAgainstHero);
-                            }
-                            else
-                            {
-                                Console.WriteLine("MasterActivator cant get " + hero.BaseSkinName + " spells!");
-                            }*/
                         }
                     }
                     menu.AddSubMenu(menuUseAgainst);
@@ -232,391 +197,181 @@ namespace PRADA_Vayne.MyUtils
             }
         }
 
-        private void teamCheckAndUse(MItem item, String buff = "", double incDmg = 0, Obj_AI_Base attacked = null, Obj_AI_Base attacker = null, bool ignoreHP = false)
+        private void checkAndUse(MItem item, String buff = "", double incDamage = 0, bool ignoreHP = false)
         {
             if (Config.Item(item.menuVariable) != null)
             {
                 // check if is configured to use
                 if (Config.Item(item.menuVariable).GetValue<bool>())
                 {
-                    #region DeffensiveSpell ManaRegeneratorSpell PurifierSpell
-                    if (item.type == ItemTypeId.DeffensiveSpell || item.type == ItemTypeId.ManaRegeneratorSpell || item.type == ItemTypeId.PurifierSpell)
+                    int actualHeroHpPercent = (int) (((_player.Health - incDamage)/_player.MaxHealth)*100);
+                        //after dmg not Actual ^^
+                    int actualHeroManaPercent = (int) (_player.MaxMana > 0 ? ((_player.Mana/_player.MaxMana)*100) : 0);
+
+                    #region DeffensiveSpell ManaRegeneratorSpell PurifierSpell OffensiveSpell KSAbility
+
+                    if (item.type == ItemTypeId.DeffensiveSpell || item.type == ItemTypeId.ManaRegeneratorSpell ||
+                        item.type == ItemTypeId.PurifierSpell || item.type == ItemTypeId.OffensiveSpell ||
+                        item.type == ItemTypeId.KSAbility)
                     {
-                        //Console.WriteLine("TCandU-> " + item.name);
                         var spellSlot = Utility.GetSpellSlot(_player, item.menuVariable);
                         if (spellSlot != SpellSlot.Unknown)
                         {
-                            var activeAllyHeros = getActiveAllyHeros(item);
-                            if (activeAllyHeros.Count() > 0)
+                            if (_player.Spellbook.CanUseSpell(spellSlot) == SpellState.Ready)
                             {
-                                int usePercent = Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
-
-                                foreach (Obj_AI_Hero hero in activeAllyHeros)
+                                if (item.type == ItemTypeId.DeffensiveSpell)
                                 {
-                                    //Console.WriteLine("Hero-> " + hero.SkinName);
-                                    int enemyInRange = Utility.CountEnemiesInRange(hero, 700);
-                                    if (enemyInRange >= 1)
+                                    int usePercent =
+                                        Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
+                                    if (actualHeroHpPercent <= usePercent)
                                     {
-                                        int actualHeroHpPercent = (int)(((_player.Health - incDmg) / _player.MaxHealth) * 100); //after dmg not Actual ^^
-                                        int actualHeroManaPercent = (int)((_player.Mana / _player.MaxMana) * 100);
-
-                                        //Console.WriteLine("actHp% -> " + actualHeroHpPercent + "   useOn%-> " + usePercent + "  IncDMG-> " + incDmg);
-
-                                        if ((item.type == ItemTypeId.DeffensiveSpell && actualHeroHpPercent <= usePercent) ||
-                                            (item.type == ItemTypeId.ManaRegeneratorSpell && actualHeroManaPercent <= usePercent))
+                                        _player.Spellbook.CastSpell(spellSlot);
+                                    }
+                                }
+                                else if (item.type == ItemTypeId.ManaRegeneratorSpell)
+                                {
+                                    int usePercent =
+                                        Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
+                                    if (actualHeroManaPercent <= usePercent && !_player.InFountain())
+                                    {
+                                        _player.Spellbook.CastSpell(spellSlot);
+                                    }
+                                }
+                                else if (item.type == ItemTypeId.PurifierSpell)
+                                {
+                                    if ((Config.Item("defJustOnCombo").GetValue<bool>() &&
+                                         Config.Item("comboModeActive").GetValue<KeyBind>().Active) ||
+                                        (!Config.Item("defJustOnCombo").GetValue<bool>()))
+                                    {
+                                        if (checkCC(_player))
                                         {
                                             _player.Spellbook.CastSpell(spellSlot);
+                                            checkCCTick = LeagueSharp.Common.Utils.TickCount + 2500;
                                         }
                                     }
                                 }
-                            }
-                        }
-                    }
-                    #endregion
-                    #region TeamAbility TeamAbilityAOE
-                    else if (item.type == ItemTypeId.TeamAbility)
-                    {
-                        try
-                        {
-                            if (!Config.Item(attacked.SkinName).GetValue<bool>())
-                            {
-                                return;
-                            }
-
-                            if (_player.Distance(attacked, false) <= item.range)
-                            {
-                                var spellSlot = Utility.GetSpellSlot(_player, item.name);
-                                if (spellSlot != SpellSlot.Unknown)
+                                else if (item.type == ItemTypeId.OffensiveSpell || item.type == ItemTypeId.KSAbility)
                                 {
-                                    if (_player.Spellbook.CanUseSpell(spellSlot) == SpellState.Ready)
-                                    {
-                                        int usePercent = !ignoreHP ? Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value : 100;
-                                        int manaPercent = Config.Item(item.menuVariable + "UseManaPct") != null ? Config.Item(item.menuVariable + "UseManaPct").GetValue<Slider>().Value : 0;
+                                    #region Ignite
 
-                                        int actualHeroHpPercent = (int)(((attacked.Health - incDmg) / attacked.MaxHealth) * 100); //after dmg not Actual ^^
-                                        int playerManaPercent = (int)((_player.Mana / _player.MaxMana) * 100);
-                                        if (playerManaPercent >= manaPercent && actualHeroHpPercent <= usePercent)
+                                    if (item == ignite)
+                                    {
+                                        // TargetSelector.TargetingMode.LowHP FIX/Check
+                                        Obj_AI_Hero target = TargetSelector.GetTarget(item.range);
+                                            // Check about DamageType
+                                        if (target != null)
                                         {
-                                            if (item.type == ItemTypeId.TeamAbility && item.spellType != SpellType.SkillShotCircle && item.spellType != SpellType.SkillShotCone && item.spellType != SpellType.SkillShotLine)
+
+                                            var aaspeed = _player.AttackSpeedMod;
+                                            float aadmg = 0;
+
+                                            // attack speed checks
+                                            if (aaspeed < 0.8f)
+                                                aadmg = _player.FlatPhysicalDamageMod*3;
+                                            else if (aaspeed > 1f && aaspeed < 1.3f)
+                                                aadmg = _player.FlatPhysicalDamageMod*5;
+                                            else if (aaspeed > 1.3f && aaspeed < 1.5f)
+                                                aadmg = _player.FlatPhysicalDamageMod*7;
+                                            else if (aaspeed > 1.5f && aaspeed < 1.7f)
+                                                aadmg = _player.FlatPhysicalDamageMod*9;
+                                            else if (aaspeed > 2.0f)
+                                                aadmg = _player.FlatPhysicalDamageMod*11;
+
+                                            // Will calculate for base hp regen, currenthp, etc
+                                            float dmg = (_player.Level*20) + 50;
+                                            float regenpersec = (target.FlatHPRegenMod +
+                                                                 (target.HPRegenRate*target.Level));
+                                            float dmgafter = (dmg - ((regenpersec*5)/2));
+
+                                            float aaleft = (dmgafter + target.Health/_player.FlatPhysicalDamageMod);
+                                            //var pScreen = Drawing.WorldToScreen(target.Position);
+
+                                            if (target.Health < (dmgafter + aadmg) &&
+                                                _player.Distance(target, false) <= item.range)
                                             {
-                                                _player.Spellbook.CastSpell(item.abilitySlot, attacked);
-                                            }
-                                            else
-                                            {
-                                                Vector3 pos = attacked.Position;
-                                                // extend 20 to attacker direction THIS 20 COST RANGE
-                                                if (attacker != null)
+                                                bool overIgnite = Config.Item("overIgnite").GetValue<bool>();
+                                                if ((!overIgnite && !target.HasBuff("summonerdot")) || overIgnite)
                                                 {
-                                                    if (_player.Distance(attacked.Position.Extend(attacker.Position, 20), false) <= item.range)
-                                                    {
-                                                        pos = attacked.Position.Extend(attacker.Position, 20);
-                                                    }
+                                                    _player.Spellbook.CastSpell(spellSlot, target);
+                                                    //Drawing.DrawText(pScreen[0], pScreen[1], System.Drawing.Color.Crimson, "Kill in " + aaleft);
                                                 }
-                                                _player.Spellbook.CastSpell(item.abilitySlot, pos);
+
                                             }
+
                                         }
                                     }
+
+                                    #endregion
                                 }
                             }
                         }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine("Problem with MasterActivator(AutoShieldTeam).");
-                            Console.WriteLine(e);
-                        }
                     }
-                    #endregion
-                    #region Others
+                        #endregion
+
                     else
                     {
                         if (Items.HasItem(item.id))
                         {
+                            //Console.WriteLine("Tem item->" + item.id + item.name);
                             if (Items.CanUseItem(item.id))
                             {
-                                var activeAllyHeros = getActiveAllyHeros(item);
-                                if (activeAllyHeros.Count() > 0)
+                                if (item.type == ItemTypeId.Offensive)
                                 {
-                                    foreach (Obj_AI_Hero hero in activeAllyHeros)
+                                    if (checkTarget(item.range))
                                     {
-                                        #region Purifier
-                                        if (item.type == ItemTypeId.Purifier)
+                                        int actualTargetHpPercent = (int) ((target.Health/target.MaxHealth)*100);
+                                        if (checkUsePercent(item, actualTargetHpPercent))
                                         {
-                                            if ((Config.Item("defJustOnCombo").GetValue<bool>() && Config.Item("comboModeActive").GetValue<KeyBind>().Active) ||
-                                            (!Config.Item("defJustOnCombo").GetValue<bool>()))
-                                            {
-                                                if (checkCC(hero))
-                                                {
-                                                    useItem(item.id, hero);
-                                                }
-                                            }
-                                        }
-                                        #endregion
-                                        #region Deffensive
-                                        else if (item.type == ItemTypeId.Deffensive)
-                                        {
-                                            int enemyInRange = Utility.CountEnemiesInRange(hero, 700);
-                                            if (enemyInRange >= 1)
-                                            {
-                                                int usePercent = Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
-                                                int actualHeroHpPercent = (int)((hero.Health / hero.MaxHealth) * 100);
-                                                if (actualHeroHpPercent <= usePercent)
-                                                {
-                                                    if (item.spellType == SpellType.Self)
-                                                    {
-                                                        useItem(item.id);
-                                                    }
-                                                    else
-                                                    {
-                                                        useItem(item.id, hero);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        #endregion
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    #endregion
-                }
-            }
-        }
-
-        private IEnumerable<Obj_AI_Hero> getActiveAllyHeros(MItem item)
-        {
-            var activeAllyHeros = from hero in ObjectManager.Get<Obj_AI_Hero>()
-                                  where hero.Team == _player.Team &&
-                                        Config.Item(hero.SkinName).GetValue<bool>() &&
-                                        hero.Distance(_player, false) <= item.range &&
-                                        !hero.IsDead
-                                  select hero;
-
-            return activeAllyHeros;
-        }
-
-        private void checkAndUse(MItem item, String buff = "", double incDamage = 0, bool ignoreHP = false)
-        {
-            try
-            {
-                if (Config.Item(item.menuVariable) != null)
-                {
-                    // check if is configured to use
-                    if (Config.Item(item.menuVariable).GetValue<bool>())
-                    {
-                        int actualHeroHpPercent = (int)(((_player.Health - incDamage) / _player.MaxHealth) * 100); //after dmg not Actual ^^
-                        int actualHeroManaPercent = (int)(_player.MaxMana > 0 ? ((_player.Mana / _player.MaxMana) * 100) : 0);
-
-                        #region DeffensiveSpell ManaRegeneratorSpell PurifierSpell OffensiveSpell KSAbility
-                        if (item.type == ItemTypeId.DeffensiveSpell || item.type == ItemTypeId.ManaRegeneratorSpell || item.type == ItemTypeId.PurifierSpell || item.type == ItemTypeId.OffensiveSpell || item.type == ItemTypeId.KSAbility)
-                        {
-                            var spellSlot = Utility.GetSpellSlot(_player, item.menuVariable);
-                            if (spellSlot != SpellSlot.Unknown)
-                            {
-                                if (_player.Spellbook.CanUseSpell(spellSlot) == SpellState.Ready)
-                                {
-                                    if (item.type == ItemTypeId.DeffensiveSpell)
-                                    {
-                                        int usePercent = Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
-                                        if (actualHeroHpPercent <= usePercent)
-                                        {
-                                            _player.Spellbook.CastSpell(spellSlot);
-                                        }
-                                    }
-                                    else if (item.type == ItemTypeId.ManaRegeneratorSpell)
-                                    {
-                                        int usePercent = Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
-                                        if (actualHeroManaPercent <= usePercent && !_player.InFountain())
-                                        {
-                                            _player.Spellbook.CastSpell(spellSlot);
-                                        }
-                                    }
-                                    else if (item.type == ItemTypeId.PurifierSpell)
-                                    {
-                                        if ((Config.Item("defJustOnCombo").GetValue<bool>() && Config.Item("comboModeActive").GetValue<KeyBind>().Active) ||
-                                            (!Config.Item("defJustOnCombo").GetValue<bool>()))
-                                        {
-                                            if (checkCC(_player))
-                                            {
-                                                _player.Spellbook.CastSpell(spellSlot);
-                                                checkCCTick = LeagueSharp.Common.Utils.TickCount + 2500;
-                                            }
-                                        }
-                                    }
-                                    else if (item.type == ItemTypeId.OffensiveSpell || item.type == ItemTypeId.KSAbility)
-                                    {
-                                        #region Ignite
-                                        if (item == ignite)
-                                        {
-                                            // TargetSelector.TargetingMode.LowHP FIX/Check
-                                            Obj_AI_Hero target = TargetSelector.GetTarget(item.range); // Check about DamageType
-                                            if (target != null)
-                                            {
-
-                                                var aaspeed = _player.AttackSpeedMod;
-                                                float aadmg = 0;
-
-                                                // attack speed checks
-                                                if (aaspeed < 0.8f)
-                                                    aadmg = _player.FlatPhysicalDamageMod * 3;
-                                                else if (aaspeed > 1f && aaspeed < 1.3f)
-                                                    aadmg = _player.FlatPhysicalDamageMod * 5;
-                                                else if (aaspeed > 1.3f && aaspeed < 1.5f)
-                                                    aadmg = _player.FlatPhysicalDamageMod * 7;
-                                                else if (aaspeed > 1.5f && aaspeed < 1.7f)
-                                                    aadmg = _player.FlatPhysicalDamageMod * 9;
-                                                else if (aaspeed > 2.0f)
-                                                    aadmg = _player.FlatPhysicalDamageMod * 11;
-
-                                                // Will calculate for base hp regen, currenthp, etc
-                                                float dmg = (_player.Level * 20) + 50;
-                                                float regenpersec = (target.FlatHPRegenMod + (target.HPRegenRate * target.Level));
-                                                float dmgafter = (dmg - ((regenpersec * 5) / 2));
-
-                                                float aaleft = (dmgafter + target.Health / _player.FlatPhysicalDamageMod);
-                                                //var pScreen = Drawing.WorldToScreen(target.Position);
-
-                                                if (target.Health < (dmgafter + aadmg) && _player.Distance(target, false) <= item.range)
-                                                {
-                                                    bool overIgnite = Config.Item("overIgnite").GetValue<bool>();
-                                                    if ((!overIgnite && !target.HasBuff("summonerdot")) || overIgnite)
-                                                    {
-                                                        _player.Spellbook.CastSpell(spellSlot, target);
-                                                        //Drawing.DrawText(pScreen[0], pScreen[1], System.Drawing.Color.Crimson, "Kill in " + aaleft);
-                                                    }
-
-                                                }
-
-                                            }
-                                        }
-                                        #endregion
-                                    }
-                                }
-                            }
-                        }
-                        #endregion
-                        else if (item.type == ItemTypeId.Ability || item.type == ItemTypeId.TeamAbility)
-                        {
-                            try
-                            {
-                                var spellSlot = Utility.GetSpellSlot(_player, item.name);
-                                if (spellSlot != SpellSlot.Unknown)
-                                {
-                                    if (_player.Spellbook.CanUseSpell(spellSlot) == SpellState.Ready)
-                                    {
-                                        int usePercent = !ignoreHP ? Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value : 100;
-                                        int manaPercent = Config.Item(item.menuVariable + "UseManaPct") != null ? Config.Item(item.menuVariable + "UseManaPct").GetValue<Slider>().Value : 0;
-                                        //Console.WriteLine("ActualMana%-> " + actualHeroManaPercent + "  Mana%->" + manaPercent + "  Acthp%->" + actualHeroHpPercent + "   Use%->" + usePercent);
-
-                                        if (actualHeroManaPercent >= manaPercent && actualHeroHpPercent <= usePercent)
-                                        {
-                                            if (item.spellType == SpellType.TargetEnemy)
-                                            {
-                                                if (checkTarget(item.range))
-                                                {
-                                                    _player.Spellbook.CastSpell(item.abilitySlot, target);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                _player.Spellbook.CastSpell(item.abilitySlot, _player);
-                                            }
+                                            useItem(item.id,
+                                                (item.range == 0 || item.spellType == SpellType.Self) ? null : target);
                                         }
                                     }
                                 }
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Problem with MasterActivator(AutoShield).");
-                                Console.WriteLine(e);
-                            }
-                        }
-                        else
-                        {
-                            if (Items.HasItem(item.id))
-                            {
-                                //Console.WriteLine("Tem item->" + item.id + item.name);
-                                if (Items.CanUseItem(item.id))
+                                else if (item.type == ItemTypeId.OffensiveAOE)
                                 {
-                                    if (item.type == ItemTypeId.Offensive)
+                                    if (checkTarget(item.range))
                                     {
-                                        if (checkTarget(item.range))
+                                        // FIX-ME: In frost case, we must check the affected area, not just ppl in range(item).
+                                        if (Utility.CountEnemiesInRange(_player, (int) item.range) >=
+                                            Config.Item(item.menuVariable + "UseXUnits").GetValue<Slider>().Value)
                                         {
-                                            int actualTargetHpPercent = (int)((target.Health / target.MaxHealth) * 100);
-                                            if (checkUsePercent(item, actualTargetHpPercent))
-                                            {
-                                                useItem(item.id, (item.range == 0 || item.spellType == SpellType.Self) ? null : target);
-                                            }
+                                            useItem(item.id,
+                                                (item.range == 0 || item.spellType == SpellType.Self) ? null : target);
                                         }
                                     }
-                                    else if (item.type == ItemTypeId.OffensiveAOE)
+                                }
+                                else if (item.type == ItemTypeId.HPRegenerator)
+                                {
+                                    if (checkUsePercent(item, actualHeroHpPercent) && !_player.InFountain() &&
+                                        !Utility.IsRecalling(_player))
                                     {
-                                        if (checkTarget(item.range))
+                                        if ((buff != "" && !checkBuff(buff)) || buff == "")
                                         {
-                                            // FIX-ME: In frost case, we must check the affected area, not just ppl in range(item).
-                                            if (Utility.CountEnemiesInRange(_player, (int)item.range) >= Config.Item(item.menuVariable + "UseXUnits").GetValue<Slider>().Value)
-                                            {
-                                                useItem(item.id, (item.range == 0 || item.spellType == SpellType.Self) ? null : target);
-                                            }
+                                            useItem(item.id);
                                         }
                                     }
-                                    else if (item.type == ItemTypeId.HPRegenerator)
+                                }
+                                else if (item.type == ItemTypeId.Deffensive)
+                                {
+                                    if (checkUsePercent(item, actualHeroHpPercent) && !_player.InFountain() &&
+                                        (Config.Item("useRecalling").GetValue<bool>() || !Utility.IsRecalling(_player)))
                                     {
-                                        if (checkUsePercent(item, actualHeroHpPercent) && !_player.InFountain() && !Utility.IsRecalling(_player))
+                                        if ((buff != "" && !checkBuff(buff)) || buff == "")
                                         {
-                                            if ((buff != "" && !checkBuff(buff)) || buff == "")
-                                            {
-                                                useItem(item.id);
-                                            }
+                                            useItem(item.id);
                                         }
                                     }
-                                    else if (item.type == ItemTypeId.Deffensive)
+                                }
+                                else if (item.type == ItemTypeId.Purifier)
+                                {
+                                    if ((Config.Item("defJustOnCombo").GetValue<bool>() &&
+                                         Config.Item("comboModeActive").GetValue<KeyBind>().Active) ||
+                                        (!Config.Item("defJustOnCombo").GetValue<bool>()))
                                     {
-                                        if (checkUsePercent(item, actualHeroHpPercent) && !_player.InFountain() && (Config.Item("useRecalling").GetValue<bool>() || !Utility.IsRecalling(_player)))
+                                        if (checkCC(_player))
                                         {
-                                            if ((buff != "" && !checkBuff(buff)) || buff == "")
-                                            {
-                                                useItem(item.id);
-                                            }
-                                        }
-                                    }
-                                    else if (item.type == ItemTypeId.ManaRegenerator)
-                                    {
-                                        if (checkUsePercent(item, actualHeroManaPercent) && !_player.InFountain() && !Utility.IsRecalling(_player))
-                                        {
-                                            if ((buff != "" && !checkBuff(buff)) || buff == "")
-                                            {
-                                                useItem(item.id);
-                                            }
-                                        }
-                                    }
-                                    else if (item.type == ItemTypeId.Buff)
-                                    {
-                                        if (checkTarget(item.range))
-                                        {
-                                            if (!checkBuff(item.name))
-                                            {
-                                                useItem(item.id);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (checkBuff(item.name))
-                                            {
-                                                useItem(item.id);
-                                            }
-                                        }
-                                    }
-                                    else if (item.type == ItemTypeId.Purifier)
-                                    {
-                                        if ((Config.Item("defJustOnCombo").GetValue<bool>() && Config.Item("comboModeActive").GetValue<KeyBind>().Active) ||
-                                            (!Config.Item("defJustOnCombo").GetValue<bool>()))
-                                        {
-                                            if (checkCC(_player))
-                                            {
-                                                useItem(item.id);
-                                                checkCCTick = LeagueSharp.Common.Utils.TickCount + 2500;
-                                            }
+                                            useItem(item.id);
+                                            checkCCTick = LeagueSharp.Common.Utils.TickCount + 2500;
                                         }
                                     }
                                 }
@@ -624,49 +379,16 @@ namespace PRADA_Vayne.MyUtils
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
             }
         }
 
         private void useItem(int id, Obj_AI_Hero target = null)
         {
-            try
+            if (Items.CanUseItem(id))
             {
-                if (Items.HasItem(id))
-                {
-                    if (Items.CanUseItem(id))
-                    {
-                        Items.UseItem(id, target);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
+                Items.UseItem(id, target);
             }
         }
-
-        private void useItem(int id, Vector3 target)
-        {
-            try
-            {
-                if (Items.HasItem(id))
-                {
-                    if (Items.CanUseItem(id))
-                    {
-                        Items.UseItem(id, target);
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
         private bool checkUsePercent(MItem item, int actualPercent)
         {
             int usePercent = Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
@@ -727,21 +449,7 @@ namespace PRADA_Vayne.MyUtils
             Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("useWithHealDebuff", "Use with debuff")).SetValue(true);
             Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("justPredHeal", "Just predicted")).SetValue(false);
             createMenuItem(hpPot, "regenerators", 55);
-            createMenuItem(manaPot, "regenerators", 55, true);
             createMenuItem(biscuit, "regenerators", 55);
-            createMenuItem(cFlaskHP, "regenerators", 40);
-            createMenuItem(cFlaskMP, "regenerators", 40, true);
-
-            Config.AddSubMenu(new Menu("Team Use", "teamUseOn"));
-
-            var allyHeros = from hero in ObjectManager.Get<Obj_AI_Hero>()
-                            where hero.IsAlly == true
-                            select hero.SkinName;
-
-            foreach (String allyHero in allyHeros)
-            {
-                Config.SubMenu("teamUseOn").AddItem(new MenuItem(allyHero, allyHero)).SetValue(true);
-            }
 
             // Combo mode
             Config.AddSubMenu(new Menu("Combo Mode", "combo"));
@@ -952,7 +660,6 @@ namespace PRADA_Vayne.MyUtils
         OffensiveSpell = 9,
         Ability = 10,
         OffensiveAOE = 11,
-        TeamAbility = 12,
         Ward = 13,
         VisionWard = 14,
         KSAbility = 15
