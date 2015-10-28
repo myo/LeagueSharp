@@ -98,7 +98,7 @@ namespace PRADA_Vayne.MyUtils
         private static AttackableUnit _lastTarget;
         private static readonly Obj_AI_Hero Player;
         private static int _delay;
-        private static float _minDistance = 300;
+        private static float _minDistance = 400;
         private static bool _missileLaunched;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
 
@@ -108,7 +108,7 @@ namespace PRADA_Vayne.MyUtils
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             MissileClient.OnCreate += MissileClient_OnCreate;
             Spellbook.OnStopCast += SpellbookOnStopCast;
-            //Obj_AI_Base.OnDoCast += OnDoCast;
+            Obj_AI_Base.OnDoCast += OnDoCast;
         }
 
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -355,6 +355,7 @@ namespace PRADA_Vayne.MyUtils
         {
             try
             {
+                if (ObjectManager.Player.IsDead) return;
                 if (target.IsValidTarget() && CanAttack())
                 {
                     DisableNextAttack = false;
