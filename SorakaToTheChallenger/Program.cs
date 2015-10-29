@@ -227,7 +227,7 @@ namespace SorakaToTheChallenger
             if (bestHealingCandidate != null)
             {
                 if (Menu.Item("sttc.dontwtanks").GetValue<bool>() &&
-                    GetWHealingAmount() < 0.15*bestHealingCandidate.MaxHealth) return;
+                    GetWHealingAmount() < 0.20*bestHealingCandidate.MaxHealth) return;
                 W.Cast(bestHealingCandidate);
             }
         }
