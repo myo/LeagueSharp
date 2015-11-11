@@ -13,6 +13,7 @@ namespace PRADA_Vayne.MyLogic.Others
     {
         public static void OnUpdate(EventArgs args)
         {
+            if (Utility.Map.GetMap().Type != Utility.Map.MapType.SummonersRift) return;
             if (Heroes.Player.HasBuff("rengarralertsound"))
             {
                 if (Items.HasItem((int) ItemId.Oracles_Lens_Trinket, Heroes.Player) &&
@@ -43,11 +44,6 @@ namespace PRADA_Vayne.MyLogic.Others
             {
                 if (ObjectManager.Player.InFountain() && MenuGUI.IsShopOpen)
                 {
-                    if (Heroes.Player.InFountain() && Program.ComboMenu.Item("AutoBuy").GetValue<bool>() &&
-                        Heroes.Player.Level > 6 && Items.HasItem((int) ItemId.Warding_Totem_Trinket))
-                    {
-                        Heroes.Player.BuyItem(ItemId.Scrying_Orb_Trinket);
-                    }
                     if (Heroes.Player.InFountain() && Program.ComboMenu.Item("AutoBuy").GetValue<bool>() &&
                         !Items.HasItem((int) ItemId.Oracles_Lens_Trinket, Heroes.Player) && Heroes.Player.Level > 6 &&
                         HeroManager.Enemies.Any(
@@ -98,11 +94,6 @@ namespace PRADA_Vayne.MyLogic.Others
             {
                 if (ObjectManager.Player.InFountain() && MenuGUI.IsShopOpen)
                 {
-                    if (Heroes.Player.InFountain() && PRADAHijacker.HijackedMenu.Item("AutoBuy").GetValue<bool>() &&
-                        Heroes.Player.Level > 6 && Items.HasItem((int) ItemId.Warding_Totem_Trinket))
-                    {
-                        Heroes.Player.BuyItem(ItemId.Scrying_Orb_Trinket);
-                    }
                     if (Heroes.Player.InFountain() && PRADAHijacker.HijackedMenu.Item("AutoBuy").GetValue<bool>() &&
                         !Items.HasItem((int) ItemId.Oracles_Lens_Trinket, Heroes.Player) && Heroes.Player.Level > 6 &&
                         HeroManager.Enemies.Any(
