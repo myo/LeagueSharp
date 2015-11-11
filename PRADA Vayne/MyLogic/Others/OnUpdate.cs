@@ -90,6 +90,8 @@ namespace PRADA_Vayne.MyLogic.Others
                     Items.UseItem((int) ItemId.Vision_Ward, Heroes.Player.Position.Randomize(0, 125));
                 }
             }
+
+            /*
             if (Game.MapId == GameMapId.SummonersRift)
             {
                 if (ObjectManager.Player.InFountain() && MenuGUI.IsShopOpen)
@@ -109,7 +111,7 @@ namespace PRADA_Vayne.MyLogic.Others
                         Heroes.Player.BuyItem(ItemId.Oracles_Lens_Trinket);
                     }
                 }
-            }
+            }*/
         }
     }
 }

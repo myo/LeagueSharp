@@ -38,6 +38,7 @@ namespace HERMES_Kalista.MyLogic.Others
                     Items.UseItem((int)ItemId.Vision_Ward, Heroes.Player.Position.Randomize(0, 125));
                 }
             }
+            /*
             if (Heroes.Player.InFountain() && MenuGUI.IsShopOpen)
             {
                 if (Program.ComboMenu.Item("AutoBuy").GetValue<bool>() &&
@@ -54,7 +55,7 @@ namespace HERMES_Kalista.MyLogic.Others
                 {
                     Heroes.Player.BuyItem(ItemId.Oracles_Lens_Trinket);
                 }
-            }
+            }*/
         }
     }
 }
