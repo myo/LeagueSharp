@@ -38,10 +38,6 @@ namespace Kindred_Chanel.MyLogic.Others
                 }
             }
 
-            if (Heroes.Player.InFountain() && Program.ComboMenu.Item("AutoBuy").GetValue<bool>() && Heroes.Player.Level > 6 && Items.HasItem((int)ItemId.Warding_Totem_Trinket))
-            {
-                Heroes.Player.BuyItem(ItemId.Scrying_Orb_Trinket);
-            }
             if (Heroes.Player.InFountain() && Program.ComboMenu.Item("AutoBuy").GetValue<bool>() && !Items.HasItem((int)ItemId.Oracles_Lens_Trinket, Heroes.Player) && Heroes.Player.Level > 6 && HeroManager.Enemies.Any(h => h.CharData.BaseSkinName == "Rengar" || h.CharData.BaseSkinName == "Talon" || h.CharData.BaseSkinName == "Vayne"))
             {
                 Heroes.Player.BuyItem(ItemId.Sweeping_Lens_Trinket);
