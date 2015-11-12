@@ -39,6 +39,7 @@ namespace PRADA_Poppy.MyLogic.Others
                 }
             }
 
+			/*
 			if (ObjectManager.Player.InFountain() && MenuGUI.IsShopOpen)
                 {
 					if (Heroes.Player.InFountain() && Program.ComboMenu.Item("AutoBuy").GetValue<bool>() && !Items.HasItem((int)ItemId.Oracles_Lens_Trinket, Heroes.Player) && Heroes.Player.Level > 6 && HeroManager.Enemies.Any(h => h.CharData.BaseSkinName == "Rengar" || h.CharData.BaseSkinName == "Talon" || h.CharData.BaseSkinName == "Vayne"))
@@ -49,7 +50,7 @@ namespace PRADA_Poppy.MyLogic.Others
 					{
 						Heroes.Player.BuyItem(ItemId.Oracles_Lens_Trinket);
 					}
-				}
+				}*/
         }
     }
 }
