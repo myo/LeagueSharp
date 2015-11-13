@@ -17,6 +17,7 @@ namespace DisableDrawings
             {
                 Menu = new Menu("Disable Drawings", "disabledrawingsmeu", true);
                 Menu.AddItem(new MenuItem("ddhotkey", "Hotkey").SetValue(new KeyBind('J', KeyBindType.Toggle, false)));
+                Menu.AddToMainMenu();
                 Game.OnUpdate += OnUpdate;
             };
         }
