@@ -30,7 +30,7 @@ namespace imAsharpHuman
                     _lastCommandT.Add("spellcast" + spellslot.ToString(), 0);
                 }
                 _lastCommandT.Add("lastchat", 0);
-                _menu = new Menu("imAsharpHuman PRO", "iashmenu", true);
+                _menu = new Menu("imAsharpHuman", "iashmenu", true);
                 _menu.AddItem(new MenuItem("MinClicks", "Min clicks per second").SetValue(new Slider(6, 1, 7)));
                 _menu.AddItem(new MenuItem("MaxClicks", "Max clicks per second").SetValue(new Slider(11, 7, 15))); 
                 _menu.AddItem(new MenuItem("Spells", "Humanize Spells?").SetValue(true));
@@ -85,25 +85,33 @@ namespace imAsharpHuman
             Spellbook.OnCastSpell += (sender, eventArgs) =>
             {
                 if (!_menu.Item("Spells").GetValue<bool>()) return;
+                if (_lastCommandT.FirstOrDefault(entry => entry.Key == "spellcast" + eventArgs.Slot).Value != null &&
+                    Utils.GameTimeTickCount -
+                    _lastCommandT.FirstOrDefault(entry => entry.Key == "spellcast" + eventArgs.Slot).Value <
+                    _random.Next(
+                        1000 / _menu.Item("MaxClicks").GetValue<Slider>().Value,
+                        1000 / _menu.Item("MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
+                {
+                    _blockedCount++;
+                    return;
+                }
 
-
-                var cN = ObjectManager.Player.ChampionName;
-                if (sender.Owner.IsMe && cN != "Viktor" && cN != "Rumble" &&
+                if (sender.Owner.IsMe && eventArgs.Slot != SpellSlot.Q && eventArgs.Slot != SpellSlot.W && eventArgs.Slot != SpellSlot.E && eventArgs.Slot != SpellSlot.R &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.ServerPosition, true) > 50 * 50 &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.Position, true) > 50 * 50 &&
-                    eventArgs.Target == null)
+                    eventArgs.Target == null && !eventArgs.StartPosition.IsWall())
                 {
                     if (_lastCommandT.FirstOrDefault(e => e.Key == "spellcast" + eventArgs.Slot).Value == 0)
                     {
                         _lastCommandT.Remove("spellcast" + eventArgs.Slot);
-                        _lastCommandT.Add("spellcast" + eventArgs.Slot, Utils.GameTimeTickCount);
+                        _lastCommandT.Add("spellcast" + eventArgs.Slot, 0);
                         eventArgs.Process = false;
                         ObjectManager.Player.Spellbook.CastSpell(eventArgs.Slot,
                             eventArgs.StartPosition.Randomize(-10, 10));
                         return;
                     }
                     _lastCommandT.Remove("spellcast" + eventArgs.Slot);
-                    _lastCommandT.Add("spellcast" + eventArgs.Slot, 0);
+                    _lastCommandT.Add("spellcast" + eventArgs.Slot, Utils.GameTimeTickCount);
                 }
             };
             Game.OnChat += gameChatEventArgs =>
