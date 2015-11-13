@@ -39,6 +39,11 @@ namespace Chat_Logger
 
         private static void OnChat(GameChatEventArgs args)
         {
+            if (!File.Exists(LogFile))
+            {
+                File.Create(LogFile);
+            }
+
             using (var sw = new StreamWriter(LogFile, true))
             {
                 //store the current stopwatch millisecond for accurate results
