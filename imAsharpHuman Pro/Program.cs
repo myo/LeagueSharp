@@ -102,16 +102,7 @@ namespace imAsharpHuman
             Spellbook.OnCastSpell += (sender, eventArgs) =>
             {
                 if (!_menu.Item("Spells").GetValue<bool>()) return;
-                if (_lastCommandT.FirstOrDefault(entry => entry.Key == "spellcast" + eventArgs.Slot).Value != null &&
-                    Utils.GameTimeTickCount -
-                    _lastCommandT.FirstOrDefault(entry => entry.Key == "spellcast" + eventArgs.Slot).Value <
-                    GimmeNextRandomizedRandomizerToRektTrees(
-                        1000/_menu.Item("MaxClicks").GetValue<Slider>().Value,
-                        1000/_menu.Item("MinClicks").GetValue<Slider>().Value) + _random.Next(-10, 10))
-                {
-                    _blockedCount++;
-                    return;
-                }
+
 
                 if (sender.Owner.IsMe && eventArgs.Slot != SpellSlot.Q && eventArgs.Slot != SpellSlot.W && eventArgs.Slot != SpellSlot.E && eventArgs.Slot != SpellSlot.R &&
                     eventArgs.StartPosition.Distance(ObjectManager.Player.ServerPosition, true) > 50*50 &&
@@ -121,14 +112,14 @@ namespace imAsharpHuman
                     if (_lastCommandT.FirstOrDefault(e => e.Key == "spellcast" + eventArgs.Slot).Value == 0)
                     {
                         _lastCommandT.Remove("spellcast" + eventArgs.Slot);
-                        _lastCommandT.Add("spellcast" + eventArgs.Slot, 0);
+                        _lastCommandT.Add("spellcast" + eventArgs.Slot, Utils.GameTimeTickCount);
                         eventArgs.Process = false;
                         ObjectManager.Player.Spellbook.CastSpell(eventArgs.Slot,
                             eventArgs.StartPosition.Randomize(-10, 10));
                         return;
                     }
                     _lastCommandT.Remove("spellcast" + eventArgs.Slot);
-                    _lastCommandT.Add("spellcast" + eventArgs.Slot, Utils.GameTimeTickCount);
+                    _lastCommandT.Add("spellcast" + eventArgs.Slot, 0);
                 }
             };
             Game.OnChat += gameChatEventArgs =>
