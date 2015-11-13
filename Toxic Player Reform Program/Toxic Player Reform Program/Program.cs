@@ -24,7 +24,7 @@ namespace Toxic_Player_Reform_Program
             Config.AddItem(new MenuItem("restrict", "BLOCK MY CHAT").SetValue(false));
             Config.AddItem(new MenuItem("filter", "Block only curse words").SetValue(true));
             Config.AddToMainMenu();
-            CustomEvents.Game.OnGameLoad += MuteEveryone;
+            MuteEveryone();
             Game.OnChat += OnChat;
         }
 
@@ -48,7 +48,7 @@ namespace Toxic_Player_Reform_Program
             }
         }
 
-        internal static void MuteEveryone(EventArgs args)
+        internal static void MuteEveryone()
         {
             if (Config.Item("mute").GetValue<bool>())
             {
