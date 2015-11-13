@@ -33,7 +33,12 @@ namespace Mastery_Badge_Spammer
 
         private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            //COMING NEXT UPDATE!
+            var sData = SpellDatabase.GetByName(args.SData.Name);
+            if (Menu.Item("ondodgedskillshot").GetValue<bool>() && sender.IsEnemy && sData != null &&
+                ObjectManager.Player.Distance(sender) < sData.Range)
+            {
+                Utility.DelayAction.Add(sData.Delay, DoEmote);
+            }
         }
 
         private static void OnUpdate(EventArgs args)
