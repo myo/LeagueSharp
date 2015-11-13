@@ -12,6 +12,7 @@ namespace Mastery_Badge_Spammer
         public static int MyKills = 0;
         public static int MyAssits = 0;
         public static int MyDeaths = 0;
+        public static Random Random;
 
         static void Main(string[] args)
         {
@@ -27,6 +28,7 @@ namespace Mastery_Badge_Spammer
             Menu.AddItem(new MenuItem("neardead", "Near Dead Bodies").SetValue(true));
             Menu.AddItem(new MenuItem("ondodgedskillshot", "After you dodge a skillshot").SetValue(true));
             Menu.AddToMainMenu();
+            Random = new Random();
             Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
         }
@@ -68,7 +70,7 @@ namespace Mastery_Badge_Spammer
 
         public static void DoEmote()
         {
-            if (Utils.GameTimeTickCount - LastMasteryBadgeSpam > 5000)
+            if (Utils.GameTimeTickCount - LastMasteryBadgeSpam > Random.Next(5000, 15000))
             {
                 LastMasteryBadgeSpam = Utils.GameTimeTickCount;
                 Game.Say("/masterybadge");
