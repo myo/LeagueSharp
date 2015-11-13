@@ -17,6 +17,10 @@ namespace DisableDrawings
             {
                 Menu = new Menu("Disable Drawings", "disabledrawingsmeu", true);
                 Menu.AddItem(new MenuItem("ddhotkey", "Hotkey").SetValue(new KeyBind('J', KeyBindType.Toggle, false)));
+                Menu.Item("ddhotkey").ValueChanged += (sender, changeEventArgs) =>
+                {
+                    Hacks.DisableDrawings = Menu.Item("ddhotkey").GetValue<KeyBind>().Active;
+                };
                 Menu.AddToMainMenu();
                 Game.OnUpdate += OnUpdate;
             };
@@ -24,7 +28,12 @@ namespace DisableDrawings
 
         private static void OnUpdate(EventArgs args)
         {
-            Hacks.DisableDrawings = Menu.Item("ddhotkey").GetValue<KeyBind>().Active;
+            DHb();
+        }
+
+        public static void DHb()
+        {
+            var i = Utils.GameTimeTickCount;
         }
     }
 }
