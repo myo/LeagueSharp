@@ -27,6 +27,10 @@ namespace Mastery_Badge_Spammer
             Menu.AddItem(new MenuItem("ondeath", "After Death").SetValue(false));
             Menu.AddItem(new MenuItem("neardead", "Near Dead Bodies").SetValue(true));
             Menu.AddItem(new MenuItem("ondodgedskillshot", "After you dodge a skillshot").SetValue(true));
+            Menu.AddItem(new MenuItem("afterq", "After Q").SetValue(false));
+            Menu.AddItem(new MenuItem("afterw", "After W").SetValue(false));
+            Menu.AddItem(new MenuItem("aftere", "After E").SetValue(false));
+            Menu.AddItem(new MenuItem("afterr", "After R").SetValue(false));
             Menu.AddToMainMenu();
             Random = new Random();
             Game.OnUpdate += OnUpdate;
@@ -40,6 +44,25 @@ namespace Mastery_Badge_Spammer
                 ObjectManager.Player.Distance(sender) < sData.Range)
             {
                 Utility.DelayAction.Add(sData.Delay, DoEmote);
+            }
+            if (sender.IsMe)
+            {
+                if (args.Slot == SpellSlot.Q && Menu.Item("afterq").GetValue<bool>())
+                {
+                    DoEmote();
+                }
+                if (args.Slot == SpellSlot.W && Menu.Item("afterw").GetValue<bool>())
+                {
+                    DoEmote();
+                }
+                if (args.Slot == SpellSlot.E && Menu.Item("aftere").GetValue<bool>())
+                {
+                    DoEmote();
+                }
+                if (args.Slot == SpellSlot.R && Menu.Item("afterr").GetValue<bool>())
+                {
+                    DoEmote();
+                }
             }
         }
 
