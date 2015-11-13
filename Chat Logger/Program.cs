@@ -54,6 +54,7 @@ namespace Chat_Logger
                 long elapsedSeconds = 0;
                 //compute the elapsed seconds and store it in the variable previously created
                 Math.DivRem(elapsedTime, 60000, out elapsedSeconds);
+                elapsedSeconds /= 1000;
                 
                 //write everything to the stream
                 sw.WriteLine("[" + elapsedMinutes + ":" + elapsedSeconds + "] " + args.Sender.Name + " (" + args.Sender.ChampionName + "): " + args.Message);
