@@ -13,6 +13,8 @@ namespace Mastery_Badge_Spammer
         public static int MyAssits = 0;
         public static int MyDeaths = 0;
         public static Random Random;
+        public static SpellSlot FlashSlot = SpellSlot.Unknown;
+        public static SpellSlot IgniteSlot = SpellSlot.Unknown;
 
         static void Main(string[] args)
         {
@@ -27,12 +29,16 @@ namespace Mastery_Badge_Spammer
             Menu.AddItem(new MenuItem("ondeath", "After Death").SetValue(false));
             Menu.AddItem(new MenuItem("neardead", "Near Dead Bodies").SetValue(true));
             Menu.AddItem(new MenuItem("ondodgedskillshot", "After you dodge a skillshot").SetValue(true));
+            Menu.AddItem(new MenuItem("afterignite", "Dubstep Ignite").SetValue(true));
+            Menu.AddItem(new MenuItem("afterflash", "Challenger Flash").SetValue(false));
             Menu.AddItem(new MenuItem("afterq", "After Q").SetValue(false));
             Menu.AddItem(new MenuItem("afterw", "After W").SetValue(false));
             Menu.AddItem(new MenuItem("aftere", "After E").SetValue(false));
             Menu.AddItem(new MenuItem("afterr", "After R").SetValue(false));
             Menu.AddToMainMenu();
             Random = new Random();
+            FlashSlot = ObjectManager.Player.GetSpellSlot("SummonerFlash");
+            IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
             Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
         }
@@ -60,6 +66,14 @@ namespace Mastery_Badge_Spammer
                     DoEmote();
                 }
                 if (args.Slot == SpellSlot.R && Menu.Item("afterr").GetValue<bool>())
+                {
+                    DoEmote();
+                }
+                if (IgniteSlot != SpellSlot.Unknown && args.Slot == IgniteSlot && Menu.Item("afterignite").GetValue<bool>())
+                {
+                    DoEmote();
+                }
+                if (FlashSlot != SpellSlot.Unknown && args.Slot == FlashSlot && Menu.Item("afterflash").GetValue<bool>())
                 {
                     DoEmote();
                 }
