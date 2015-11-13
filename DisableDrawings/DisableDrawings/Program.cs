@@ -22,18 +22,7 @@ namespace DisableDrawings
                     Hacks.DisableDrawings = Menu.Item("ddhotkey").GetValue<KeyBind>().Active;
                 };
                 Menu.AddToMainMenu();
-                Game.OnUpdate += OnUpdate;
             };
-        }
-
-        private static void OnUpdate(EventArgs args)
-        {
-            DHb();
-        }
-
-        public static void DHb()
-        {
-            var i = Utils.GameTimeTickCount;
         }
     }
 }
