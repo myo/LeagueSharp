@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -15,7 +17,11 @@ namespace Mastery_Badge_Spammer
         public static Random Random;
         public static SpellSlot FlashSlot = SpellSlot.Unknown;
         public static SpellSlot IgniteSlot = SpellSlot.Unknown;
-
+        public static string[] KnownDisrespectStarts = new[] {"", "gj ", "nice ", "wp ", "lol gj ", "nice 1 ", "gg ", "very wp ", "ggwp ", "sweet ", "ty ", "thx ", "wow nice ", "lol ", "wow ", "so good ", "heh ", "hah ", "haha ", "hahaha ", "hahahaha ", "u did well", "you did well ", "loved it ", "loved that ", "love u ", "love you ", "ahaha ", "ahahaha ", "ahahahaha "};
+        public static string[] KnownDisrespectEndings = new[] {"", " XD", " XDD", " XDDD", " XDDD", "XDDDD", " haha", " hahaha", " hahahaha", " ahaha"," ahahaha"," lol"," rofl", " roflmao"};
+        public static int LastDeathNetworkId = 0;
+        public static int LastChat = 0;
+        public static Dictionary<int, int> DeathsHistory = new Dictionary<int, int>(); 
         static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += OnGameLoad;
@@ -25,6 +31,9 @@ namespace Mastery_Badge_Spammer
         {
             Menu = new Menu("Mastery Emote Spammer", "masteryemotespammermenu", true);
             Menu.AddItem(new MenuItem("mode", "Mode").SetValue(new StringList(new[] { "MASTERY", "LAUGH" })));
+            Menu.AddItem(
+                new MenuItem("chatdisrespectmode", "Chat Disrespect Mode").SetValue(
+                    new StringList(new[] { "DISABLED", "CHAMPION NAME", "SUMMONER NAME" })));
             Menu.AddItem(new MenuItem("onkill", "After Kill").SetValue(true));
             Menu.AddItem(new MenuItem("onassist", "After Assist").SetValue(true));
             Menu.AddItem(new MenuItem("ondeath", "After Death").SetValue(false));
@@ -42,6 +51,12 @@ namespace Mastery_Badge_Spammer
             IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
             Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+            
+            //init chat disrespekter
+            foreach (var en in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy))
+            {
+                DeathsHistory.Add(en.NetworkId, en.Deaths);
+            }
         }
 
         private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -104,6 +119,42 @@ namespace Mastery_Badge_Spammer
             {
                 DoEmote();
             }
+
+            switch (Menu.Item("chatdisrespectmode").GetValue<StringList>().SelectedValue)
+            {
+                case "DISABLED":
+                    break;
+                case "CHAMPION NAME":
+                    foreach (var en in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy))
+                    {
+                        if (DeathsHistory.FirstOrDefault(record => record.Key == en.NetworkId).Value < en.Deaths)
+                        {
+                            var championName = en.ChampionName.ToLower();
+                            DeathsHistory.Remove(en.NetworkId);
+                            DeathsHistory.Add(en.NetworkId, en.Deaths);
+                            if (en.Distance(ObjectManager.Player) < 1000)
+                            {
+                                Utility.DelayAction.Add(Random.Next(1000, 5000), () => DoChatDisrespect(championName));
+                            }
+                        }
+                    }
+                    break;
+                case "SUMMONER NAME":
+                    foreach (var en in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy))
+                    {
+                        if (DeathsHistory.FirstOrDefault(record => record.Key == en.NetworkId).Value < en.Deaths)
+                        {
+                            var name = en.Name.ToLower();
+                            DeathsHistory.Remove(en.NetworkId);
+                            DeathsHistory.Add(en.NetworkId, en.Deaths);
+                            if (en.Distance(ObjectManager.Player) < 1000)
+                            {
+                                Utility.DelayAction.Add(Random.Next(1000, 5000), () => DoChatDisrespect(name));
+                            }
+                        }
+                    }
+                    break;
+            }
         }
 
         public static void DoEmote()
@@ -111,14 +162,18 @@ namespace Mastery_Badge_Spammer
             if (Utils.GameTimeTickCount - LastEmoteSpam > Random.Next(5000, 15000))
             {
                 LastEmoteSpam = Utils.GameTimeTickCount;
-                if (Menu.Item("mode").GetValue<StringList>().SelectedValue == "MASTERY")
-                {
-                    Game.Say("/masterybadge");
-                }
-                else
-                {
-                    Game.Say("/l");
-                }
+                Game.Say(Menu.Item("mode").GetValue<StringList>().SelectedValue == "MASTERY" ? "/masterybadge" : "/l");
+            }
+        }
+
+        public static void DoChatDisrespect(string theTarget)
+        {
+            if (Utils.GameTimeTickCount - LastChat > Random.Next(5000, 20000))
+            {
+                LastChat = Utils.GameTimeTickCount;
+                Game.Say("/all " + KnownDisrespectStarts[Random.Next(0, KnownDisrespectStarts.Length - 1)] +
+                         (Random.Next(1, 2) == 1 ? theTarget : "") +
+                         KnownDisrespectEndings[Random.Next(0, KnownDisrespectEndings.Length - 1)]);
             }
         }
     }
