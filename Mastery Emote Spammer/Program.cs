@@ -50,7 +50,7 @@ namespace Mastery_Badge_Spammer
             if (Menu.Item("ondodgedskillshot").GetValue<bool>() && sender.IsEnemy && sData != null &&
                 ObjectManager.Player.Distance(sender) < sData.Range)
             {
-                Utility.DelayAction.Add(sData.Delay, DoEmote);
+                Utility.DelayAction.Add((int)Math.Round(sData.Delay + sender.Distance(ObjectManager.Player)/sData.MissileSpeed), DoEmote);
             }
             if (sender.IsMe)
             {
