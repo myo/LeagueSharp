@@ -56,27 +56,27 @@ namespace Mastery_Badge_Spammer
             {
                 if (args.Slot == SpellSlot.Q && Menu.Item("afterq").GetValue<bool>())
                 {
-                    DoEmote();
+                    Utility.DelayAction.Add(Random.Next(250, 500), DoEmote);
                 }
                 if (args.Slot == SpellSlot.W && Menu.Item("afterw").GetValue<bool>())
                 {
-                    DoEmote();
+                    Utility.DelayAction.Add(Random.Next(250, 500), DoEmote);
                 }
                 if (args.Slot == SpellSlot.E && Menu.Item("aftere").GetValue<bool>())
                 {
-                    DoEmote();
+                    Utility.DelayAction.Add(Random.Next(250, 500), DoEmote);
                 }
                 if (args.Slot == SpellSlot.R && Menu.Item("afterr").GetValue<bool>())
                 {
-                    DoEmote();
+                    Utility.DelayAction.Add(Random.Next(250, 500), DoEmote);
                 }
                 if (IgniteSlot != SpellSlot.Unknown && args.Slot == IgniteSlot && Menu.Item("afterignite").GetValue<bool>())
                 {
-                    DoEmote();
+                    Utility.DelayAction.Add(Random.Next(250, 500), DoEmote);
                 }
                 if (FlashSlot != SpellSlot.Unknown && args.Slot == FlashSlot && Menu.Item("afterflash").GetValue<bool>())
                 {
-                    DoEmote();
+                    Utility.DelayAction.Add(Random.Next(250, 500), DoEmote);
                 }
             }
         }
