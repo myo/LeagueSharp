@@ -17,7 +17,7 @@ namespace Chat_Logger
             CustomEvents.Game.OnGameLoad += eventArgs =>
             {
                 //Define the logfile location
-                LogFile = Config.AppDataDirectory + "\\Chat Logs\\" + DateTime.Now.ToString("yy-mm-dd") + " " + DateTime.Now.ToString("HH:mm:ss tt") + " - " + ObjectManager.Player.ChampionName + ".txt";
+                LogFile = Config.AppDataDirectory + "\\Chat Logs\\" + DateTime.Now.ToString("yy-MM-dd") + " " + DateTime.Now.ToString("HH-mm-ss") + " - " + ObjectManager.Player.ChampionName + ".txt";
                 
                 //Create a stopwatch which we will use to emulate in-game time.
                 Stopwatch = new Stopwatch();
