@@ -14,6 +14,7 @@ namespace InvisibleObjectAutisticInvestigation
         public static string LogFile2;
         public static string LogFile3;
         public static string LogFile4;
+        public static string LogFile5;
         public static Stopwatch Stopwatch;
         static void Main(string[] args)
         {
@@ -24,6 +25,7 @@ namespace InvisibleObjectAutisticInvestigation
                 LogFile2 = Config.AppDataDirectory + "\\Investigation Logs\\" + DateTime.Now.ToString("yy-MM-dd") + " " + DateTime.Now.ToString("HH-mm-ss") + " - Objects Close To Me.txt";
                 LogFile3 = Config.AppDataDirectory + "\\Investigation Logs\\" + DateTime.Now.ToString("yy-MM-dd") + " " + DateTime.Now.ToString("HH-mm-ss") + " - Only Missiles.txt";
                 LogFile4 = Config.AppDataDirectory + "\\Investigation Logs\\" + DateTime.Now.ToString("yy-MM-dd") + " " + DateTime.Now.ToString("HH-mm-ss") + " - Fake Heroes.txt";
+                LogFile5 = Config.AppDataDirectory + "\\Investigation Logs\\" + DateTime.Now.ToString("yy-MM-dd") + " " + DateTime.Now.ToString("HH-mm-ss") + " - Invisible Stuff.txt";
 
                 //Create a stopwatch which we will use to emulate in-game time.
                 Stopwatch = new Stopwatch();
@@ -60,6 +62,10 @@ namespace InvisibleObjectAutisticInvestigation
             if (!File.Exists(LogFile4))
             {
                 File.Create(LogFile4);
+            }
+            if (!File.Exists(LogFile5))
+            {
+                File.Create(LogFile5);
             }
 
             int dist =
@@ -128,6 +134,27 @@ namespace InvisibleObjectAutisticInvestigation
             if (sender is Obj_AI_Base)
             {
                 using (var sw = new StreamWriter(LogFile4, true))
+                {
+                    //store the current stopwatch millisecond for accurate results
+                    long elapsedTime = Stopwatch.ElapsedMilliseconds;
+                    //compute elapsed minutes
+                    long elapsedMinutes = elapsedTime / 60000;
+                    //create a variable to store the seconds in
+                    long elapsedSeconds = 0;
+                    //compute the elapsed seconds and store it in the variable previously created
+                    Math.DivRem(elapsedTime, 60000, out elapsedSeconds);
+                    elapsedSeconds /= 1000;
+
+                    //write everything to the stream
+                    sw.WriteLine("[" + elapsedMinutes + ":" + elapsedSeconds + "] " + sender.Name +
+                                 " has been created at a distance of " + dist + " units away from me");
+                    //close the stream
+                    sw.Close();
+                }
+            } 
+            if (!sender.IsVisible)
+            {
+                using (var sw = new StreamWriter(LogFile5, true))
                 {
                     //store the current stopwatch millisecond for accurate results
                     long elapsedTime = Stopwatch.ElapsedMilliseconds;
