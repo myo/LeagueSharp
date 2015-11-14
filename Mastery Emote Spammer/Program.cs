@@ -8,7 +8,7 @@ namespace Mastery_Badge_Spammer
     public static class Program
     {
         public static Menu Menu;
-        public static int LastMasteryBadgeSpam = 0;
+        public static int LastEmoteSpam = 0;
         public static int MyKills = 0;
         public static int MyAssits = 0;
         public static int MyDeaths = 0;
@@ -24,6 +24,7 @@ namespace Mastery_Badge_Spammer
         public static void OnGameLoad(EventArgs args)
         {
             Menu = new Menu("Mastery Emote Spammer", "masteryemotespammermenu", true);
+            Menu.AddItem(new MenuItem("mode", "Mode").SetValue(new StringList(new[] { "MASTERY", "LAUGH" })));
             Menu.AddItem(new MenuItem("onkill", "After Kill").SetValue(true));
             Menu.AddItem(new MenuItem("onassist", "After Assist").SetValue(true));
             Menu.AddItem(new MenuItem("ondeath", "After Death").SetValue(false));
@@ -107,10 +108,17 @@ namespace Mastery_Badge_Spammer
 
         public static void DoEmote()
         {
-            if (Utils.GameTimeTickCount - LastMasteryBadgeSpam > Random.Next(5000, 15000))
+            if (Utils.GameTimeTickCount - LastEmoteSpam > Random.Next(5000, 15000))
             {
-                LastMasteryBadgeSpam = Utils.GameTimeTickCount;
-                Game.Say("/masterybadge");
+                LastEmoteSpam = Utils.GameTimeTickCount;
+                if (Menu.Item("mode").GetValue<StringList>().SelectedValue == "MASTERY")
+                {
+                    Game.Say("/masterybadge");
+                }
+                else
+                {
+                    Game.Say("/l");
+                }
             }
         }
     }
