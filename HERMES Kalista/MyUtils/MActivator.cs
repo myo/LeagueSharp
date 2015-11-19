@@ -494,42 +494,6 @@ namespace HERMES_Kalista.MyUtils
                             }
                         }
                         #endregion
-                        else if (item.type == ItemTypeId.Ability || item.type == ItemTypeId.TeamAbility)
-                        {
-                            try
-                            {
-                                var spellSlot = Utility.GetSpellSlot(_player, item.name);
-                                if (spellSlot != SpellSlot.Unknown)
-                                {
-                                    if (_player.Spellbook.CanUseSpell(spellSlot) == SpellState.Ready)
-                                    {
-                                        int usePercent = !ignoreHP ? Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value : 100;
-                                        int manaPercent = Config.Item(item.menuVariable + "UseManaPct") != null ? Config.Item(item.menuVariable + "UseManaPct").GetValue<Slider>().Value : 0;
-                                        //Console.WriteLine("ActualMana%-> " + actualHeroManaPercent + "  Mana%->" + manaPercent + "  Acthp%->" + actualHeroHpPercent + "   Use%->" + usePercent);
-
-                                        if (actualHeroManaPercent >= manaPercent && actualHeroHpPercent <= usePercent)
-                                        {
-                                            if (item.spellType == SpellType.TargetEnemy)
-                                            {
-                                                if (checkTarget(item.range))
-                                                {
-                                                    _player.Spellbook.CastSpell(item.abilitySlot, target);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                _player.Spellbook.CastSpell(item.abilitySlot, _player);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Problem with MasterActivator(AutoShield).");
-                                Console.WriteLine(e);
-                            }
-                        }
                         else
                         {
                             if (Items.HasItem(item.id))
