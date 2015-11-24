@@ -57,7 +57,7 @@ namespace Chat_Logger
                 elapsedSeconds /= 1000;
                 
                 //write everything to the stream
-                sw.WriteLine("[" + elapsedMinutes + ":" + elapsedSeconds + "] " + args.Sender.Name + " (" + args.Sender.ChampionName + "): " + args.Message);
+                sw.WriteLine("[" + elapsedMinutes + ":" + (elapsedSeconds < 10 ? "0" : "") + elapsedSeconds + "] " + args.Sender.Name + " (" + args.Sender.ChampionName + "): " + args.Message);
                 //close the stream
                 sw.Close();
             }
