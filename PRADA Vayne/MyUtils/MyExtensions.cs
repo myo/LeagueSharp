@@ -283,8 +283,7 @@ namespace PRADA_Vayne.MyUtils
             }
             return false;
         }
-
-        public static Vector3 GetTumblePos(this Obj_AI_Base target)
+        public static Vector3 GetAggressiveTumblePos(this Obj_AI_Base target)
         {
             var cursorPos = Game.CursorPos;
 
@@ -294,32 +293,55 @@ namespace PRADA_Vayne.MyUtils
 
             var aRC = new Geometry.Circle(Heroes.Player.ServerPosition.To2D(), 300).ToPolygon().ToClipperPath();
             var targetPosition = target.ServerPosition;
-            var pList = new List<Vector3>();
-            var additionalDistance = (0.106 + Game.Ping / 2000f) * target.MoveSpeed;
 
 
             foreach (var p in aRC)
             {
                 var v3 = new Vector2(p.X, p.Y).To3D();
+                var dist = v3.Distance(targetPosition);
+                if (dist > 325 && dist < 450)
+                {
+                    return v3;
+                }
+            }
+            return Vector3.Zero;
+        }
 
-                if (target.IsFacing(Heroes.Player))
-                {
-                    if (!v3.IsDangerousPosition() && v3.Distance(targetPosition) < 550) pList.Add(v3);
-                }
-                else
-                {
-                    if (!v3.IsDangerousPosition() && v3.Distance(targetPosition) < 550 - additionalDistance) pList.Add(v3);
-                }
-            }
-            if (Heroes.Player.UnderTurret() || Heroes.Player.CountEnemiesInRange(800) == 1)
+        public static Vector3 GetTumblePos(this Obj_AI_Base target)
+        {
+            if (!PRADAHijacker.IsVHRDetected && Program.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo)
+                return GetAggressiveTumblePos(target);
+
+            var cursorPos = Game.CursorPos;
+
+            if (!cursorPos.IsDangerousPosition()) return cursorPos;
+            //if the target is not a melee and he's alone he's not really a danger to us, proceed to 1v1 him :^ )
+            if (!target.IsMelee && Heroes.Player.CountEnemiesInRange(800) == 1) return cursorPos;
+
+            var aRC = new Geometry.Circle(Heroes.Player.ServerPosition.To2D(), 300).ToPolygon().ToClipperPath();
+            var targetPosition = target.ServerPosition;
+            var pList = PRADAHijacker.IsVHRDetected
+                ? (from p in aRC
+                    select new Vector2(p.X, p.Y).To3D()
+                    into v3
+                    let dist = v3.Distance(targetPosition)
+                    where dist > 450 && dist < 500
+                    select v3).ToList()
+                : (from p in aRC
+                    select new Vector2(p.X, p.Y).To3D()
+                    into v3
+                    let dist = v3.Distance(targetPosition)
+                    where !v3.IsDangerousPosition() && dist < 500
+                    select v3).ToList();
+
+            if (Heroes.Player.UnderTurret() || Heroes.Player.CountEnemiesInRange(800) == 1 ||
+                cursorPos.CountEnemiesInRange(450) <= 1)
             {
                 return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
             }
-            if (!cursorPos.IsDangerousPosition())
-            {
-                return pList.Count > 1 ? pList.OrderBy(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
-            }
-            return pList.Count > 1 ? pList.OrderByDescending(el => el.Distance(cursorPos)).FirstOrDefault() : Vector3.Zero;
+            return pList.Count > 1
+                ? pList.OrderByDescending(el => el.Distance(cursorPos)).FirstOrDefault()
+                : Vector3.Zero;
         }
 
         public static int VayneWStacks(this Obj_AI_Base o)
