@@ -15,7 +15,7 @@ namespace PRADA_Vayne.MyInitializer
                 Notifications.AddNotification("as always,", 10000);
                 Notifications.AddNotification("wish u have fun,", 10000);
                 Notifications.AddNotification("and remember,", 10000);
-                Notifications.AddNotification("u dont need no luck", 10000);
+                Notifications.AddNotification("u dont need luck", 10000);
             });
         }
     }
