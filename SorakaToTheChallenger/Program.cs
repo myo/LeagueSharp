@@ -139,6 +139,7 @@ namespace SorakaToTheChallenger
                         !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
                         !BlacklistMenu.Item("dontheal" + a.CharData.BaseSkinName).GetValue<bool>()))
                     {
+                        if (healingCandidate != null)
                         Drawing.DrawText(healingCandidate.Position.X, healingCandidate.Position.Y, Menu.Item("sttc.drawdebug").GetValue<Circle>().Color, "1W Heals " + GetWHealingAmount().ToString() + "HP");
                     }
                 }
@@ -193,8 +194,8 @@ namespace SorakaToTheChallenger
         /// <param name="args">The Args</param>
         public static void OnUpdate(EventArgs args)
         {
-            RLogic();
             WLogic();
+            RLogic();
             QLogic();
             ELogic();
             Orbwalker.SetAttack(!Menu.Item("sttc.blockaa").GetValue<bool>());
@@ -233,19 +234,20 @@ namespace SorakaToTheChallenger
         /// </summary>
         public static void WLogic()
         {
-            if (!W.IsReady() || !CanW() || ObjectManager.Player.InFountain()) return;
+            if (!W.IsReady() || !CanW()) return;
             var bestHealingCandidate =
                 HeroManager.Allies.Where(
                     a =>
                         !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
-                        !BlacklistMenu.Item("dontheal" + a.CharData.BaseSkinName).GetValue<bool>() &&
                         a.MaxHealth - a.Health > GetWHealingAmount())
-                    .OrderByDescending(STTCSelector.GetPriority)
+                    .OrderByDescending(TargetSelector.GetPriority)
                     .ThenBy(ally => ally.Health).FirstOrDefault();
             if (bestHealingCandidate != null)
             {
-                if (Menu.Item("sttc.dontwtanks").GetValue<bool>() &&
-                    GetWHealingAmount() < 0.20*bestHealingCandidate.MaxHealth) return;
+                if (Menu.SubMenu("sttc.blacklist").Item("dontheal" + bestHealingCandidate.CharData.BaseSkinName) != null && 
+                    Menu.SubMenu("sttc.blacklist").Item("dontheal" + bestHealingCandidate.CharData.BaseSkinName).GetValue<bool>() || 
+                    Menu.Item("sttc.dontwtanks").GetValue<bool>() &&
+                    10 * GetWHealingAmount() > bestHealingCandidate.Health) return;
                 W.Cast(bestHealingCandidate);
             }
         }
@@ -337,7 +339,7 @@ namespace SorakaToTheChallenger
 
         public static int GetWManaCost()
         {
-            return new[] {20,25,30,35,40}[ObjectManager.Player.GetSpell(SpellSlot.W).Level - 1];
+            return new[] {40,45,50,55,60}[ObjectManager.Player.GetSpell(SpellSlot.W).Level - 1];
         }
 
         public static double GetWHealthCost()
@@ -347,7 +349,7 @@ namespace SorakaToTheChallenger
 
         public static bool CanW()
         {
-            return ObjectManager.Player.Health - GetWHealthCost() >
+            return !ObjectManager.Player.InFountain() && ObjectManager.Player.Health - GetWHealthCost() >
             Menu.Item("sttc.wmyhp").GetValue<Slider>().Value/100f*ObjectManager.Player.MaxHealth;
         }
     }
