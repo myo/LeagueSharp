@@ -141,7 +141,7 @@ namespace SorakaToTheChallenger
                             if (healingCandidate != null)
                             {
                                 var wtsPos = Drawing.WorldToScreen(healingCandidate.Position);
-                                Drawing.DrawText(wtsPos.X, wtsPos.Y, Menu.Item("sttc.drawdebug").GetValue<Circle>().Color, "1W Heals " + GetWHealingAmount().ToString() + "HP");
+                                Drawing.DrawText(wtsPos.X, wtsPos.Y, Menu.Item("sttc.drawdebug").GetValue<Circle>().Color, "1W Heals " + Math.Round(GetWHealingAmount()).ToString() + "HP");
                             }
                         }
                     }
