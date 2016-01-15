@@ -244,10 +244,14 @@ namespace SorakaToTheChallenger
                     .ThenBy(ally => ally.Health).FirstOrDefault();
             if (bestHealingCandidate != null)
             {
-                if (Menu.SubMenu("sttc.blacklist").Item("dontheal" + bestHealingCandidate.CharData.BaseSkinName) != null && 
-                    Menu.SubMenu("sttc.blacklist").Item("dontheal" + bestHealingCandidate.CharData.BaseSkinName).GetValue<bool>() || 
+                if (Menu.SubMenu("sttc.blacklist").Item("dontheal" + bestHealingCandidate.CharData.BaseSkinName) != null &&
+                    Menu.SubMenu("sttc.blacklist").Item("dontheal" + bestHealingCandidate.CharData.BaseSkinName).GetValue<bool>() ||
                     Menu.Item("sttc.dontwtanks").GetValue<bool>() &&
-                    10 * GetWHealingAmount() > bestHealingCandidate.Health) return;
+                    10 * GetWHealingAmount() > bestHealingCandidate.Health)
+                {
+                    Console.WriteLine("STTC: Skipped healing an ignored target!");
+                    return;
+                }
                 W.Cast(bestHealingCandidate);
             }
         }
