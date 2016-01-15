@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SorakaToTheChallenger.Utils;
-using Orbwalking = SorakaToTheChallenger.Utils.Orbwalking;
 
 namespace SorakaToTheChallenger
 {
@@ -69,7 +67,6 @@ namespace SorakaToTheChallenger
 
             Menu = new Menu("Soraka To The Challenger", "sttc", true);
             PriorityMenu = Menu.AddSubMenu(new Menu("Heal Priority", "sttc.priority"));
-            STTCSelector.Initialize();
             BlacklistMenu = Menu.AddSubMenu(new Menu("Heal Blacklist", "sttc.blacklist"));
             foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly && !h.IsMe))
             {
@@ -134,13 +131,19 @@ namespace SorakaToTheChallenger
                 }
                 if (Menu.Item("sttc.drawdebug").GetValue<Circle>().Active)
                 {
-                    foreach(var healingCandidate in HeroManager.Allies.Where(
-                    a =>
-                        !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
-                        !BlacklistMenu.Item("dontheal" + a.CharData.BaseSkinName).GetValue<bool>()))
+                    if (ObjectManager.Player.GetSpell(SpellSlot.W).Level > 0)
                     {
-                        if (healingCandidate != null)
-                        Drawing.DrawText(healingCandidate.Position.X, healingCandidate.Position.Y, Menu.Item("sttc.drawdebug").GetValue<Circle>().Color, "1W Heals " + GetWHealingAmount().ToString() + "HP");
+                        foreach (var healingCandidate in HeroManager.Allies.Where(
+                        a =>
+                            !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
+                            !BlacklistMenu.Item("dontheal" + a.CharData.BaseSkinName).GetValue<bool>()))
+                        {
+                            if (healingCandidate != null)
+                            {
+                                var wtsPos = Drawing.WorldToScreen(healingCandidate.Position);
+                                Drawing.DrawText(wtsPos.X, wtsPos.Y, Menu.Item("sttc.drawdebug").GetValue<Circle>().Color, "1W Heals " + GetWHealingAmount().ToString() + "HP");
+                            }
+                        }
                     }
                 }
             };
@@ -245,11 +248,15 @@ namespace SorakaToTheChallenger
             if (bestHealingCandidate != null)
             {
                 if (Menu.SubMenu("sttc.blacklist").Item("dontheal" + bestHealingCandidate.CharData.BaseSkinName) != null &&
-                    Menu.SubMenu("sttc.blacklist").Item("dontheal" + bestHealingCandidate.CharData.BaseSkinName).GetValue<bool>() ||
-                    Menu.Item("sttc.dontwtanks").GetValue<bool>() &&
+                    Menu.SubMenu("sttc.blacklist").Item("dontheal" + bestHealingCandidate.CharData.BaseSkinName).GetValue<bool>())
+                {
+                    Console.WriteLine("STTC: Skipped healing " + bestHealingCandidate.CharData.BaseSkinName + " because he is blacklisted.");
+                    return;
+                }
+                if (Menu.Item("sttc.dontwtanks").GetValue<bool>() &&
                     10 * GetWHealingAmount() > bestHealingCandidate.Health)
                 {
-                    Console.WriteLine("STTC: Skipped healing an ignored target!");
+                    Console.WriteLine("STTC: Skipped healing " + bestHealingCandidate.CharData.BaseSkinName + " because he is a tank.");
                     return;
                 }
                 W.Cast(bestHealingCandidate);
