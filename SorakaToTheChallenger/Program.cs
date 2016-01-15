@@ -59,7 +59,7 @@ namespace SorakaToTheChallenger
         public static void Load(EventArgs args)
         {
             if (ObjectManager.Player.CharData.BaseSkinName != "Soraka") return;
-            Q = new Spell(SpellSlot.Q, 950, TargetSelector.DamageType.Magical);
+            Q = new Spell(SpellSlot.Q, 800, TargetSelector.DamageType.Magical);
             W = new Spell(SpellSlot.W, 550);
             E = new Spell(SpellSlot.E, 900, TargetSelector.DamageType.Magical);
             R = new Spell(SpellSlot.R);
@@ -81,7 +81,7 @@ namespace SorakaToTheChallenger
 
 
             Menu.AddItem(
-                new MenuItem("sttc.mode", "Play Mode: ").SetValue(new StringList(new[] { "SMART", "AP-SORAKA" })));
+                new MenuItem("sttc.mode", "Play Mode: ").SetValue(new StringList(new[] { "SMART", "AP-SORAKA", "ONLYHEAL" })));
             Menu.AddItem(new MenuItem("sttc.wmyhp", "Don't heal (W) if I'm below HP%").SetValue(new Slider(20, 1)));
             Menu.AddItem(new MenuItem("sttc.dontwtanks", "Don't heal (W) tanks").SetValue(true));
             Menu.AddItem(new MenuItem("sttc.ultmyhp", "ULT if I'm below HP%").SetValue(new Slider(20, 1)));
@@ -96,6 +96,7 @@ namespace SorakaToTheChallenger
             Game.OnUpdate += OnUpdate;
             Interrupter2.OnInterruptableTarget += (sender, eventArgs) =>
             {
+                if (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue == "ONLYHEAL") return;
                 if (eventArgs.DangerLevel == Interrupter2.DangerLevel.High)
                 {
                     var pos = sender.ServerPosition;
@@ -109,6 +110,7 @@ namespace SorakaToTheChallenger
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             GameObject.OnCreate += (sender, eventArgs) =>
             {
+                if (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue == "ONLYHEAL") return;
                 if (sender.Name.Contains("Draven_Base_Q_reticle_self.troy"))
                 {
                     E.Cast(sender.Position);
@@ -137,6 +139,7 @@ namespace SorakaToTheChallenger
         /// <param name="gapcloser">The Gapcloser</param>
         private static void OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
+            if (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue == "ONLYHEAL") return;
             if (gapcloser.Sender.IsMelee && HeroManager.Allies.Any(a => a.Distance(gapcloser.End) < 200) && ObjectManager.Player.Distance(gapcloser.Sender) < 900)
             {
                 E.Cast(gapcloser.End);
@@ -150,6 +153,7 @@ namespace SorakaToTheChallenger
         /// <param name="args">The Args</param>
         private static void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            if (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue == "ONLYHEAL") return;
             if (sender.Type != GameObjectType.obj_AI_Hero) return;
             var target = sender as Obj_AI_Hero;
             var pos = sender.ServerPosition;
@@ -207,6 +211,8 @@ namespace SorakaToTheChallenger
                         Q.CastIfHitchanceEquals(hero, HitChance.VeryHigh);
                     }
                     break;
+                case "ONLYHEAL":
+                    break;
             }
         }
 
@@ -237,6 +243,7 @@ namespace SorakaToTheChallenger
         /// </summary>
         public static void ELogic()
         {
+            if (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue == "ONLYHEAL") return;
             if (!E.IsReady()) return;
             var goodTarget =
                 HeroManager.Enemies.FirstOrDefault(e => e.IsValidTarget(900) && e.HasBuffOfType(BuffType.Knockup) || e.HasBuffOfType(BuffType.Snare) || e.HasBuffOfType(BuffType.Stun) || e.HasBuffOfType(BuffType.Suppression));
