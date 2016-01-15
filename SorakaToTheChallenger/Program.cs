@@ -91,6 +91,8 @@ namespace SorakaToTheChallenger
                 .SetValue(new Circle(true, Color.DarkMagenta)));
             Menu.AddItem(new MenuItem("sttc.draww", "Draw W?")
                  .SetValue(new Circle(true, Color.Turquoise)));
+            Menu.AddItem(new MenuItem("sttc.drawdebug", "Draw Heal Info?")
+                 .SetValue(new Circle(false, Color.White)));
 
             Menu.AddToMainMenu();
             Game.OnUpdate += OnUpdate;
@@ -130,6 +132,16 @@ namespace SorakaToTheChallenger
                         Menu.Item("sttc.draww").GetValue<Circle>().Color : Color.Red,
                         7);
                 }
+                if (Menu.Item("sttc.drawdebug").GetValue<Circle>().Active)
+                {
+                    foreach(var healingCandidate in HeroManager.Allies.Where(
+                    a =>
+                        !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
+                        !BlacklistMenu.Item("dontheal" + a.CharData.BaseSkinName).GetValue<bool>()))
+                    {
+                        Drawing.DrawText(healingCandidate.Position.X, healingCandidate.Position.Y, Menu.Item("sttc.drawdebug").GetValue<Circle>().Color, "1W Heals " + GetWHealingAmount().ToString() + "HP");
+                    }
+                }
             };
         }
 
@@ -140,7 +152,7 @@ namespace SorakaToTheChallenger
         private static void OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
             if (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue == "ONLYHEAL") return;
-            if (gapcloser.Sender.IsMelee && HeroManager.Allies.Any(a => a.Distance(gapcloser.End) < 200) && ObjectManager.Player.Distance(gapcloser.Sender) < 900)
+            if (gapcloser.Sender.IsMelee && HeroManager.Allies.Any(a => a.Distance(gapcloser.End) < 200) && ObjectManager.Player.ServerPosition.Distance(gapcloser.Sender.ServerPosition) < 900)
             {
                 E.Cast(gapcloser.End);
             }
@@ -225,7 +237,7 @@ namespace SorakaToTheChallenger
             var bestHealingCandidate =
                 HeroManager.Allies.Where(
                     a =>
-                        !a.IsMe && a.Distance(ObjectManager.Player) < 550 &&
+                        !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
                         !BlacklistMenu.Item("dontheal" + a.CharData.BaseSkinName).GetValue<bool>() &&
                         a.MaxHealth - a.Health > GetWHealingAmount())
                     .OrderByDescending(STTCSelector.GetPriority)
@@ -255,7 +267,7 @@ namespace SorakaToTheChallenger
                     E.Cast(goodTarget.ServerPosition);
                 }
             } 
-            foreach (var enemyMinion in ObjectManager.Get<Obj_AI_Base>().Where(m => m.IsEnemy && m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900 && m.HasBuff("teleport_target", true) || m.HasBuff("Pantheon_GrandSkyfall_Jump", true)))
+            foreach (var enemyMinion in ObjectManager.Get<Obj_AI_Base>().Where(m => m.IsEnemy && m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900 && m.HasBuff("teleport_target") || m.HasBuff("Pantheon_GrandSkyfall_Jump")))
             {
                 Utility.DelayAction.Add(2000, () =>
                 {
