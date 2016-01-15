@@ -64,7 +64,7 @@ namespace SorakaToTheChallenger
             E = new Spell(SpellSlot.E, 900, TargetSelector.DamageType.Magical);
             R = new Spell(SpellSlot.R);
 
-            Q.SetSkillshot(0.283f, 210, 1100, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.3f, 200, 1750, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.5f, 70f, 1750, false, SkillshotType.SkillshotCircle);
 
             Menu = new Menu("Soraka To The Challenger", "sttc", true);
