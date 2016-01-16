@@ -30,6 +30,7 @@ namespace IreliaToTheChallenger
             MainMenu = new Menu("Irelia To The Challenger", "ittc", true);
             MainMenu.AddItem(new MenuItem("ittc.qfarm", "Q FARM Mode: ").SetValue(new StringList(new[] { "ONLY-UNKILLABLE", "ALWAYS", "NEVER" })));
 
+            Orbwalker = new Orbwalking.Orbwalker(MainMenu);
             Game.OnUpdate += Mechanics;
             Orbwalking.BeforeAttack += UseW;
             Drawing.OnDraw += DrawR;
