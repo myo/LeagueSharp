@@ -62,8 +62,8 @@ namespace SorakaToTheChallenger
             E = new Spell(SpellSlot.E, 900, TargetSelector.DamageType.Magical);
             R = new Spell(SpellSlot.R);
 
-            Q.SetSkillshot(0.3f, 160, 1750, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.5f, 70f, 1750, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.3f, 160, 1600, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.5f, 70f, 1600, false, SkillshotType.SkillshotCircle);
 
             Menu = new Menu("Soraka To The Challenger", "sttc", true);
             PriorityMenu = Menu.AddSubMenu(new Menu("Heal Priority", "sttc.priority"));

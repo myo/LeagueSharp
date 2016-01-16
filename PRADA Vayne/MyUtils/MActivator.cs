@@ -34,7 +34,6 @@ namespace PRADA_Vayne.MyUtils
         // If no allied champions are near the cursor, Heal will target the most wounded allied champion in range.
         MItem heal = new MItem("Heal", "Heal", "SummonerHeal", 0, ItemTypeId.DeffensiveSpell, 700); // 300? www.gamefaqs.com/pc/954437-league-of-legends/wiki/3-1-summoner-spells
         MItem exhaust = new MItem("Exhaust", "Exhaust", "SummonerExhaust", 0, ItemTypeId.OffensiveSpell, 650); //summonerexhaust, low, debuff (buffs)
-        MItem barrier = new MItem("Barrier", "Barrier", "SummonerBarrier", 0, ItemTypeId.DeffensiveSpell);
         MItem cleanse = new MItem("Cleanse", "Cleanse", "SummonerBoost", 0, ItemTypeId.PurifierSpell);
         MItem ignite = new MItem("Ignite", "Ignite", "SummonerDot", 0, ItemTypeId.OffensiveSpell, 600);
         #endregion
@@ -50,18 +49,7 @@ namespace PRADA_Vayne.MyUtils
             checkCCTick = LeagueSharp.Common.Utils.TickCount;
             createMenu();
 
-            Drawing.OnDraw += onDraw;
             Game.OnUpdate += onGameUpdate;
-        }
-
-        private void onDraw(EventArgs args)
-        {
-            if (Config.Item("drawStatus").IsActive())
-            {
-                Drawing.DrawText(Drawing.Width - 120, 80,
-                    Config.Item("enabled").IsActive() ? System.Drawing.Color.Green : System.Drawing.Color.Red,
-                    "MActivator");
-            }
         }
 
         private void onGameUpdate(EventArgs args)
@@ -74,11 +62,6 @@ namespace PRADA_Vayne.MyUtils
                 checkAndUse(mercurial);
                 checkAndUse(hpPot, "RegenerationPotion");
                 checkAndUse(biscuit, "ItemMiniRegenPotion");
-
-                if (!Config.Item("justPred").GetValue<bool>() || !Config.Item("predict").GetValue<bool>())
-                {
-                    checkAndUse(barrier);
-                }
 
                 if (Config.Item("comboModeActive").GetValue<KeyBind>().Active)
                 {
@@ -139,16 +122,7 @@ namespace PRADA_Vayne.MyUtils
                         {
                             if (_player.Spellbook.CanUseSpell(spellSlot) == SpellState.Ready)
                             {
-                                if (item.type == ItemTypeId.DeffensiveSpell)
-                                {
-                                    int usePercent =
-                                        Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
-                                    if (actualHeroHpPercent <= usePercent)
-                                    {
-                                        _player.Spellbook.CastSpell(spellSlot);
-                                    }
-                                }
-                                else if (item.type == ItemTypeId.PurifierSpell)
+                                if (item.type == ItemTypeId.PurifierSpell)
                                 {
                                     if ((Config.Item("defJustOnCombo").GetValue<bool>() &&
                                          Config.Item("comboModeActive").GetValue<KeyBind>().Active) ||
@@ -170,7 +144,6 @@ namespace PRADA_Vayne.MyUtils
                     {
                         if (Items.HasItem(item.id))
                         {
-                            //Console.WriteLine("Tem item->" + item.id + item.name);
                             if (Items.CanUseItem(item.id))
                             {
                                 if (item.type == ItemTypeId.Offensive)
@@ -180,7 +153,7 @@ namespace PRADA_Vayne.MyUtils
                                         int actualTargetHpPercent = (int) ((target.Health/target.MaxHealth)*100);
                                         if (checkUsePercent(item, actualTargetHpPercent))
                                         {
-                                            useItem(item.id,
+                                            Items.UseItem(item.id,
                                                 (item.range == 0 || item.spellType == SpellType.Self) ? null : target);
                                         }
                                     }
@@ -192,18 +165,7 @@ namespace PRADA_Vayne.MyUtils
                                     {
                                         if ((buff != "" && !checkBuff(buff)) || buff == "")
                                         {
-                                            useItem(item.id);
-                                        }
-                                    }
-                                }
-                                else if (item.type == ItemTypeId.Deffensive)
-                                {
-                                    if (checkUsePercent(item, actualHeroHpPercent) && !_player.InFountain() &&
-                                        (Config.Item("useRecalling").GetValue<bool>() || !Utility.IsRecalling(_player)))
-                                    {
-                                        if ((buff != "" && !checkBuff(buff)) || buff == "")
-                                        {
-                                            useItem(item.id);
+                                            Items.UseItem(item.id);
                                         }
                                     }
                                 }
@@ -215,7 +177,7 @@ namespace PRADA_Vayne.MyUtils
                                     {
                                         if (checkCC(_player))
                                         {
-                                            useItem(item.id);
+                                            Items.UseItem(item.id);
                                             checkCCTick = LeagueSharp.Common.Utils.TickCount + 2500;
                                         }
                                     }
@@ -227,13 +189,6 @@ namespace PRADA_Vayne.MyUtils
             }
         }
 
-        private void useItem(int id, Obj_AI_Hero target = null)
-        {
-            if (Items.CanUseItem(id))
-            {
-                Items.UseItem(id, target);
-            }
-        }
         private bool checkUsePercent(MItem item, int actualPercent)
         {
             int usePercent = Config.Item(item.menuVariable + "UseOnPercent").GetValue<Slider>().Value;
@@ -285,14 +240,9 @@ namespace PRADA_Vayne.MyUtils
             createMenuItem(bilgewater, "offensive", 100);
             createMenuItem(king, "offensive", 100);
 
-            Config.AddSubMenu(new Menu("Deffensive", "deffensive"));
-            Config.SubMenu("deffensive").AddItem(new MenuItem("justPred", "Just Predicted")).SetValue(true);
-            Config.SubMenu("deffensive").AddItem(new MenuItem("useRecalling", "Use Recalling")).SetValue(false);
-
             Config.AddSubMenu(new Menu("Regenerators", "regenerators"));
             createMenuItem(heal, "regenerators", 35);
             Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("useWithHealDebuff", "Use with debuff")).SetValue(true);
-            Config.SubMenu("regenerators").SubMenu("menu" + heal.menuVariable).AddItem(new MenuItem("justPredHeal", "Just predicted")).SetValue(false);
             createMenuItem(hpPot, "regenerators", 55);
             createMenuItem(biscuit, "regenerators", 55);
 
@@ -304,10 +254,7 @@ namespace PRADA_Vayne.MyUtils
             Config.AddSubMenu(new Menu("Target Selector", "targetSelector"));
             TargetSelector.AddToMenu(Config.SubMenu("targetSelector"));
 
-            Config.AddItem(new MenuItem("predict", "Predict DMG")).SetValue(true);
-
-            Config.AddItem(new MenuItem("drawStatus", "Draw Status")).SetValue(true);
-            Config.AddItem(new MenuItem("enabled", "Enabled")).SetValue(new KeyBind('L', KeyBindType.Toggle, true));
+            Config.AddItem(new MenuItem("enabled", "Enabled")).SetValue(false);
         }
 
         private bool checkCC(Obj_AI_Hero hero)
