@@ -95,6 +95,10 @@ namespace IreliaToTheChallenger
                         }
                     }
                 }
+                if (target.HealthPercent < ObjectManager.Player.HealthPercent && target.MoveSpeed > ObjectManager.Player.MoveSpeed)
+                {
+                    E.Cast(target);
+                }
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
