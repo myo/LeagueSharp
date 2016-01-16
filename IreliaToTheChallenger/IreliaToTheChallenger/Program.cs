@@ -87,7 +87,7 @@ namespace IreliaToTheChallenger
                         else
                         {
                             var gapclosingMinion = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650 &&
-                                m.IsEnemy && m.ServerPosition.Distance(target.ServerPosition) < distBetweenMeAndTarget && m.Health > 1 && m.Health < Q.GetDamage(m)).FirstOrDefault();
+                                m.IsEnemy && m.ServerPosition.Distance(target.ServerPosition) < distBetweenMeAndTarget && m.Health > 1 && m.Health < Q.GetDamage(m)).OrderBy(m=>m.Position.Distance(target.ServerPosition)).FirstOrDefault();
                             if (gapclosingMinion != null)
                             {
                                 Q.Cast(gapclosingMinion);
