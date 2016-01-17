@@ -85,7 +85,7 @@ namespace IreliaToTheChallenger
                             Q.Cast(killableEnemy);
                         }
                         var distBetweenMeAndTarget = ObjectManager.Player.ServerPosition.Distance(target.ServerPosition);
-                        if (!Orbwalker.InAutoAttackRange(target))
+                        if (distBetweenMeAndTarget > 550)
                         {
                             if (distBetweenMeAndTarget < 650)
                             {
