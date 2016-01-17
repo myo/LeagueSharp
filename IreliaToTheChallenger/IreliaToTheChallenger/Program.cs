@@ -21,6 +21,7 @@ namespace IreliaToTheChallenger
         }
         public static void Load(EventArgs args)
         {
+            if (ObjectManager.Player.CharData.BaseSkinName != "Irelia") return;
             Q = new Spell(SpellSlot.Q, 650);
             W = new Spell(SpellSlot.W);
             E = new Spell(SpellSlot.E, 425);
