@@ -31,8 +31,10 @@ namespace IreliaToTheChallenger
             MainMenu = new Menu("Irelia To The Challenger", "ittc", true);
             MainMenu.AddItem(new MenuItem("ittc.qfarm", "Q FARM Mode: ").SetValue(new StringList(new[] { "ONLY-UNKILLABLE", "ALWAYS", "NEVER" })));
 
-            Orbwalker = new Orbwalking.Orbwalker(MainMenu);
+            var orbwalkerMenu = MainMenu.AddSubMenu(new Menu("Orbwalker", "orbwalker"));
+            Orbwalker = new Orbwalking.Orbwalker(orbwalkerMenu);
             MainMenu.AddToMainMenu();
+
             Game.OnUpdate += Mechanics;
             Orbwalking.BeforeAttack += UseW;
             Drawing.OnDraw += DrawR;
@@ -60,53 +62,56 @@ namespace IreliaToTheChallenger
         public static void Mechanics(EventArgs args)
         {
             var target = TargetSelector.GetTarget(1000, TargetSelector.DamageType.Physical);
-            if (ObjectManager.Player.HasBuff("ireliatranscendentbladesspell"))
+            if (target != null)
             {
-                R.Cast(R.GetPrediction(target).UnitPosition);
-            }
-            if (E.IsReady())
-            {
-                if (ObjectManager.Player.HealthPercent <= target.HealthPercent)
+                if (ObjectManager.Player.HasBuff("ireliatranscendentbladesspell"))
                 {
-                    E.Cast(target);
+                    R.Cast(R.GetPrediction(target).UnitPosition);
                 }
-            }
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-            {
-                if (Q.IsReady())
+                if (E.IsReady())
                 {
-                    var killableEnemy = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(hero => hero.IsEnemy && !hero.IsDead && hero.Health < Q.GetDamage(hero) && hero.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650);
-                    if (killableEnemy != null && killableEnemy.IsValidTarget())
+                    if (ObjectManager.Player.HealthPercent <= target.HealthPercent)
                     {
-                        Q.Cast(killableEnemy);
+                        E.Cast(target);
                     }
-                    var distBetweenMeAndTarget = ObjectManager.Player.ServerPosition.Distance(target.ServerPosition);
-                    if (!Orbwalker.InAutoAttackRange(target))
+                }
+                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                {
+                    if (Q.IsReady())
                     {
-                        if (distBetweenMeAndTarget < 650)
+                        var killableEnemy = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(hero => hero.IsEnemy && !hero.IsDead && hero.Health < Q.GetDamage(hero) && hero.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650);
+                        if (killableEnemy != null && killableEnemy.IsValidTarget())
                         {
-                            Q.Cast(target);
+                            Q.Cast(killableEnemy);
                         }
-                        else
+                        var distBetweenMeAndTarget = ObjectManager.Player.ServerPosition.Distance(target.ServerPosition);
+                        if (!Orbwalker.InAutoAttackRange(target))
                         {
-                            var gapclosingMinion = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650 &&
-                                m.IsEnemy && m.ServerPosition.Distance(target.ServerPosition) < distBetweenMeAndTarget && m.Health > 1 && m.Health < Q.GetDamage(m)).OrderBy(m=>m.Position.Distance(target.ServerPosition)).FirstOrDefault();
-                            if (gapclosingMinion != null)
+                            if (distBetweenMeAndTarget < 650)
                             {
-                                Q.Cast(gapclosingMinion);
+                                Q.Cast(target);
+                            }
+                            else
+                            {
+                                var gapclosingMinion = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650 &&
+                                    m.IsEnemy && m.ServerPosition.Distance(target.ServerPosition) < distBetweenMeAndTarget && m.Health > 1 && m.Health < Q.GetDamage(m)).OrderBy(m => m.Position.Distance(target.ServerPosition)).FirstOrDefault();
+                                if (gapclosingMinion != null)
+                                {
+                                    Q.Cast(gapclosingMinion);
+                                }
                             }
                         }
                     }
-                }
-                if (target.HealthPercent < ObjectManager.Player.HealthPercent && target.MoveSpeed > ObjectManager.Player.MoveSpeed)
-                {
-                    E.Cast(target);
+                    if (target.HealthPercent < ObjectManager.Player.HealthPercent && target.MoveSpeed > ObjectManager.Player.MoveSpeed)
+                    {
+                        E.Cast(target);
+                    }
                 }
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 var farmMode = MainMenu.Item("ittc.qfarm").GetValue<StringList>().SelectedValue;
-                switch(farmMode)
+                switch (farmMode)
                 {
                     case "ONLY-UNKILLABLE":
                         {
