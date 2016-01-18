@@ -30,6 +30,8 @@ namespace IreliaToTheChallenger
 
             MainMenu = new Menu("Irelia To The Challenger", "ittc", true);
             MainMenu.AddItem(new MenuItem("ittc.qfarm", "Q FARM Mode: ").SetValue(new StringList(new[] { "ONLY-UNKILLABLE", "ALWAYS", "NEVER" })));
+            MainMenu.AddItem(new MenuItem("ittc.mindistanceforqgapclose", "MIN DISTANCE FOR Q GAPCLOSER").SetValue(new Slider(450, 325, 625)));
+            MainMenu.AddItem(new MenuItem("ittc.qminiongapclose", "Q MINION GAPCLOSER Mode: ").SetValue(new StringList(new[] { "ONLY-CLOSEST-TO-TARGET", "ALL-KILLABLE-MINIONS" })));
 
             var orbwalkerMenu = MainMenu.AddSubMenu(new Menu("Orbwalker", "orbwalker"));
             Orbwalker = new Orbwalking.Orbwalker(orbwalkerMenu);
@@ -85,7 +87,7 @@ namespace IreliaToTheChallenger
                             Q.Cast(killableEnemy);
                         }
                         var distBetweenMeAndTarget = ObjectManager.Player.ServerPosition.Distance(target.ServerPosition);
-                        if (distBetweenMeAndTarget > 450)
+                        if (distBetweenMeAndTarget > MainMenu.Item("ittc.mindistanceforqgapclose").GetValue<Slider>().Value)
                         {
                             if (distBetweenMeAndTarget < 650)
                             {
@@ -93,11 +95,24 @@ namespace IreliaToTheChallenger
                             }
                             else
                             {
-                                var gapclosingMinion = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650 &&
-                                    m.IsEnemy && m.ServerPosition.Distance(target.ServerPosition) < distBetweenMeAndTarget && m.Health > 1 && m.Health < Q.GetDamage(m)).OrderBy(m => m.Position.Distance(target.ServerPosition)).FirstOrDefault();
-                                if (gapclosingMinion != null)
+                                var minionGapclosingMode = MainMenu.Item("ittc.qminiongapclose").GetValue<StringList>().SelectedValue;
+                                if (minionGapclosingMode == "ONLY-CLOSEST-TO-TARGET")
                                 {
-                                    Q.Cast(gapclosingMinion);
+                                    var gapclosingMinion = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650 &&
+                                        m.IsEnemy && m.ServerPosition.Distance(target.ServerPosition) < distBetweenMeAndTarget && m.Health > 1 && m.Health < Q.GetDamage(m)).OrderBy(m => m.Position.Distance(target.ServerPosition)).FirstOrDefault();
+                                    if (gapclosingMinion != null)
+                                    {
+                                        Q.Cast(gapclosingMinion);
+                                    }
+                                }
+                                else
+                                {
+                                    var firstGapclosingMinion = ObjectManager.Get<Obj_AI_Minion>().Where(m => m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650 &&
+                                    m.Health > 1 && m.Health < Q.GetDamage(m)).OrderByDescending(m => m.Position.Distance(target.ServerPosition)).FirstOrDefault();
+                                    if (firstGapclosingMinion != null)
+                                    {
+                                        Q.Cast(firstGapclosingMinion);
+                                    }
                                 }
                             }
                         }
