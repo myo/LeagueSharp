@@ -19,7 +19,7 @@ namespace PRADA_Vayne.MyLogic.Others
             {
 
                 #region ward brush after condemn
-                if (sender.IsMe && args.SData.Name.ToLower().Contains("condemn") && args.Target.IsValid<Obj_AI_Hero>())
+                /*if (sender.IsMe && args.SData.Name.ToLower().Contains("condemn") && args.Target.IsValid<Obj_AI_Hero>())
                 {
                     var target = (Obj_AI_Hero)args.Target;
                     if (Program.ComboMenu.Item("EQ").GetValue<bool>() && target.IsVisible && !target.HasBuffOfType(BuffType.Stun) && Program.Q.IsReady()) //#TODO: fix
@@ -40,10 +40,11 @@ namespace PRADA_Vayne.MyLogic.Others
                         if (Items.CanUseItem((int)yellowTrinket))
                             Items.UseItem((int)yellowTrinket, args.End.Randomize(0, 100));
                     }
-                }
+                }*/
                 #endregion
 
                 #region Anti-Stealth
+                /*
                 if (args.SData.Name.ToLower().Contains("talonshadow")) //#TODO get the actual buff name
                 {
                     if (Items.HasItem((int)ItemId.Oracles_Lens_Trinket) && Items.CanUseItem((int)ItemId.Oracles_Lens_Trinket))
@@ -55,8 +56,9 @@ namespace PRADA_Vayne.MyLogic.Others
                         Items.UseItem((int)ItemId.Vision_Ward, Heroes.Player.Position.Randomize(0, 125));
                     }
                 }
+                 */
                 #endregion
-
+                /*
                 if (MyWizard.ShouldSaveCondemn()) return;
                 if (sender.Distance(Heroes.Player) > 1500 || !args.Target.IsMe || args.SData == null)
                     return;
@@ -69,7 +71,7 @@ namespace PRADA_Vayne.MyLogic.Others
                     {
                         Program.E.Cast(sender);
                     }
-                }
+                }*/
             }
             catch (Exception exception)
             {
