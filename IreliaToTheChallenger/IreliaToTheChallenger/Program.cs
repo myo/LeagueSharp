@@ -116,7 +116,7 @@ namespace IreliaToTheChallenger
                         {
                             E.Cast(target);
                         }
-                        if (target.HealthPercent < ObjectManager.Player.HealthPercent && target.MoveSpeed > ObjectManager.Player.MoveSpeed && ObjectManager.Player.ServerPosition.Distance(target.ServerPosition) > 385)
+                        if (target.HealthPercent < ObjectManager.Player.HealthPercent && target.MoveSpeed > ObjectManager.Player.MoveSpeed && ObjectManager.Player.ServerPosition.Distance(target.ServerPosition) > 300)
                         {
                             E.Cast(target);
                         }
