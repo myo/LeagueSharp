@@ -70,13 +70,6 @@ namespace IreliaToTheChallenger
                 {
                     R.Cast(R.GetPrediction(target).UnitPosition);
                 }
-                if (E.IsReady())
-                {
-                    if (ObjectManager.Player.HealthPercent <= target.HealthPercent)
-                    {
-                        E.Cast(target);
-                    }
-                }
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
                     if (Q.IsReady())
@@ -117,9 +110,16 @@ namespace IreliaToTheChallenger
                             }
                         }
                     }
-                    if (target.HealthPercent < ObjectManager.Player.HealthPercent && target.MoveSpeed > ObjectManager.Player.MoveSpeed)
+                    if (E.IsReady())
                     {
-                        E.Cast(target);
+                        if (ObjectManager.Player.HealthPercent <= target.HealthPercent)
+                        {
+                            E.Cast(target);
+                        }
+                        if (target.HealthPercent < ObjectManager.Player.HealthPercent && target.MoveSpeed > ObjectManager.Player.MoveSpeed && ObjectManager.Player.ServerPosition.Distance(target.ServerPosition) > 385)
+                        {
+                            E.Cast(target);
+                        }
                     }
                 }
             }
