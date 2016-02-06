@@ -178,7 +178,7 @@ namespace Mastery_Badge_Spammer
             if (Utils.GameTimeTickCount - LastChat > Random.Next(5000, 20000))
             {
                 LastChat = Utils.GameTimeTickCount;
-                if (Menu.Item("guccimode").GetValue<bool>())
+                if (Menu.Item("guccimode").GetValue<bool>() && Random.Next(0,1) == 1)
                 {
                     switch (Random.Next(0, 14))
                     {
