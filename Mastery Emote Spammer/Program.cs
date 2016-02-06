@@ -180,7 +180,7 @@ namespace Mastery_Badge_Spammer
                 LastChat = Utils.GameTimeTickCount;
                 if (Menu.Item("guccimode").GetValue<bool>() && Random.Next(0,1) == 1)
                 {
-                    switch (Random.Next(0, 14))
+                    switch (Random.Next(0, 15))
                     {
                         case 0:
                             Game.Say(String.Format("/all HAHA {0} that was a refreshing experience!", theTarget));
@@ -226,6 +226,9 @@ namespace Mastery_Badge_Spammer
                             break;
                         case 14:
                             Game.Say(String.Format("/all {0}, if you have something to say raise your hand... then place it over your mouth. ", theTarget));
+                            break;
+                        case 15:
+                            Game.Say(String.Format("/all Somewhere out there is a tree, tirelessly producing oxygen so you can breathe. I think you owe it an apology, {0}", theTarget));
                             break;
                     }
                     return;
