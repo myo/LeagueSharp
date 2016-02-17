@@ -178,60 +178,59 @@ namespace Mastery_Badge_Spammer
             if (Utils.GameTimeTickCount - LastChat > Random.Next(5000, 20000))
             {
                 LastChat = Utils.GameTimeTickCount;
-                if (Menu.Item("guccimode").GetValue<bool>() && Random.Next(0,1) == 1)
+                if (Menu.Item("guccimode").GetValue<bool>() && Random.Next(0,100) > 1)
                 {
                     switch (Random.Next(0, 15))
                     {
                         case 0:
                             Game.Say(String.Format("/all HAHA {0} that was a refreshing experience!", theTarget));
-                            break;
+                            return;
                         case 1:
                             Game.Say(String.Format("/all LOL {0} no match for me!", theTarget));
-                            break;
+                            return;
                         case 2:
                             Game.Say(String.Format("/all Fantastic performance right there {0}!", theTarget));
-                            break;
+                            return;
                         case 3:
                             Game.Say(String.Format("/all Can't touch this {0}", theTarget));
-                            break;
+                            return;
                         case 4:
                             Game.Say(String.Format("/all {0}, you have been reformed!", theTarget));
-                            break;
+                            return;
                         case 5:
                             Game.Say(String.Format("/all Completely smashed there {0}", theTarget));
-                            break;
+                            return;
                         case 6:
                             Game.Say(String.Format("/all haha pathetic {0}", theTarget));
-                            break;
+                            return;
                         case 7:
                             Game.Say(String.Format("/all true display of skill {0}", theTarget));
-                            break;
+                            return;
                         case 8:
                             Game.Say(String.Format("/all better luck next time {0}", theTarget));
-                            break;
+                            return;
                         case 9:
                             Game.Say(String.Format("/all Nice try for a monkey {0}", theTarget));
-                            break;
+                            return;
                         case 10:
                             Game.Say(String.Format("/all I see you've set aside this special time to humiliate yourself in public {0}", theTarget));
-                            break;
+                            return;
                         case 11:
                             Game.Say(String.Format("/all Who lit the fuse on your tampon {0}?", theTarget));
-                            break;
+                            return;
                         case 12:
                             Game.Say(String.Format("/all I like you {0}. You remind me of myself when I was young and stupid. ", theTarget));
-                            break;
+                            return;
                         case 13:
                             Game.Say(String.Format("/all {0}, I'll try being nicer if you'll try being more intelligent.", theTarget));
-                            break;
+                            return;
                         case 14:
                             Game.Say(String.Format("/all {0}, if you have something to say raise your hand... then place it over your mouth. ", theTarget));
-                            break;
+                            return;
                         case 15:
                             Game.Say(String.Format("/all Somewhere out there is a tree, tirelessly producing oxygen so you can breathe. I think you owe it an apology, {0}", theTarget));
-                            break;
+                            return;
                     }
-                    return;
                 }
                 Game.Say("/all " + KnownDisrespectStarts[Random.Next(0, KnownDisrespectStarts.Length - 1)] +
                          (Random.Next(1, 2) == 1 ? theTarget : "") +
