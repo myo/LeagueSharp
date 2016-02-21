@@ -47,6 +47,11 @@ namespace Challenger_Series
                     var sdata = SpellDatabase.GetByName(spell.Name);
                     if (sdata != null)
                     {
+                        if (sdata.SpellTags == null)
+                        {
+                            Game.PrintChat(enemy.ChampionName + " " + spell.Name + " is broken in SDK, report to imsosharp.");
+                            break;
+                        }
                         if (
                             sdata.SpellTags.Any(
                                 st => st == SpellTags.Dash || st == SpellTags.Blink))
