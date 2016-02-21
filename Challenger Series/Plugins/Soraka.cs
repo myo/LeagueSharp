@@ -61,7 +61,7 @@ namespace Challenger_Series
             if (sender is Obj_AI_Hero && sender.IsEnemy)
             {
                 var sdata = SpellDatabase.GetByName(args.SData.Name);
-                if (sdata != null && args.End.Distance(ObjectManager.Player.ServerPosition) < E.Range &&
+                if (sdata != null && args.End.Distance(ObjectManager.Player.ServerPosition) < E.Range && sdata.SpellTags != null &&
                     sdata.SpellTags.Any(st => st == SpellTags.Dash || st == SpellTags.Blink))
                 {
                     E.Cast(args.Start.Extend(args.End, sdata.Range));
