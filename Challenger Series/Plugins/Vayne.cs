@@ -193,7 +193,7 @@ namespace Challenger_Series
                         h =>
                             h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
                             h.GetBuffCount("vaynesilvereddebuff") == 2);
-                    if (possible2WTarget.IsValidTarget() && UseEAs3rdWProcBool)
+                    if (possible2WTarget.IsValidTarget() && UseEAs3rdWProcBool && (sender as Obj_AI_Hero).GetWaypoints().LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 550)
                     {
                         E.Cast(possible2WTarget);
                     }
@@ -300,7 +300,13 @@ namespace Challenger_Series
                                 return;
                             }
                         }
-                        E.CastOnUnit(possibleNearbyMeleeChampion);
+                        if (
+                            possibleNearbyMeleeChampion.GetWaypoints()
+                                .LastOrDefault()
+                                .Distance(ObjectManager.Player.ServerPosition) < 1000)
+                        {
+                            E.CastOnUnit(possibleNearbyMeleeChampion);
+                        }
                     }
                 }
             }
@@ -673,7 +679,7 @@ namespace Challenger_Series
         {
             return GameObjects.EnemyHeroes.Any(
                 e => e.IsValidTarget() && e.IsVisible &&
-                     (e.Distance(pos) < 375) && !(e.GetWaypoints().LastOrDefault().Distance(pos) < 550)) ||
+                     (e.Distance(pos) < 375) && (e.GetWaypoints().LastOrDefault().Distance(pos) > 550)) ||
                      (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true)) || pos.IsWall();
         }
 
