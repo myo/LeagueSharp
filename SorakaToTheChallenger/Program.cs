@@ -57,6 +57,9 @@ namespace SorakaToTheChallenger
         public static void Load(EventArgs args)
         {
             if (ObjectManager.Player.CharData.BaseSkinName != "Soraka") return;
+			
+            Game.PrintChat("Please switch to Challenger Series AIO, everything is improved there!");
+            Game.PrintChat("Open Loader > Install new assembly > GitHub > https://github.com/myo/LeagueSharp");
             Q = new Spell(SpellSlot.Q, 800, TargetSelector.DamageType.Magical);
             W = new Spell(SpellSlot.W, 550);
             E = new Spell(SpellSlot.E, 900, TargetSelector.DamageType.Magical);
@@ -84,6 +87,7 @@ namespace SorakaToTheChallenger
             Menu.AddItem(new MenuItem("sttc.ultmyhp", "ULT if I'm below HP%").SetValue(new Slider(20, 1)));
             Menu.AddItem(new MenuItem("sttc.ultallyhp", "ULT if an ally is below HP%").SetValue(new Slider(15)));
             Menu.AddItem(new MenuItem("sttc.blockaa", "Block AutoAttacks?").SetValue(false));
+            Menu.AddItem(new MenuItem("sttc.antiks", "Anti-KS").SetValue(true));
             Menu.AddItem(new MenuItem("sttc.drawq", "Draw Q?")
                 .SetValue(new Circle(true, Color.DarkMagenta)));
             Menu.AddItem(new MenuItem("sttc.draww", "Draw W?")
@@ -210,6 +214,7 @@ namespace SorakaToTheChallenger
         public static void QLogic()
         {
             if (!Q.IsReady() || (ObjectManager.Player.Mana < 3*GetWManaCost() && CanW())) return;
+            var shouldntKS = Menu.Item("sttc.antiks").GetValue<bool>();
             switch (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue)
             {
                 case "SMART":
@@ -217,6 +222,10 @@ namespace SorakaToTheChallenger
                     {
                         foreach (var hero in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsValidTarget(925)))
                         {
+                            if (shouldntKS && Q.GetDamage(hero) > hero.Health)
+                            {
+                                return;
+                            }
                             Q.CastIfHitchanceEquals(hero, HitChance.VeryHigh);
                         }
                     }
@@ -224,6 +233,10 @@ namespace SorakaToTheChallenger
                 case "AP-SORAKA":
                     foreach (var hero in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsValidTarget(925)))
                     {
+                        if (shouldntKS && Q.GetDamage(hero) > hero.Health)
+                        {
+                            return;
+                        }
                         Q.CastIfHitchanceEquals(hero, HitChance.VeryHigh);
                     }
                     break;
@@ -269,20 +282,25 @@ namespace SorakaToTheChallenger
         public static void ELogic()
         {
             if (Menu.Item("sttc.mode").GetValue<StringList>().SelectedValue == "ONLYHEAL") return;
+            var shouldntKS = Menu.Item("sttc.antiks").GetValue<bool>();
             if (!E.IsReady()) return;
             var goodTarget =
                 HeroManager.Enemies.FirstOrDefault(e => e.IsValidTarget(900) && e.HasBuffOfType(BuffType.Knockup) || e.HasBuffOfType(BuffType.Snare) || e.HasBuffOfType(BuffType.Stun) || e.HasBuffOfType(BuffType.Suppression));
             if (goodTarget != null)
             {
+                if (shouldntKS && Q.GetDamage(goodTarget) > goodTarget.Health)
+                {
+                    return;
+                }
                 var pos = goodTarget.ServerPosition;
                 if (pos.Distance(ObjectManager.Player.ServerPosition) < 900)
                 {
                     E.Cast(goodTarget.ServerPosition);
                 }
             } 
-            foreach (var enemyMinion in ObjectManager.Get<Obj_AI_Base>().Where(m => m.IsEnemy && m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900 && m.HasBuff("teleport_target") || m.HasBuff("Pantheon_GrandSkyfall_Jump")))
+            foreach (var enemyMinion in ObjectManager.Get<Obj_AI_Base>().Where(m => m.IsEnemy && m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < E.Range && m.HasBuff("teleport_target") || m.HasBuff("Pantheon_GrandSkyfall_Jump")))
             {
-                Utility.DelayAction.Add(2000, () =>
+                Utility.DelayAction.Add(2500, () =>
                 {
                     if (enemyMinion.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900)
                     {

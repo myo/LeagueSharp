@@ -44,6 +44,9 @@ namespace PRADA_Vayne
             {
                 if (ObjectManager.Player.CharData.BaseSkinName == "Vayne")
                 {
+                    Game.PrintChat("PRADA Vayne: Please switch to Challenger Series AIO, everything is improved there!");
+                    Game.PrintChat("PRADA Vayne: Open Loader > Install new assembly > GitHub > https://github.com/myo/LeagueSharp");
+                    Game.PrintChat("PRADA Vayne: Please don't use them together, new one has custom orbwalker.");
                     EarlyEvade = new EarlyEvade();
                     PRADAHijacker.AttemptHijack();
                 }
