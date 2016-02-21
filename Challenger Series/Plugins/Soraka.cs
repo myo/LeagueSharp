@@ -316,7 +316,7 @@ namespace Challenger_Series
                                       " because he is blacklisted.");
                     return;
                 }
-                if (DontWTanksBool.GetValue<MenuBool>() && bestHealingCandidate.Health > 300 &&
+                if (DontWTanksBool != null && DontWTanksBool.GetValue<MenuBool>() && bestHealingCandidate.Health > 300 &&
                     ATankTakesXHealsToHealSlider.Value*GetWHealingAmount() <
                     bestHealingCandidate.MaxHealth - bestHealingCandidate.Health)
                 {
