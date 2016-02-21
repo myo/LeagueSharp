@@ -25,6 +25,9 @@ namespace Challenger_Series
                     case "Soraka":
                         new Soraka();
                         break;
+                    case "Vayne":
+                        new Vayne();
+                        break;
                 }
             };
         }
