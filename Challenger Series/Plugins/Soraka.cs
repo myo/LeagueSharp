@@ -171,7 +171,7 @@ namespace Challenger_Series
             DontWTanksBool = MainMenu.Add(new MenuBool("dontwtanks", "Don't Heal (W) Tanks", true));
 
             ATankTakesXHealsToHealSlider =
-                MainMenu.Add(new MenuSlider("atanktakesxheals", "A TANK takes X Heals (W) to  FULLHP", 10, 5, 30));
+                MainMenu.Add(new MenuSlider("atanktakesxheals", "A TANK takes X Heals (W) to  FULLHP", 15, 5, 30));
 
             UseUltForMeIfMyHpIsLessThanSlider = MainMenu.Add(new MenuSlider("ultmyhp", "Ult if MY HP% < ", 15, 1, 25));
 
