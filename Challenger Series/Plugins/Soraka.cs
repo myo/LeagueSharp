@@ -4,7 +4,7 @@
  * from the LeagueSharp staff.
  * 
  * Author: imsosharp
- * Date: 2/20/2016
+ * Date: 2/21/2016
  * File: Soraka.cs
  */
 #endregion License
@@ -322,6 +322,21 @@ namespace Challenger_Series
                 {
                     Console.WriteLine("STTC: Skipped healing " + bestHealingCandidate.CharData.BaseSkinName +
                                       " because he is a tank.");
+                    return;
+                }
+                W.Cast(bestHealingCandidate);
+            }
+            else
+            {
+                bestHealingCandidate = GameObjects.AllyHeroes.Where(
+                    a =>
+                        !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
+                        a.MaxHealth - a.Health > GetWHealingAmount()).OrderBy(ally => ally.Health).FirstOrDefault();
+                if (bestHealingCandidate == null || (HealBlacklistMenu["dontheal" + bestHealingCandidate.CharData.BaseSkinName] != null &&
+                    HealBlacklistMenu["dontheal" + bestHealingCandidate.CharData.BaseSkinName].GetValue<MenuBool>()))
+                {
+                    Console.WriteLine("STTC: Skipped healing " + bestHealingCandidate.CharData.BaseSkinName +
+                                      " because he is blacklisted.");
                     return;
                 }
                 W.Cast(bestHealingCandidate);
