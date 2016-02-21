@@ -326,21 +326,6 @@ namespace Challenger_Series
                 }
                 W.Cast(bestHealingCandidate);
             }
-            else
-            {
-                bestHealingCandidate = GameObjects.AllyHeroes.Where(
-                    a =>
-                        !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
-                        a.MaxHealth - a.Health > GetWHealingAmount()).OrderBy(ally => ally.Health).FirstOrDefault();
-                if (bestHealingCandidate == null || (HealBlacklistMenu["dontheal" + bestHealingCandidate.CharData.BaseSkinName] != null &&
-                    HealBlacklistMenu["dontheal" + bestHealingCandidate.CharData.BaseSkinName].GetValue<MenuBool>()))
-                {
-                    Console.WriteLine("STTC: Skipped healing " + bestHealingCandidate.CharData.BaseSkinName +
-                                      " because he is blacklisted.");
-                    return;
-                }
-                W.Cast(bestHealingCandidate);
-            }
         }
 
         public void ELogic()
