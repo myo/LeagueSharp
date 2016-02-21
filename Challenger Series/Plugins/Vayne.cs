@@ -193,7 +193,7 @@ namespace Challenger_Series
                         h =>
                             h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
                             h.GetBuffCount("vaynesilvereddebuff") == 2);
-                    if (possible2WTarget.IsValidTarget() && UseEAs3rdWProcBool && (sender as Obj_AI_Hero).GetWaypoints().LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 550)
+                    if (possible2WTarget.IsValidTarget() && UseEAs3rdWProcBool && possible2WTarget.GetWaypoints().LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 1000)
                     {
                         E.Cast(possible2WTarget);
                     }
