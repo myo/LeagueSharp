@@ -49,7 +49,7 @@ namespace Challenger_Series
                     {
                         if (sdata.SpellTags == null)
                         {
-                            Game.PrintChat(enemy.ChampionName + " " + spell.Name + " is broken in SDK, report to imsosharp.");
+                            Game.PrintChat("Skipped loading " + enemy.ChampionName + " " + spell.Name + " because it's broken.");
                             break;
                         }
                         if (
@@ -162,6 +162,33 @@ namespace Challenger_Series
         public override void OnDraw(EventArgs args)
         {
             base.OnDraw(args);
+            if (DrawWStacksBool)
+            {
+                var target =
+                    GameObjects.EnemyHeroes.FirstOrDefault(
+                        enemy => enemy.HasBuff("vaynesilvereddebuff") && enemy.IsValidTarget(2000));
+                if (target.IsValidTarget())
+                {
+                    var x = target.HPBarPosition.X + 50;
+                    var y = target.HPBarPosition.Y - 20;
+
+                    if (W.Level > 0)
+                    {
+                        if (DrawEnemyWaypointsBool != null) //Credits to lizzaran 
+                        {
+                            int stacks = target.GetBuffCount("vaynesilvereddebuff");
+                            if (stacks > -1)
+                            {
+                                for (var i = 0; i < 3; i++)
+                                {
+                                    Drawing.DrawLine(x + i*20, y, x + i*20 + 10, y, 10,
+                                        stacks <= i ? Color.DarkGray : Color.DeepSkyBlue);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             if (DrawEnemyWaypointsBool)
             {
                 foreach (
@@ -340,6 +367,7 @@ namespace Challenger_Series
         private MenuBool UseEJungleFarm;
         private MenuKeyBind SemiAutomaticCondemnKey;
         private MenuBool DrawEnemyWaypointsBool;
+        private MenuBool DrawWStacksBool;
 
         private void InitMenu()
         {
@@ -380,6 +408,7 @@ namespace Challenger_Series
             UseQFarm = FarmMenu.Add(new MenuBool("useqfarm", "Use Q"));
             UseEJungleFarm = FarmMenu.Add(new MenuBool("useejgfarm", "Use E Jungle", true));
             DrawEnemyWaypointsBool = DrawMenu.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints", true));
+            DrawWStacksBool = DrawMenu.Add(new MenuBool("drawwstacks", "Draw W Stacks", true));
             MainMenu.Attach();
         }
 
