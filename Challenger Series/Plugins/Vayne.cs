@@ -214,12 +214,12 @@ namespace Challenger_Series
             if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
             {
                 Orbwalker.ForceTarget = null;
+                var possible2WTarget = GameObjects.EnemyHeroes.FirstOrDefault(
+                    h =>
+                        h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
+                        h.GetBuffCount("vaynesilvereddebuff") == 2);
                 if (Orbwalker.ActiveMode != OrbwalkingMode.Combo)
                 {
-                    var possible2WTarget = GameObjects.EnemyHeroes.FirstOrDefault(
-                        h =>
-                            h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
-                            h.GetBuffCount("vaynesilvereddebuff") == 2);
                     if (possible2WTarget.IsValidTarget() && UseEAs3rdWProcBool && possible2WTarget.GetWaypoints().LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 1000)
                     {
                         E.Cast(possible2WTarget);
@@ -250,19 +250,21 @@ namespace Challenger_Series
                 }
                 if (orbwalkingActionArgs.Target is Obj_AI_Minion && Orbwalker.ActiveMode == OrbwalkingMode.LaneClear)
                 {
+                    var tg = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     if (E.IsReady())
                     {
-                        var tg = orbwalkingActionArgs.Target as Obj_AI_Minion;
                         if (tg.Name.Contains("SRU_") && tg.IsValidTarget() && UseEJungleFarm)
                         {
                             E.CastOnUnit(tg);
                         }
                     }
-                    if (Q.IsReady())
+                    if (UseQFarm && Q.IsReady())
                     {
-                        if (
-                            UseQFarm &&
-                            GameObjects.EnemyMinions.Count(
+                        if (tg.Name.Contains("SRU_"))
+                        {
+                            Q.Cast(Game.CursorPos);
+                        }
+                        if (GameObjects.EnemyMinions.Count(
                                 m =>
                                     m.Position.Distance(ObjectManager.Player.Position) < 550 &&
                                     m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + Q.GetDamage(m)) > 1 &&
@@ -270,7 +272,7 @@ namespace Challenger_Series
                         {
                             Q.Cast(Game.CursorPos);
                         }
-                        if (UseQFarm && ObjectManager.Player.UnderAllyTurret())
+                        if (ObjectManager.Player.UnderAllyTurret())
                         {
                             if (GameObjects.EnemyMinions.Count(
                                 m =>
@@ -281,6 +283,10 @@ namespace Challenger_Series
                             }
                         }
                     }
+                }
+                if (UseQOnlyAt2WStacksBool && Orbwalker.ActiveMode != OrbwalkingMode.Combo && possible2WTarget.IsValidTarget())
+                {
+                    Q.Cast(GetTumblePos(possible2WTarget));
                 }
             }
             if (orbwalkingActionArgs.Type == OrbwalkingType.BeforeAttack)
@@ -373,6 +379,7 @@ namespace Challenger_Series
         private MenuBool UseEAntiGapcloserBool;
         private MenuBool UseEWhenMeleesNearBool;
         private MenuBool UseEAs3rdWProcBool;
+        private MenuBool UseQOnlyAt2WStacksBool;
         private MenuBool DontAttackWhileInvisibleAndMeelesNearBool;
         private MenuBool UseRBool;
         private MenuBool UseQBonusOnEnemiesNotCS;
@@ -418,6 +425,7 @@ namespace Challenger_Series
                 HarassMenu.Add(new MenuBool("usee3rdwproc", "Use E as 3rd W Proc Before LVL: ", true));
             UseQBonusOnEnemiesNotCS =
                 HarassMenu.Add(new MenuBool("useqonenemiesnotcs", "Use Q Bonus On ENEMY not CS", false));
+            UseQOnlyAt2WStacksBool = HarassMenu.Add(new MenuBool("useqonlyon2stackedenemies", "Use Q If Enemy Have 2W Stacks", false));
             UseQFarm = FarmMenu.Add(new MenuBool("useqfarm", "Use Q"));
             UseEJungleFarm = FarmMenu.Add(new MenuBool("useejgfarm", "Use E Jungle", true));
             DrawEnemyWaypointsBool = DrawMenu.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints", true));
