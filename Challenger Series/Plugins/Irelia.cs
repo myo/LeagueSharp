@@ -226,7 +226,7 @@ namespace Challenger_Series
                 MainMenu.Add(new MenuList<string>("qgc", "Q Gapcloser Mode",
                     new[] {"ONLY-CLOSEST-TO-TARGET", "ALL-KILLABLE-MINIONS"}));
             MinDistForQGapcloser =
-                MainMenu.Add(new MenuSlider("mindistqgapcloser", "Min Distance for Q Gapclose", 450, 325, 625));
+                MainMenu.Add(new MenuSlider("mindistqgapcloser", "Min Distance for Q Gapclose", 350, 325, 625));
             QFarmModeStringList = MainMenu.Add(new MenuList<string>("useqfarm", "Q Farm Mode: ", new[] { "ONLY-UNKILLABLE", "ALWAYS", "NEVER" }));
             MainMenu.Attach();
         }
