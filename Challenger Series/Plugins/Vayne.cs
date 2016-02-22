@@ -258,15 +258,28 @@ namespace Challenger_Series
                             E.CastOnUnit(tg);
                         }
                     }
-                    if (
-                        UseQFarm &&
-                        GameObjects.EnemyMinions.Count(
-                            m =>
-                                m.Position.Distance(ObjectManager.Player.Position) < 550 &&
-                                m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + Q.GetDamage(m)) > 1 &&
-                        !IsDangerousPosition(Game.CursorPos))
+                    if (Q.IsReady())
                     {
-                        Q.Cast(Game.CursorPos);
+                        if (
+                            UseQFarm &&
+                            GameObjects.EnemyMinions.Count(
+                                m =>
+                                    m.Position.Distance(ObjectManager.Player.Position) < 550 &&
+                                    m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + Q.GetDamage(m)) > 1 &&
+                            !IsDangerousPosition(Game.CursorPos))
+                        {
+                            Q.Cast(Game.CursorPos);
+                        }
+                        if (UseQFarm && ObjectManager.Player.UnderAllyTurret())
+                        {
+                            if (GameObjects.EnemyMinions.Count(
+                                m =>
+                                    m.Position.Distance(ObjectManager.Player.Position) < 550 &&
+                                    m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + Q.GetDamage(m)) > 0)
+                            {
+                                Q.Cast(Game.CursorPos);
+                            }
+                        }
                     }
                 }
             }

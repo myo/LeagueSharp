@@ -38,5 +38,16 @@ namespace Challenger_Series.Utils
             return
                 ObjectManager.Get<Obj_AI_Turret>().Any(turret => turret.IsValidTarget(950, enemyTurretsOnly, position));
         }
+        public static bool UnderAllyTurret(this Obj_AI_Base unit)
+        {
+            return UnderAllyTurret(unit.ServerPosition);
+        }
+
+        public static bool UnderAllyTurret(this Vector3 position)
+        {
+            return
+                GameObjects.Get<Obj_AI_Turret>()
+                    .Any(turret => turret.Position.Distance(position) < 950 && turret.IsAlly && turret.Health > 1);
+        }
     }
 }
