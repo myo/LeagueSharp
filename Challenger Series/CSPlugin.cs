@@ -35,6 +35,7 @@ namespace Challenger_Series
         #endregion Spells
 
         public Orbwalker Orbwalker { get; } = Variables.Orbwalker;
+        public TargetSelector TargetSelector { get; } = Variables.TargetSelector;
         public Menu MainMenu { get; set; }
         public virtual void OnUpdate(EventArgs args) { }
         public virtual void OnProcessSpellCast(GameObject sender, GameObjectProcessSpellCastEventArgs args) { }
