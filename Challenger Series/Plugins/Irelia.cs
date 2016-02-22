@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using LeagueSharp.SDK.Core.UI.IMenu.Values;
+using LeagueSharp.SDK.Core.Utils;
 
 namespace Challenger_Series
 {
@@ -150,7 +151,7 @@ namespace Challenger_Series
                                .FirstOrDefault(
                                    hero =>
                                        hero.IsEnemy && !hero.IsDead && hero.Health < E.GetDamage(hero) &&
-                                       hero.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 425);
+                                       hero.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 425 && hero.ServerPosition.Distance(ObjectManager.Player.ServerPosition) > ObjectManager.Player.GetRealAutoAttackRange());
                     if (!Q.IsReady() && UseEKSBool)
                     {
                         E.Cast(killableEnemy);
