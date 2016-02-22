@@ -28,6 +28,9 @@ namespace Challenger_Series
                     case "Vayne":
                         new Vayne();
                         break;
+                    case "Irelia":
+                        new Irelia();
+                        break;
                 }
             };
         }
