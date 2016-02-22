@@ -145,6 +145,17 @@ namespace Challenger_Series
                 }
                 if (E.IsReady())
                 {
+                    var killableEnemy =
+                           ObjectManager.Get<Obj_AI_Hero>()
+                               .FirstOrDefault(
+                                   hero =>
+                                       hero.IsEnemy && !hero.IsDead && hero.Health < E.GetDamage(hero) &&
+                                       hero.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 425);
+                    if (!Q.IsReady() && UseEKSBool)
+                    {
+                        E.Cast(killableEnemy);
+                    }
+
                     var eMode = UseEComboStringList.SelectedValue;
                     if (eMode == "CHALLENGER")
                     {
@@ -212,6 +223,7 @@ namespace Challenger_Series
         private MenuList<string> UseQComboStringList;
         private MenuBool UseWComboBool;
         private MenuList<string> UseEComboStringList;
+        private MenuBool UseEKSBool;
         private MenuBool UseRComboBool;
         private MenuList<string> QGapcloseModeStringList;
         private MenuSlider MinDistForQGapcloser;
@@ -221,6 +233,7 @@ namespace Challenger_Series
             UseQComboStringList = MainMenu.Add(new MenuList<string>("useqcombo", "Q Combo MODE: ", new [] {"CHALLENGER", "BRONZE", "NEVER"}));
             UseWComboBool = MainMenu.Add(new MenuBool("usewcombo", "Use W Combo", true));
             UseEComboStringList = MainMenu.Add(new MenuList<string>("useecombo", "Use E Combo", new [] {"CHALLENGER", "BRONZE", "NEVER"}));
+            UseEKSBool = MainMenu.Add(new MenuBool("useeks", "Use E KS if Q on CD", true));
             UseRComboBool = MainMenu.Add(new MenuBool("usercombo", "Use R Combo", true));
             QGapcloseModeStringList =
                 MainMenu.Add(new MenuList<string>("qgc", "Q Gapcloser Mode",
