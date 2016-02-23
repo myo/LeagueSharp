@@ -145,10 +145,38 @@ namespace Challenger_Series
                 if (sdata != null)
                 {
                     if (UseEAntiGapcloserBool &&
-                        ObjectManager.Player.Distance(args.Start.Extend(args.End, sdata.Range)) < 350 &&
+                        (ObjectManager.Player.Distance(args.Start.Extend(args.End, sdata.Range)) < 350 || args.Target.IsMe) &&
                         sdata.SpellTags.Any(st => st == SpellTags.Dash || st == SpellTags.Blink))
                     {
-                        E.CastOnUnit((Obj_AI_Hero) sender);
+                        if (E.IsReady())
+                        {
+                            E.CastOnUnit((Obj_AI_Hero) sender);
+                        }
+                        if (Q.IsReady())
+                        {
+                            switch (UseQAntiGapcloserStringList.SelectedValue)
+                            {
+                                case "ALWAYS":
+                                {
+                                    if (args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
+                                        Q.Cast(ObjectManager.Player.ServerPosition.Extend(args.End, -300));
+                                    if (sender.Distance(ObjectManager.Player) < 350)
+                                        Q.Cast(ObjectManager.Player.ServerPosition.Extend(sender.Position, -300));
+                                    break;
+                                }
+                                case "E-NOT-READY":
+                                {
+                                    if (!E.IsReady())
+                                    {
+                                        if (args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
+                                            Q.Cast(ObjectManager.Player.ServerPosition.Extend(args.End, -300));
+                                        if (sender.Distance(ObjectManager.Player) < 350)
+                                            Q.Cast(ObjectManager.Player.ServerPosition.Extend(sender.Position, -300));
+                                    }
+                                    break;
+                                }
+                            }
+                        }
                     }
                     if (UseEInterruptBool && sdata.SpellTags.Any(st => st == SpellTags.Interruptable) &&
                         ObjectManager.Player.Distance(sender) < 550)
@@ -369,6 +397,7 @@ namespace Challenger_Series
         private Menu CondemnMenu;
         private MenuBool UseQBool;
         private MenuList<string> QModeStringList;
+        private MenuList<string> UseQAntiGapcloserStringList;
         private MenuBool TryToFocus2WBool;
         private MenuBool UseEBool;
         private MenuSlider EDelaySlider;
@@ -400,6 +429,9 @@ namespace Challenger_Series
             QModeStringList =
                 ComboMenu.Add(new MenuList<string>("qmode", "Q Mode: ",
                     new[] {"PRADA", "MARKSMAN", "VHR", "SharpShooter"}));
+            UseQAntiGapcloserStringList =
+                ComboMenu.Add(new MenuList<string>("qantigc", "Use Q Antigapcloser",
+                    new[] {"NEVER", "E-NOT-READY", "ALWAYS"}));
             TryToFocus2WBool = ComboMenu.Add(new MenuBool("focus2w", "Try To Focus 2W", false));
             UseEBool = CondemnMenu.Add(new MenuBool("usee", "Auto E", true));
             EDelaySlider = CondemnMenu.Add(new MenuSlider("edelay", "E Delay: ", 0, 0, 100));
