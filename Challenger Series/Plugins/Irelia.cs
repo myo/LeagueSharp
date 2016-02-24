@@ -55,7 +55,7 @@ namespace Challenger_Series
                         ObjectManager.Get<Obj_AI_Hero>()
                             .FirstOrDefault(
                                 hero =>
-                                    hero.IsEnemy && !hero.IsDead && hero.Health < Q.GetDamage(hero) &&
+                                    hero.IsEnemy && !hero.IsDead && hero.Health < Q.GetDamage(hero) && hero.Health > 1 &&
                                     hero.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650);
                     if (killableEnemy != null && killableEnemy.IsValidTarget())
                     {

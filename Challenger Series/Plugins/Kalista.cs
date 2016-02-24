@@ -99,7 +99,7 @@ namespace Challenger_Series.Plugins
                         pi.Speed = 1400;
                         pi.From = target.Position;
                         pi.Type = SkillshotType.SkillshotLine;
-                        foreach (var enemy in GameObjects.EnemyHeroes.Where(en => en.Distance(ObjectManager.Player) > 1050))
+                        foreach (var enemy in GameObjects.EnemyHeroes.Where(en => en.Distance(ObjectManager.Player) > 1050 && en.Health > 1))
                         {
                             var prediction = Movement.GetPrediction(enemy, 0.25f, 40, 1400);
                             var posLists = new List<Vector3>();

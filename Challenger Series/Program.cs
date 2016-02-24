@@ -37,6 +37,9 @@ namespace Challenger_Series
                     case "Kalista":
                         new Kalista();
                         break;
+                    case "KogMaw":
+                        new KogMaw();
+                        break;
                 }
             };
         }

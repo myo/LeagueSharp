@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="CSPlugin.cs" />
     <Compile Include="Plugins\Kalista.cs" />
+    <Compile Include="Plugins\KogMaw.cs" />
     <Compile Include="Plugins\Soraka.cs" />
     <Compile Include="Plugins\Vayne.cs" />
     <Compile Include="Program.cs" />
