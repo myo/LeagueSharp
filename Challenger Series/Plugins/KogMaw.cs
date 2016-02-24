@@ -31,7 +31,7 @@ namespace Challenger_Series.Plugins
             base.E = new Spell(SpellSlot.E, 1250);
             base.E.SetSkillshot(0.25f, 120f, 1400f, false, SkillshotType.SkillshotLine);
             base.R = new Spell(SpellSlot.R, 1200);
-            base.R.SetSkillshot(0.225f, 75f, 1200f, false, SkillshotType.SkillshotCircle);
+            base.R.SetSkillshot(1.2f, 75f, 1200f, false, SkillshotType.SkillshotCircle);
             InitializeMenu();
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
