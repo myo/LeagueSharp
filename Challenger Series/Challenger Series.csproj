@@ -44,6 +44,9 @@
     <Reference Include="SharpDX">
       <HintPath>C:\L3\System\SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX.Direct3D9">
+      <HintPath>C:\L3\System\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -56,13 +59,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CSPlugin.cs" />
+    <Compile Include="Plugins\Kalista.cs" />
     <Compile Include="Plugins\Soraka.cs" />
     <Compile Include="Plugins\Vayne.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Plugins\Irelia.cs" />
+    <Compile Include="Utils\HpBarDamageIndicator.cs" />
     <Compile Include="Utils\Misc.cs" />
+    <Compile Include="Utils\VectorHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

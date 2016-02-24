@@ -52,7 +52,7 @@ namespace Challenger_Series
                 Orbwalker.ActiveMode != OrbwalkingMode.Hybrid) return;
             QLogic();
             ELogic();
-            Orbwalker.SetAttackState(Orbwalker.ActiveMode == OrbwalkingMode.Combo && ObjectManager.Player.Level < BlockAutoAttacksSlider.Value);
+            Orbwalker.SetAttackState(!BlockAutoAttacksBool);
         }
 
         public override void OnProcessSpellCast(GameObject sender, GameObjectProcessSpellCastEventArgs args)
@@ -126,7 +126,7 @@ namespace Challenger_Series
         private MenuSlider UltIfAnAllyHpIsLessThanSlider;
         private MenuBool CheckIfAllyCanSurviveBool;
         private MenuBool TryToUltAfterIgniteBool;
-        private MenuSlider BlockAutoAttacksSlider;
+        private MenuBool BlockAutoAttacksBool;
         private MenuKeyBind DisableQKey;
         private MenuSlider DontHealIfImBelowHpSlider;
         private MenuBool DrawW;
@@ -182,7 +182,7 @@ namespace Challenger_Series
 
             TryToUltAfterIgniteBool = MainMenu.Add(new MenuBool("ultafterignite", "ULT (R) after IGNITE", false));
 
-            BlockAutoAttacksSlider = MainMenu.Add(new MenuSlider("blockaas", "Block AutoAttacks after LVL: ", 8, 0, 18));
+            BlockAutoAttacksBool = MainMenu.Add(new MenuBool("blockaas", "Block AutoAttacks?", true));
 
             DrawW = MainMenu.Add(new MenuBool("draww", "Draw W?", true));
 

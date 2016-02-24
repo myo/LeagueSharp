@@ -9,8 +9,10 @@
  */
 #endregion License
 
+using Challenger_Series.Plugins;
 using LeagueSharp;
 using LeagueSharp.SDK;
+using LeagueSharp.SDK.Core.Utils;
 
 namespace Challenger_Series
 {
@@ -20,6 +22,7 @@ namespace Challenger_Series
         {
             Events.OnLoad += (sender, eventArgs) =>
             {
+                Game.PrintChat("" + Game.MapId);
                 switch (ObjectManager.Player.ChampionName)
                 {
                     case "Soraka":
@@ -30,6 +33,9 @@ namespace Challenger_Series
                         break;
                     case "Irelia":
                         new Irelia();
+                        break;
+                    case "Kalista":
+                        new Kalista();
                         break;
                 }
             };

@@ -9,10 +9,14 @@
  */
 #endregion License
 
+using System;
+using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using SharpDX;
+using SharpDX.Text;
+using Color = System.Drawing.Color;
 
 namespace Challenger_Series.Utils
 {
