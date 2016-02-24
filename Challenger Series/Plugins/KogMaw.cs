@@ -133,7 +133,7 @@ namespace Challenger_Series.Plugins
             GetInPositionForWBeforeActivatingBool =
                 ComboMenu.Add(new MenuBool("koggiewintime", "Dont Activate W if In Danger!", false));
             HarassMenu = MainMenu.Add(new Menu("koggieharassmenu", "Harass Settings"));
-            UseRHarass = HarassMenu.Add(new MenuBool("koggieuserharass", "UseRHarass", true));
+            UseRHarass = HarassMenu.Add(new MenuBool("koggieuserharass", "Use R", true));
             JungleclearMenu = MainMenu.Add(new Menu("koggiejgclearmenu", "Jungleclear Settings: "));
             UseWJungleClearMenu = JungleclearMenu.Add(new Menu("koggiewjgcleartargets", "W if TARGET is: "));
 
