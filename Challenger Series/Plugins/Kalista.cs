@@ -497,7 +497,7 @@ namespace Challenger_Series.Plugins
                             R.Cast();
                         }
                         if (UseRInterruptBool && sdata != null && sdata.SpellTags != null &&
-                            sdata.SpellTags.Any(st => st == SpellTags.Interruptable))
+                            sdata.SpellTags.Any(st => st == SpellTags.Interruptable) && sender.DistanceToPlayer() < sdata.Range)
                         {
                             R.Cast();
                         }
