@@ -234,6 +234,9 @@ namespace Challenger_Series.Plugins
         private MenuBool FocusWBuffedMinions;
         private MenuBool AlwaysUseEIf2MinionsKillableBool;
         private Menu RendSmiteMenu;
+        private Menu RendDamageMenu;
+        private MenuSlider ReduceRendDamageBySlider;
+        private MenuSlider IncreaseRendDamageBySlider;
         private Menu DrawMenu;
         private MenuBool DrawERangeBool;
         private MenuBool DrawRRangeBool;
@@ -284,7 +287,11 @@ namespace Challenger_Series.Plugins
                     RendSmiteMenu.Add(new MenuBool(mob, mob, true));
                 }
             }
-
+            RendDamageMenu = MainMenu.Add(new Menu("kalirenddmgmenu", "Adjust Rend (E) DMG Prediction: "));
+            ReduceRendDamageBySlider =
+                RendDamageMenu.Add(new MenuSlider("kalirendreducedmg", "Reduce E DMG by: ", 0, 0, 300));
+            IncreaseRendDamageBySlider =
+                RendDamageMenu.Add(new MenuSlider("kalirendincreasedmg", "Increse E DMG by: ", 0, 0, 300));
             DrawMenu = MainMenu.Add(new Menu("kalidrawmenu", "Drawing Settings: "));
             DrawERangeBool = DrawMenu.Add(new MenuBool("drawerangekali", "Draw E Range", true));
             DrawRRangeBool = DrawMenu.Add(new MenuBool("kalidrawrrange", "Draw R Range", true));
@@ -433,6 +440,8 @@ namespace Challenger_Series.Plugins
                 }
                 var dmg = GetRendDmg(target);
                 //check if damage > target hp + all shields affecting target
+                dmg -= ReduceRendDamageBySlider.Value;
+                dmg += IncreaseRendDamageBySlider.Value;
                 return dmg > actualTargetHealth;
             }
             return false;
