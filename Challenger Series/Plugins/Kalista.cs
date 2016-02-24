@@ -4,8 +4,8 @@
  * from the LeagueSharp staff.
  * 
  * Author: imsosharp
- * Date: 2/21/2016
- * File: Soraka.cs
+ * Date: 2/24/2016
+ * File: Kalista.cs
  */
 #endregion License
 
@@ -390,7 +390,7 @@ namespace Challenger_Series.Plugins
                 var dmg = E.GetDamage(target, Damage.DamageStage.Default) + E.GetDamage(target, Damage.DamageStage.Buff) +
                           Q.GetDamage(target) + E.GetDamage(target)/2;
                 //exhaust reduces target damage by 40%
-                if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
+                if (ObjectManager.Player.HasBuff("SummonerExhaustSlow") || ObjectManager.Player.HasBuff("summonerexhaust"))
                 {
                     dmg *= 0.6f;
                 }
