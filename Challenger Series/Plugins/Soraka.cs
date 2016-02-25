@@ -96,7 +96,7 @@ namespace Challenger_Series
                 foreach (
                     var e in
                         GameObjects.EnemyHeroes.Where(
-                            en => en.IsVisible && !en.IsDead && en.Distance(ObjectManager.Player) < 2500))
+                            en => en.IsValidTarget() && en.Distance(ObjectManager.Player) < 2500))
                 {
                     var ip = Drawing.WorldToScreen(e.Position); //start pos
 

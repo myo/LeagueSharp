@@ -55,7 +55,7 @@ namespace Challenger_Series
                         ObjectManager.Get<Obj_AI_Hero>()
                             .FirstOrDefault(
                                 hero =>
-                                    hero.IsEnemy && !hero.IsDead && hero.Health < Q.GetDamage(hero) && hero.Health > 1 &&
+                                    hero.IsEnemy && hero.IsValidTarget() && hero.Health < Q.GetDamage(hero) &&
                                     hero.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 650);
                     if (killableEnemy != null && killableEnemy.IsValidTarget())
                     {
@@ -86,7 +86,7 @@ namespace Challenger_Series
                                                     650 &&
                                                     m.IsEnemy &&
                                                     m.ServerPosition.Distance(target.ServerPosition) <
-                                                    distBetweenMeAndTarget && m.Health > 1 &&
+                                                    distBetweenMeAndTarget && m.IsValidTarget() &&
                                                     m.Health < Q.GetDamage(m))
                                             .OrderBy(m => m.Position.Distance(target.ServerPosition))
                                             .FirstOrDefault();
@@ -105,7 +105,7 @@ namespace Challenger_Series
                                                     650 && m.IsEnemy &&
                                                     m.ServerPosition.Distance(target.ServerPosition) <
                                                     distBetweenMeAndTarget &&
-                                                    m.Health > 1 && m.Health < Q.GetDamage(m))
+                                                    m.IsValidTarget() && m.Health < Q.GetDamage(m))
                                             .OrderByDescending(m => m.Position.Distance(target.ServerPosition))
                                             .FirstOrDefault();
                                     if (firstGapclosingMinion != null)
@@ -134,7 +134,7 @@ namespace Challenger_Series
                                                     650 && m.IsEnemy &&
                                                     m.ServerPosition.Distance(target.ServerPosition) <
                                                     distBetweenMeAndTarget &&
-                                                    m.Health > 1 && m.Health < Q.GetDamage(m))
+                                                    m.IsValidTarget() && m.Health < Q.GetDamage(m))
                                             .OrderByDescending(m => m.Position.Distance(target.ServerPosition))
                                             .FirstOrDefault();
                             if (firstGapclosingMinion != null)
@@ -190,7 +190,7 @@ namespace Challenger_Series
                                     m =>
                                         m.IsEnemy && m.Position.Distance(ObjectManager.Player.ServerPosition) < 650 &&
                                         m.Position.Distance(ObjectManager.Player.Position) >
-                                        ObjectManager.Player.AttackRange && m.Health > 1 &&
+                                        ObjectManager.Player.AttackRange && m.IsValidTarget() &&
                                         m.Health < 25);
                         if (unkillableMinion != null)
                         {
@@ -205,7 +205,7 @@ namespace Challenger_Series
                                 .FirstOrDefault(
                                     m =>
                                         m.IsEnemy && m.Position.Distance(ObjectManager.Player.ServerPosition) < 650 &&
-                                        m.Health > 1 && m.Health < Q.GetDamage(m));
+                                        m.IsValidTarget() && m.Health < Q.GetDamage(m));
                         if (killableMinion != null)
                         {
                             Q.Cast(killableMinion);

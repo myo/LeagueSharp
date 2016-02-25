@@ -145,7 +145,8 @@ namespace Challenger_Series
                 if (sdata != null)
                 {
                     if (UseEAntiGapcloserBool &&
-                        (ObjectManager.Player.Distance(args.Start.Extend(args.End, sdata.Range)) < 350 || args.Target.IsMe) &&
+                        (ObjectManager.Player.Distance(args.Start.Extend(args.End, sdata.Range)) < 350 ||
+                         args.Target.IsMe) &&
                         sdata.SpellTags.Any(st => st == SpellTags.Dash || st == SpellTags.Blink))
                     {
                         if (E.IsReady())
@@ -159,9 +160,21 @@ namespace Challenger_Series
                                 case "ALWAYS":
                                 {
                                     if (args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
-                                        Q.Cast(ObjectManager.Player.ServerPosition.Extend(args.End, -300));
+                                    {
+                                        var pos = ObjectManager.Player.ServerPosition.Extend(args.End, -300);
+                                        if (!IsDangerousPosition(pos))
+                                        {
+                                            Q.Cast(pos);
+                                        }
+                                    }
                                     if (sender.Distance(ObjectManager.Player) < 350)
-                                        Q.Cast(ObjectManager.Player.ServerPosition.Extend(sender.Position, -300));
+                                    {
+                                        var pos = ObjectManager.Player.ServerPosition.Extend(sender.Position, -300);
+                                        if (!IsDangerousPosition(pos))
+                                        {
+                                            Q.Cast(pos);
+                                        }
+                                    }
                                     break;
                                 }
                                 case "E-NOT-READY":
@@ -169,9 +182,21 @@ namespace Challenger_Series
                                     if (!E.IsReady())
                                     {
                                         if (args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
-                                            Q.Cast(ObjectManager.Player.ServerPosition.Extend(args.End, -300));
+                                        {
+                                            var pos = ObjectManager.Player.ServerPosition.Extend(args.End, -300);
+                                            if (!IsDangerousPosition(pos))
+                                            {
+                                                Q.Cast(pos);
+                                            }
+                                        }
                                         if (sender.Distance(ObjectManager.Player) < 350)
-                                            Q.Cast(ObjectManager.Player.ServerPosition.Extend(sender.Position, -300));
+                                        {
+                                            var pos = ObjectManager.Player.ServerPosition.Extend(sender.Position, -300);
+                                            if (!IsDangerousPosition(pos))
+                                            {
+                                                Q.Cast(pos);
+                                            }
+                                        }
                                     }
                                     break;
                                 }
@@ -222,7 +247,7 @@ namespace Challenger_Series
                 foreach (
                     var e in
                         GameObjects.EnemyHeroes.Where(
-                            en => en.IsVisible && !en.IsDead && en.Distance(ObjectManager.Player) < 2500))
+                            en => en.IsValidTarget() && en.Distance(ObjectManager.Player) < 2500))
                 {
                     var ip = Drawing.WorldToScreen(e.Position); //start pos
 
@@ -271,7 +296,7 @@ namespace Challenger_Series
                                     tumblePosition = Game.CursorPos;
                                     break;
                             }
-                            if (tumblePosition.Distance(ObjectManager.Player.Position) > 2000) return;
+                            if (tumblePosition.Distance(ObjectManager.Player.Position) > 2000 || IsDangerousPosition(tumblePosition)) return;
                             Q.Cast(tumblePosition);
                         }
                     }
@@ -288,7 +313,7 @@ namespace Challenger_Series
                     }
                     if (UseQFarm && Q.IsReady())
                     {
-                        if (tg.Name.Contains("SRU_"))
+                        if (tg.Name.Contains("SRU_") && !IsDangerousPosition(Game.CursorPos))
                         {
                             Q.Cast(Game.CursorPos);
                         }
@@ -305,7 +330,7 @@ namespace Challenger_Series
                             if (GameObjects.EnemyMinions.Count(
                                 m =>
                                     m.Position.Distance(ObjectManager.Player.Position) < 550 &&
-                                    m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + Q.GetDamage(m)) > 0)
+                                    m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + Q.GetDamage(m)) > 0 && !IsDangerousPosition(Game.CursorPos))
                             {
                                 Q.Cast(Game.CursorPos);
                             }
@@ -355,8 +380,12 @@ namespace Challenger_Series
                 {
                     if (Q.IsReady() && UseQBool)
                     {
-                        Q.Cast(ObjectManager.Player.ServerPosition.Extend(possibleNearbyMeleeChampion.ServerPosition,
-                            -350));
+                        var pos = ObjectManager.Player.ServerPosition.Extend(possibleNearbyMeleeChampion.ServerPosition,
+                            -350);
+                        if (!IsDangerousPosition(pos))
+                        {
+                            Q.Cast(pos);
+                        }
                         orbwalkingActionArgs.Process = false;
                     }
                     if (UseEWhenMeleesNearBool && !Q.IsReady() && E.IsReady())
@@ -760,9 +789,9 @@ namespace Challenger_Series
         public static bool IsDangerousPosition(Vector3 pos)
         {
             return GameObjects.EnemyHeroes.Any(
-                e => e.IsValidTarget() && e.IsVisible &&
+                e => e.IsValidTarget() &&
                      (e.Distance(pos) < 375) && (e.GetWaypoints().LastOrDefault().Distance(pos) > 550)) ||
-                     (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true)) || pos.IsWall();
+                     (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true));
         }
 
         public static bool IsKillable(Obj_AI_Hero hero)
