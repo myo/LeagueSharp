@@ -68,7 +68,7 @@ namespace Challenger_Series.Plugins
                     if (
                         GameObjects.EnemyHeroes.Any(
                             e =>
-                                e.DistanceToPlayer() > 615 &&
+                                e.Distance(ObjectManager.Player.ServerPosition) > 615 &&
                                 GetRendBuff(e).Count >= MinEnemyStacksForEMinionResetSlider.Value) &&
                         GameObjects.EnemyMinions.Any(m => IsRendKillable(m)))
                     {
@@ -120,7 +120,7 @@ namespace Challenger_Series.Plugins
                 {
                     var wMarkedEnemy =
                         GameObjects.EnemyHeroes.FirstOrDefault(
-                            h => h.DistanceToPlayer() < 600 && h.HasBuff("kalistacoopstrikemarkally"));
+                            h => h.Distance(ObjectManager.Player.ServerPosition) < 600 && h.HasBuff("kalistacoopstrikemarkally"));
                     if (wMarkedEnemy != null && wMarkedEnemy.IsValidTarget())
                     {
                         Orbwalker.ForceTarget = wMarkedEnemy;
@@ -130,7 +130,7 @@ namespace Challenger_Series.Plugins
                 {
                     var wMarkedEnemy =
                         GameObjects.EnemyHeroes.FirstOrDefault(
-                            h => h.DistanceToPlayer() < 600 && h.HasBuff("kalistacoopstrikemarkally"));
+                            h => h.Distance(ObjectManager.Player.ServerPosition) < 600 && h.HasBuff("kalistacoopstrikemarkally"));
                     if (wMarkedEnemy != null && wMarkedEnemy.IsValidTarget())
                     {
                         Orbwalker.ForceTarget = wMarkedEnemy;
@@ -144,7 +144,7 @@ namespace Challenger_Series.Plugins
                         Orbwalker.ForceTarget =
                             GameObjects.EnemyMinions.FirstOrDefault(
                                 m =>
-                                    m.DistanceToPlayer() < 615 && m.HasBuff("kalistacoopstrikemarkally") &&
+                                    m.Distance(ObjectManager.Player.ServerPosition) < 615 && m.HasBuff("kalistacoopstrikemarkally") &&
                                     m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + W.GetDamage(m));
                     }
                 }
@@ -374,7 +374,7 @@ namespace Challenger_Series.Plugins
         public bool IsPierceRendComboKillable(Obj_AI_Base target)
         {
             //If target doesn't have rend buff or is too far away, rend will most likely not kill him.
-            if (E.Level == 0 || !target.HasBuff("kalistaexpungemarker") || target.DistanceToPlayer() > 985)
+            if (E.Level == 0 || !target.HasBuff("kalistaexpungemarker") || target.Distance(ObjectManager.Player.ServerPosition) > 985)
                 return false;
 
             //take shields into account
@@ -449,7 +449,7 @@ namespace Challenger_Series.Plugins
 
         public float GetRendDmg(Obj_AI_Base target)
         {
-            if (E.Level == 0 || !target.HasBuff("kalistaexpungemarker") || target.DistanceToPlayer() > 985) return 0;
+            if (E.Level == 0 || !target.HasBuff("kalistaexpungemarker") || target.Distance(ObjectManager.Player.ServerPosition) > 985) return 0;
             //get the rend damage
             var dmg = E.GetDamage(target) + E.GetDamage(target, Damage.DamageStage.Buff);
             //exhaust reduces target damage by 40%
@@ -506,7 +506,7 @@ namespace Challenger_Series.Plugins
                             R.Cast();
                         }
                         if (UseRInterruptBool && sdata != null && sdata.SpellTags != null &&
-                            sdata.SpellTags.Any(st => st == SpellTags.Interruptable) && sender.DistanceToPlayer() < sdata.Range)
+                            sdata.SpellTags.Any(st => st == SpellTags.Interruptable) && sender.Distance(ObjectManager.Player.ServerPosition) < sdata.Range)
                         {
                             R.Cast();
                         }
@@ -577,8 +577,8 @@ namespace Challenger_Series.Plugins
                         ObjectManager.Get<Obj_AI_Hero>()
                             .Where(
                                 h =>
-                                    h.IsEnemy && h.IsHPBarRendered && h.DistanceToPlayer() > 700 &&
-                                    h.DistanceToPlayer() < 1400)
+                                    h.IsEnemy && h.IsHPBarRendered && h.Distance(ObjectManager.Player.ServerPosition) > 700 &&
+                                    h.Distance(ObjectManager.Player.ServerPosition) < 1400)
                     )
                 {
                     if ((unit.HasBuff("rocketgrab2") && BalistaBool) ||
@@ -591,10 +591,10 @@ namespace Challenger_Series.Plugins
             }
             if (UseREngageBool)
             {
-                foreach (var enemy in GameObjects.EnemyHeroes.Where(en => en.DistanceToPlayer() < 1000 && en.IsFacing(ObjectManager.Player)))
+                foreach (var enemy in GameObjects.EnemyHeroes.Where(en => en.Distance(ObjectManager.Player.ServerPosition) < 1000 && en.IsFacing(ObjectManager.Player)))
                 {
                     var waypoints = enemy.GetWaypoints();
-                    if (waypoints.LastOrDefault().DistanceToPlayer() < 400)
+                    if (waypoints.LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 400)
                     {
                         R.Cast();
                     }

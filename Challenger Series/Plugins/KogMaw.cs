@@ -45,7 +45,7 @@ namespace Challenger_Series.Plugins
                 if (orbwalkingActionArgs.Target is Obj_AI_Hero)
                 {
                     var target = orbwalkingActionArgs.Target as Obj_AI_Hero;
-                    var distFromTargetToMe = target.DistanceToPlayer();
+                    var distFromTargetToMe = target.Distance(ObjectManager.Player.ServerPosition);
                     if (Q.IsReady())
                     {
                         QLogic(target);
@@ -98,7 +98,7 @@ namespace Challenger_Series.Plugins
             {
                 Drawing.DrawCircle(ObjectManager.Player.Position, GetRRange() + 25, R.IsReady() ? Color.LimeGreen : Color.Red);
             }
-            foreach(var targetCloseToMouse in GameObjects.EnemyHeroes.Where(en => en.DistanceToPlayer() > ObjectManager.Player.GetRealAutoAttackRange() && en.Position.Distance(Game.CursorPos) < 250))
+            foreach(var targetCloseToMouse in GameObjects.EnemyHeroes.Where(en => en.Distance(ObjectManager.Player.ServerPosition) > ObjectManager.Player.GetRealAutoAttackRange() && en.Position.Distance(Game.CursorPos) < 250))
             {
                 ELogic(targetCloseToMouse);
             }
@@ -168,7 +168,7 @@ namespace Challenger_Series.Plugins
         private void WLogic()
         {
             if (W.IsReady() && !IsWActive() &&
-                GameObjects.EnemyHeroes.Any(h => h.DistanceToPlayer() < GetAttackRangeAfterWIsApplied() && h.Health > 1 && h.IsVisible) && Orbwalker.ActiveMode == OrbwalkingMode.Combo)
+                GameObjects.EnemyHeroes.Any(h => h.Distance(ObjectManager.Player.ServerPosition) < GetAttackRangeAfterWIsApplied() && h.Health > 1 && h.IsVisible) && Orbwalker.ActiveMode == OrbwalkingMode.Combo)
             {
                 W.Cast();
             }
@@ -192,9 +192,9 @@ namespace Challenger_Series.Plugins
             if (GetRStacks() >= MaxRStacksSlider.Value) return;
             foreach (
                 var enemy in
-                    GameObjects.EnemyHeroes.Where(h => h.DistanceToPlayer() < R.Range && h.Health < R.GetDamage(h) && h.Health > 1))
+                    GameObjects.EnemyHeroes.Where(h => h.Distance(ObjectManager.Player.ServerPosition) < R.Range && h.Health < R.GetDamage(h) && h.Health > 1))
             {
-                var dist = enemy.DistanceToPlayer();
+                var dist = enemy.Distance(ObjectManager.Player.ServerPosition);
                 if (IsWActive() && dist < GetAttackRangeAfterWIsApplied() + 25) break;
                 if (Orbwalker.CanAttack() && dist < 550) break;
                 var prediction = R.GetPrediction(enemy, true);
@@ -205,9 +205,9 @@ namespace Challenger_Series.Plugins
             }
             if (IsWActive() || (Orbwalker.ActiveMode != OrbwalkingMode.Combo && !UseRHarass)) return;
 
-            foreach (var enemy in GameObjects.EnemyHeroes.Where(h => h.DistanceToPlayer() < R.Range && h.Health > 1))
+            foreach (var enemy in GameObjects.EnemyHeroes.Where(h => h.Distance(ObjectManager.Player.ServerPosition) < R.Range && h.Health > 1))
             {
-                var dist = enemy.DistanceToPlayer();
+                var dist = enemy.Distance(ObjectManager.Player.ServerPosition);
                 if (Orbwalker.CanAttack() && dist < 550) break;
                 var prediction = R.GetPrediction(enemy, true);
                 if ((int) prediction.Hitchance >= (int) HitChance.Medium)
