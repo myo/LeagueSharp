@@ -454,7 +454,7 @@ namespace Challenger_Series
                 ComboMenu.Add(new MenuBool("dontattackwhileinvisible", "Smart Invisible Attacking", true));
             UseRBool = ComboMenu.Add(new MenuBool("user", "Use R In Combo", false));
             UseEAs3rdWProcBool =
-                HarassMenu.Add(new MenuBool("usee3rdwproc", "Use E as 3rd W Proc Before LVL: ", true));
+                HarassMenu.Add(new MenuBool("usee3rdwproc", "Use E as 3rd W Proc Before LVL: ", false));
             UseQBonusOnEnemiesNotCS =
                 HarassMenu.Add(new MenuBool("useqonenemiesnotcs", "Use Q Bonus On ENEMY not CS", false));
             UseQOnlyAt2WStacksBool = HarassMenu.Add(new MenuBool("useqonlyon2stackedenemies", "Use Q If Enemy Have 2W Stacks", false));
