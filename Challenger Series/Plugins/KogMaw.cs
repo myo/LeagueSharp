@@ -168,7 +168,7 @@ namespace Challenger_Series.Plugins
         private void WLogic()
         {
             if (W.IsReady() && !IsWActive() &&
-                GameObjects.EnemyHeroes.Any(h => h.DistanceToPlayer() < GetAttackRangeAfterWIsApplied() && h.Health > 1) && Orbwalker.ActiveMode == OrbwalkingMode.Combo)
+                GameObjects.EnemyHeroes.Any(h => h.DistanceToPlayer() < GetAttackRangeAfterWIsApplied() && h.Health > 1 && h.IsVisible) && Orbwalker.ActiveMode == OrbwalkingMode.Combo)
             {
                 W.Cast();
             }
