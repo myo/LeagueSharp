@@ -22,7 +22,6 @@ namespace Challenger_Series
         {
             Events.OnLoad += (sender, eventArgs) =>
             {
-                Game.PrintChat("" + Game.MapId);
                 switch (ObjectManager.Player.ChampionName)
                 {
                     case "Soraka":
