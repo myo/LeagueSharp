@@ -60,7 +60,7 @@ namespace Challenger_Series.Plugins
                     }
                 }
                 if (orbwalkingActionArgs.Target is Obj_AI_Minion && GetJungleCampsOnCurrentMap() != null &&
-                     GetJungleCampsOnCurrentMap().Contains(orbwalkingActionArgs.Target.Name))
+                     GetJungleCampsOnCurrentMap().Contains(orbwalkingActionArgs.Target.Name) && Orbwalker.ActiveMode == OrbwalkingMode.LaneClear)
                 {
                     if (UseWJungleClearMenu[orbwalkingActionArgs.Target.Name].GetValue<MenuBool>())
                     {
@@ -98,7 +98,7 @@ namespace Challenger_Series.Plugins
             {
                 Drawing.DrawCircle(ObjectManager.Player.Position, GetRRange() + 25, R.IsReady() ? Color.LimeGreen : Color.Red);
             }
-            foreach(var targetCloseToMouse in GameObjects.EnemyHeroes.Where(en => en.Distance(ObjectManager.Player.ServerPosition) > ObjectManager.Player.GetRealAutoAttackRange() && en.Position.Distance(Game.CursorPos) < 250))
+            foreach(var targetCloseToMouse in GameObjects.EnemyHeroes.Where(en => en.Distance(ObjectManager.Player.ServerPosition) > ObjectManager.Player.GetRealAutoAttackRange() && en.Distance(ObjectManager.Player.ServerPosition) < 1400 && en.Position.Distance(Game.CursorPos) < 250))
             {
                 ELogic(targetCloseToMouse);
             }
