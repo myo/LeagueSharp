@@ -204,6 +204,11 @@ namespace Challenger_Series.Plugins
                 HpBarDamageIndicator.DamageToUnit = GetRendDmg;
             }
             HpBarDamageIndicator.Enabled = DrawEDamage;
+            //this is intended.
+            if (GameObjects.EnemyMinions.Any(m => m.BaseSkinName.Contains("MinionSiege") && IsRendKillable(m)))
+            {
+                E.Cast();
+            }
         }
 
         private Menu ComboMenu;
