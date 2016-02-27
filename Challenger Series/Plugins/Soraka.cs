@@ -119,6 +119,7 @@ namespace Challenger_Series
         private Menu HealBlacklistMenu;
         private Menu UltBlacklistMenu;
         private MenuList<string> PlayModeStringList;
+        private MenuSlider OnlyQIfMyHPLessThanSlider;
         private MenuBool NoNeedForSpacebarBool;
         private MenuBool DontWTanksBool;
         private MenuSlider ATankTakesXHealsToHealSlider;
@@ -161,6 +162,9 @@ namespace Challenger_Series
 
             PlayModeStringList =
                 MainMenu.Add(new MenuList<string>("playmode", "Play Mode: ", new[] {"CHALLENGER", "BRONZE"}));
+
+            OnlyQIfMyHPLessThanSlider =
+                MainMenu.Add(new MenuSlider("rakaqonlyifmyhp", "Only Q if my HP < %", 100, 0, 100));
 
             NoNeedForSpacebarBool = MainMenu.Add(new MenuBool("noneed4spacebar", "PLAY ONLY WITH MOUSE! NO SPACEBAR", true));
 
@@ -264,7 +268,7 @@ namespace Challenger_Series
                     {
                         return;
                     }
-                    if (ObjectManager.Player.MaxHealth - ObjectManager.Player.Health > GetQHealingAmount())
+                    if (ObjectManager.Player.HealthPercent <= OnlyQIfMyHPLessThanSlider && ObjectManager.Player.MaxHealth - ObjectManager.Player.Health > GetQHealingAmount())
                     {
                         foreach (var hero in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsValidTarget(925)))
                         {
