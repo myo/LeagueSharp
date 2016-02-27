@@ -470,7 +470,7 @@ namespace Challenger_Series.Plugins
             //you deal -7% dmg to dragon for each killed dragon
             if (target.Name.Contains("Dragon") && ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
             {
-                dmg *= (1f - (0.1f*ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
+                dmg *= (1f - (0.075f*ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
             }
             return dmg;
         }
