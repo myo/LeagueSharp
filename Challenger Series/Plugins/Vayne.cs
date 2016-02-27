@@ -523,6 +523,7 @@ namespace Challenger_Series
                     var prediction = E.GetPrediction(hero);
                     for (var i = 15; i < pD; i += 75)
                     {
+                        if (i > pD) return false;
                         var posFlags = NavMesh.GetCollisionFlags(
                             prediction.UnitPosition.ToVector2()
                                 .Extend(
@@ -548,6 +549,7 @@ namespace Challenger_Series
 
                     for (var i = 15; i < pD; i += 100)
                     {
+                        if (i > pD) return false;
                         if (IsCollisionable(pP.ToVector2().Extend(alpha,
                             i)
                             .ToVector3()) && IsCollisionable(pP.ToVector2().Extend(beta, i).ToVector3())) return true;
@@ -574,6 +576,7 @@ namespace Challenger_Series
 
                 for (var i = 15; i < pD; i += 100)
                 {
+                    if (i > pD) return false;
                     if (IsCollisionable(pP.ToVector2().Extend(alpha,
                         i)
                         .ToVector3()) && IsCollisionable(pP.ToVector2().Extend(beta, i).ToVector3())) return true;
@@ -597,6 +600,7 @@ namespace Challenger_Series
 
                 for (var i = 15; i < pD; i += 100)
                 {
+                    if (i > pD) return false;
                     if (IsCollisionable(pP.ToVector2().Extend(alpha,
                         i)
                         .ToVector3()) || IsCollisionable(pP.ToVector2().Extend(beta, i).ToVector3())) return true;
@@ -626,6 +630,7 @@ namespace Challenger_Series
                 var prediction = E.GetPrediction(hero);
                 for (var i = 15; i < pD; i += 100)
                 {
+                    if (i > pD) return false;
                     var posCF = NavMesh.GetCollisionFlags(
                         prediction.UnitPosition.ToVector2()
                             .Extend(
