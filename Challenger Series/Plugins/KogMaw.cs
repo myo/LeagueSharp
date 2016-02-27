@@ -45,6 +45,21 @@ namespace Challenger_Series.Plugins
                 if (orbwalkingActionArgs.Target is Obj_AI_Hero)
                 {
                     var target = orbwalkingActionArgs.Target as Obj_AI_Hero;
+                    if (IsWActive())
+                    {
+                        if (ObjectManager.Player.AttackSpeedMod / 2 > HumanizeAttacks.Value && target.InAutoAttackRange() && !GameObjects.EnemyHeroes.Any(enemy => enemy.IsValidTarget() && enemy.IsMelee && enemy.Distance(ObjectManager.Player) < 450))
+                        {
+                            Orbwalker.SetMovementState(false);
+                        }
+                        else
+                        {
+                            Orbwalker.SetMovementState(true);
+                        }
+                    }
+                    else
+                    {
+                        Orbwalker.SetMovementState(true);
+                    }
                     var distFromTargetToMe = target.Distance(ObjectManager.Player.ServerPosition);
                     if (Q.IsReady())
                     {
@@ -102,6 +117,10 @@ namespace Challenger_Series.Plugins
             {
                 ELogic(targetCloseToMouse);
             }
+            if (!IsWActive() || !GameObjects.Enemy.Any(en => en.IsValidTarget() && en.Distance(ObjectManager.Player) < ObjectManager.Player.GetRealAutoAttackRange()))
+            {
+                Orbwalker.SetMovementState(true);
+            }
         }
 
         #endregion Events
@@ -115,6 +134,7 @@ namespace Challenger_Series.Plugins
         private MenuBool UseWBool;
         private MenuBool UseEBool;
         private MenuBool UseRBool;
+        private MenuSlider HumanizeAttacks;
         private MenuSlider MaxRStacksSlider;
         private MenuBool AlwaysSaveManaForWBool;
         private MenuBool UseRHarass;
@@ -130,6 +150,8 @@ namespace Challenger_Series.Plugins
             UseWBool = ComboMenu.Add(new MenuBool("koggieusew", "Use W", true));
             UseEBool = ComboMenu.Add(new MenuBool("koggieusee", "Use E", true));
             UseRBool = ComboMenu.Add(new MenuBool("koggieuser", "Use R", true));
+            HumanizeAttacks =
+                ComboMenu.Add(new MenuSlider("koggiedontmoveifasbiggerthan", "Don't move if AS > %", 10, 2, 10));
             GetInPositionForWBeforeActivatingBool =
                 ComboMenu.Add(new MenuBool("koggiewintime", "Dont Activate W if In Danger!", false));
             HarassMenu = MainMenu.Add(new Menu("koggieharassmenu", "Harass Settings"));
