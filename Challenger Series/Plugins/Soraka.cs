@@ -304,7 +304,7 @@ namespace Challenger_Series
                 GameObjects.AllyHeroes.Where(
                     a =>
                         !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
-                        a.MaxHealth - a.Health > GetWHealingAmount())
+                        a.MaxHealth - a.Health > GetWHealingAmount() && !a.IsRecalling())
                     .OrderByDescending(GetPriority)
                     .ThenBy(ally => ally.Health).FirstOrDefault();
             if (bestHealingCandidate != null)
