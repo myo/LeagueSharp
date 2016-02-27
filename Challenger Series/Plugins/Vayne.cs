@@ -475,7 +475,7 @@ namespace Challenger_Series
             UseEInterruptBool = CondemnMenu.Add(new MenuBool("useeinterrupt", "Use E To Interrupt", true));
             UseEAntiGapcloserBool = CondemnMenu.Add(new MenuBool("useeantigapcloser", "Use E AntiGapcloser", true));
             UseEWhenMeleesNearBool = CondemnMenu.Add(new MenuBool("useewhenmeleesnear", "Use E when Melee near", true));
-            EPushDistanceSlider = CondemnMenu.Add(new MenuSlider("epushdist", "E Push Distance: ", 450, 300, 475));
+            EPushDistanceSlider = CondemnMenu.Add(new MenuSlider("epushdist", "E Push Distance: ", 415, 300, 475));
             EHitchanceSlider = CondemnMenu.Add(new MenuSlider("ehitchance", "Condemn Hitchance", 50, 0, 100));
             SemiAutomaticCondemnKey =
                 CondemnMenu.Add(new MenuKeyBind("semiautoekey", "Semi Automatic Condemn", Keys.E, KeyBindType.Press));
