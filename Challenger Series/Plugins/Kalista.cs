@@ -465,11 +465,6 @@ namespace Challenger_Series.Plugins
             if (E.Level == 0 || !target.HasBuff("kalistaexpungemarker") || target.Distance(ObjectManager.Player.ServerPosition) > 985) return 0;
             //get the rend damage
             var dmg = E.GetDamage(target) + E.GetDamage(target, Damage.DamageStage.Buff);
-            //exhaust reduces target damage by 40%
-            if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
-            {
-                dmg *= 0.6f;
-            }
             //the barontarget buff reduces the damage to baron by 50%
             if (target.Name.Contains("Baron") && ObjectManager.Player.HasBuff("barontarget"))
             {
