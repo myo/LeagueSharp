@@ -254,7 +254,7 @@ namespace Challenger_Series.Plugins
             BalistaBool = WomboComboMenu.Add(new MenuBool("kalibalista", "Balista", true));
             TalistaBool = WomboComboMenu.Add(new MenuBool("kalitalista", "Talista", true));
             SalistaBool = WomboComboMenu.Add(new MenuBool("kalisalista", "Salista", true));
-            UseQCantAABool = ComboMenu.Add(new MenuBool("kaliuseqcombo", "Use Q if cant AA", true));
+            UseQCantAABool = ComboMenu.Add(new MenuBool("kaliuseqcombo", "Use Q if cant AA", false));
             UseQIfECanKillBool = ComboMenu.Add(new MenuBool("kaliuseqecombo", "Use Q > E combo", true));
             UseQManaSlider = ComboMenu.Add(new MenuSlider("kaliuseqmanaslider", "Use Q if Mana% > ", 20));
             //UseQWalljumpKey = ComboMenu.Add(new MenuKeyBind("useqwalljump", "Q Walljump Key", Keys.N, KeyBindType.Press));
