@@ -19,6 +19,7 @@ using LeagueSharp.SDK.Core.UI.IMenu.Values;
 using LeagueSharp.SDK.Core.Utils;
 using LeagueSharp.SDK.Core.Wrappers.Damages;
 using SharpDX;
+using SharpDX.Direct3D9;
 using Collision = LeagueSharp.SDK.Collision;
 using Color = System.Drawing.Color;
 using Menu = LeagueSharp.SDK.Core.UI.IMenu.Menu;
@@ -55,8 +56,9 @@ namespace Challenger_Series.Plugins
                     {
                         if (UseQIfECanKillBool && IsPierceRendComboKillable(target))
                         {
-                            var predictedPos = Q.GetPrediction(target).UnitPosition;
-                            if (predictedPos.Distance(ObjectManager.Player.ServerPosition) < 1100)
+                            var prediction = Q.GetPrediction(target);
+                            var predictedPos = prediction.UnitPosition;
+                            if (predictedPos.Distance(ObjectManager.Player.ServerPosition) < 1100 && prediction.CollisionObjects.Count == 0 && (int)prediction.Hitchance > (int)HitChance.Medium)
                             {
                                 Q.Cast(predictedPos);
                             }
@@ -174,8 +176,14 @@ namespace Challenger_Series.Plugins
                     if (target.Distance(ObjectManager.Player) > 585 && target.Distance(ObjectManager.Player) < 1100 &&
                         UseQCantAABool)
                     {
-                        var predictedPos = Q.GetPrediction(target).UnitPosition;
-                        Q.Cast(predictedPos);
+                        var prediction = Q.GetPrediction(target);
+                        var predictedPos = prediction.UnitPosition;
+                        if (predictedPos.Distance(ObjectManager.Player.ServerPosition) < 1100 &&
+                            prediction.CollisionObjects.Count == 0 &&
+                            (int) prediction.Hitchance > (int) HitChance.Medium)
+                        {
+                            Q.Cast(predictedPos);
+                        }
                     }
                 }
             }
