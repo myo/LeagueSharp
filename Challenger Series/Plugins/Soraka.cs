@@ -277,7 +277,7 @@ namespace Challenger_Series
                                 return;
                             }
                             var pred = Q.GetPrediction(hero);
-                            if (pred.Hitchance > HitChance.Medium)
+                            if ((int)pred.Hitchance > (int)HitChance.Medium && pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < Q.Range)
                             {
                                 Q.Cast(pred.UnitPosition);
                             }
@@ -292,7 +292,7 @@ namespace Challenger_Series
                             return;
                         }
                         var pred = Q.GetPrediction(hero);
-                        if (pred.Hitchance > HitChance.Medium)
+                        if ((int)pred.Hitchance > (int)HitChance.Medium && pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < Q.Range)
                         {
                             Q.Cast(pred.UnitPosition);
                         }
