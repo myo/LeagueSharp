@@ -270,7 +270,7 @@ namespace Challenger_Series
                     }
                     if (ObjectManager.Player.HealthPercent <= OnlyQIfMyHPLessThanSlider && ObjectManager.Player.MaxHealth - ObjectManager.Player.Health > GetQHealingAmount())
                     {
-                        foreach (var hero in GameObjects.Enemy.Where(h => h.IsValidTarget(925)))
+                        foreach (var hero in GameObjects.EnemyHeroes.Where(h => h.IsValidTarget(925)))
                         {
                             if (shouldntKS && Q.GetDamage(hero) > hero.Health)
                             {
