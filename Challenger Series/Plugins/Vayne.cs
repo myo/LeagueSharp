@@ -49,7 +49,6 @@ namespace Challenger_Series
                     {
                         if (sdata.SpellTags == null)
                         {
-                            Game.PrintChat("Skipped loading " + enemy.ChampionName + " " + spell.Name + " because it's broken.");
                             break;
                         }
                         if (
@@ -475,7 +474,7 @@ namespace Challenger_Series
             UseEInterruptBool = CondemnMenu.Add(new MenuBool("useeinterrupt", "Use E To Interrupt", true));
             UseEAntiGapcloserBool = CondemnMenu.Add(new MenuBool("useeantigapcloser", "Use E AntiGapcloser", true));
             UseEWhenMeleesNearBool = CondemnMenu.Add(new MenuBool("useewhenmeleesnear", "Use E when Melee near", true));
-            EPushDistanceSlider = CondemnMenu.Add(new MenuSlider("epushdist", "E Push Distance: ", 415, 300, 475));
+            EPushDistanceSlider = CondemnMenu.Add(new MenuSlider("epushdist", "E Push Distance: ", 425, 300, 475));
             EHitchanceSlider = CondemnMenu.Add(new MenuSlider("ehitchance", "Condemn Hitchance", 50, 0, 100));
             SemiAutomaticCondemnKey =
                 CondemnMenu.Add(new MenuKeyBind("semiautoekey", "Semi Automatic Condemn", Keys.E, KeyBindType.Press));
@@ -523,7 +522,20 @@ namespace Challenger_Series
                     var prediction = E.GetPrediction(hero);
                     for (var i = 15; i < pD; i += 75)
                     {
-                        if (i > pD) return false;
+                        if (i > pD)
+                        {
+                            var lastPosFlags = NavMesh.GetCollisionFlags(
+                            prediction.UnitPosition.ToVector2()
+                                .Extend(
+                                    pP.ToVector2(),
+                                    -pD)
+                                .ToVector3());
+                            if (lastPosFlags.HasFlag(CollisionFlags.Wall) || lastPosFlags.HasFlag(CollisionFlags.Building))
+                            {
+                                return true;
+                            }
+                            return false;
+                        }
                         var posFlags = NavMesh.GetCollisionFlags(
                             prediction.UnitPosition.ToVector2()
                                 .Extend(
@@ -576,10 +588,15 @@ namespace Challenger_Series
 
                 for (var i = 15; i < pD; i += 100)
                 {
-                    if (i > pD) return false;
-                    if (IsCollisionable(pP.ToVector2().Extend(alpha,
-                        i)
-                        .ToVector3()) && IsCollisionable(pP.ToVector2().Extend(beta, i).ToVector3())) return true;
+                    if (i > pD)
+                    {
+                        return IsCollisionable(alpha.Extend(pP.ToVector2(),
+                            -pD)
+                            .ToVector3()) && IsCollisionable(beta.Extend(pP.ToVector2(), -pD).ToVector3());
+                    }
+                    if (IsCollisionable(alpha.Extend(pP.ToVector2(),
+                        -i)
+                        .ToVector3()) && IsCollisionable(beta.Extend(pP.ToVector2(), -i).ToVector3())) return true;
                 }
                 return false;
             }
@@ -600,7 +617,6 @@ namespace Challenger_Series
 
                 for (var i = 15; i < pD; i += 100)
                 {
-                    if (i > pD) return false;
                     if (IsCollisionable(pP.ToVector2().Extend(alpha,
                         i)
                         .ToVector3()) || IsCollisionable(pP.ToVector2().Extend(beta, i).ToVector3())) return true;

@@ -36,7 +36,10 @@ namespace Challenger_Series.Plugins
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Orbwalker.OnAction += OnAction;
+            Rand = new Random();
         }
+
+        private Random Rand;
 
         private void OnAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
         {
@@ -47,7 +50,7 @@ namespace Challenger_Series.Plugins
                     var target = orbwalkingActionArgs.Target as Obj_AI_Hero;
                     if (IsWActive())
                     {
-                        if (ObjectManager.Player.AttackSpeedMod / 2 > HumanizeAttacks.Value && target.InAutoAttackRange() && !GameObjects.EnemyHeroes.Any(enemy => enemy.IsValidTarget() && enemy.IsMelee && enemy.Distance(ObjectManager.Player) < 450))
+                        if (ObjectManager.Player.AttackSpeedMod / 2 > HumanizeAttacks.Value && target.InAutoAttackRange() && !GameObjects.EnemyHeroes.Any(enemy => enemy.IsValidTarget() && enemy.IsMelee && enemy.Distance(ObjectManager.Player) < Rand.Next(350, 400)))
                         {
                             Orbwalker.SetMovementState(false);
                         }
