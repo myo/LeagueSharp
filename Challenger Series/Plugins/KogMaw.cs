@@ -212,7 +212,7 @@ namespace Challenger_Series.Plugins
 
         private void RLogic()
         {
-            if (!UseRBool || !R.IsReady() || ObjectManager.Player.IsRecalling()) return;
+            if (!UseRBool || !R.IsReady() || ObjectManager.Player.IsRecalling() || Orbwalker.ActiveMode == OrbwalkingMode.None) return;
             if (AlwaysSaveManaForWBool && ObjectManager.Player.Mana < GetRMana() + GetWMana()) return;
             if (GetRStacks() >= MaxRStacksSlider.Value) return;
             foreach (
