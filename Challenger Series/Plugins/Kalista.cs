@@ -599,7 +599,7 @@ namespace Challenger_Series.Plugins
             }
             if (UseREngageBool)
             {
-                foreach (var enemy in GameObjects.EnemyHeroes.Where(en => en.Distance(ObjectManager.Player.ServerPosition) < 1000 && en.IsFacing(ObjectManager.Player)))
+                foreach (var enemy in GameObjects.EnemyHeroes.Where(en => en.IsValidTarget(1000) && en.IsFacing(ObjectManager.Player)))
                 {
                     var waypoints = enemy.GetWaypoints();
                     if (waypoints.LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 400)
