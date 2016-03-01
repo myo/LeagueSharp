@@ -379,6 +379,7 @@ namespace Challenger_Series
             if (minAllyHealth <= 1) return;
             foreach (var ally in GameObjects.AllyHeroes)
             {
+                if (HealBlacklistMenu["dontheal" + ally.CharData.BaseSkinName].GetValue<MenuBool>()) return;
                 if (TryToUltAfterIgniteBool && ally.HasBuff("summonerdot") && ally.Health > 400) return;
                 if (CheckIfAllyCanSurviveBool && ally.CountAllyHeroesInRange(800) == 0 &&
                     ally.CountEnemyHeroesInRange(800) > 2) return;
