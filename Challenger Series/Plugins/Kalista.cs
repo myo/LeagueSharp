@@ -77,7 +77,7 @@ namespace Challenger_Series.Plugins
                         E.Cast();
                     }
                 }
-                if (orbwalkingActionArgs.Target is Obj_AI_Minion && GetJungleCampsOnCurrentMap() != null && Orbwalker.ActiveMode == OrbwalkingMode.LaneClear)
+                if (orbwalkingActionArgs.Target is Obj_AI_Minion && GetJungleCampsOnCurrentMap() != null)
                 {
                     var targetName = (orbwalkingActionArgs.Target as Obj_AI_Minion).CharData.BaseSkinName;
 
@@ -368,10 +368,10 @@ namespace Challenger_Series.Plugins
         /// </summary>
         private List<string> TTMobs = new List<string>
         {
-            "Wraith",
-            "Golem",
-            "Wolf",
-            "Spider"
+            "TT_NWraith",
+            "TT_NGolem",
+            "TT_NWolf",
+            "TT_Spiderboss"
         };
 
         //#TODO: Check E Damage every patch

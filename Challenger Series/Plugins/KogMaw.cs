@@ -321,10 +321,10 @@ namespace Challenger_Series.Plugins
         /// </summary>
         private List<string> TTMobs = new List<string>
         {
-            "Wraith",
-            "Golem",
-            "Wolf",
-            "Spider"
+            "TT_NWraith",
+            "TT_NGolem",
+            "TT_NWolf",
+            "TT_Spiderboss"
         };
         #endregion ChampionLogic
     }
