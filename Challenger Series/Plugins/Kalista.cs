@@ -77,10 +77,11 @@ namespace Challenger_Series.Plugins
                         E.Cast();
                     }
                 }
-                if (orbwalkingActionArgs.Target is Obj_AI_Minion && GetJungleCampsOnCurrentMap() != null &&
-                    GetJungleCampsOnCurrentMap().Contains(orbwalkingActionArgs.Target.Name))
+                if (orbwalkingActionArgs.Target is Obj_AI_Minion && GetJungleCampsOnCurrentMap() != null && Orbwalker.ActiveMode == OrbwalkingMode.LaneClear)
                 {
-                    if (RendSmiteMenu[orbwalkingActionArgs.Target.Name].GetValue<MenuBool>())
+                    var targetName = (orbwalkingActionArgs.Target as Obj_AI_Minion).CharData.BaseSkinName;
+
+                    if (GetJungleCampsOnCurrentMap().Contains(targetName) && RendSmiteMenu[targetName].GetValue<MenuBool>())
                     {
                         var minion = orbwalkingActionArgs.Target as Obj_AI_Minion;
                         if (IsRendKillable(minion))
@@ -351,22 +352,15 @@ namespace Challenger_Series.Plugins
         /// </summary>
         private List<string> SRMobs = new List<string>
         {
-            "SRU_Baron12.1.1",
-            "SRU_Blue1.1.1",
-            "SRU_Blue7.1.1",
-            "Sru_Crab15.1.1",
-            "Sru_Crab16.1.1",
-            "SRU_Dragon6.1.1",
-            "SRU_Gromp13.1.1",
-            "SRU_Gromp14.1.1",
-            "SRU_Krug5.1.2",
-            "SRU_Krug11.1.2",
-            "SRU_Murkwolf2.1.1",
-            "SRU_Murkwolf8.1.1",
-            "SRU_Razorbeak3.1.1",
-            "SRU_Razorbeak9.1.1",
-            "SRU_Red4.1.1",
-            "SRU_Red10.1.1"
+            "SRU_Baron",
+            "SRU_Blue",
+            "Sru_Crab",
+            "SRU_Dragon",
+            "SRU_Gromp",
+            "SRU_Krug",
+            "SRU_Murkwolf",
+            "SRU_Razorbeak",
+            "SRU_Red",
         };
 
         /// <summary>
@@ -374,13 +368,10 @@ namespace Challenger_Series.Plugins
         /// </summary>
         private List<string> TTMobs = new List<string>
         {
-            "TT_NWraith1.1.1",
-            "TT_NGolem2.1.1",
-            "TT_NWolf3.1.1",
-            "TT_NWraith4.1.1",
-            "TT_NGolem5.1.1",
-            "TT_NWolf6.1.1",
-            "TT_Spiderboss8.1.1"
+            "Wraith",
+            "Golem",
+            "Wolf",
+            "Spider"
         };
 
         //#TODO: Check E Damage every patch
