@@ -23,6 +23,7 @@ namespace Challenger_Series
 {
     public class Soraka : CSPlugin
     {
+        private Random _rand;
         public Soraka()
         {
             this.Q = new Spell(SpellSlot.Q, 800);
@@ -38,6 +39,7 @@ namespace Challenger_Series
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
+            _rand = new Random();
         }
 
         #region Events
@@ -64,7 +66,7 @@ namespace Challenger_Series
                 if (sdata != null && args.End.Distance(ObjectManager.Player.ServerPosition) < E.Range && sdata.SpellTags != null &&
                     sdata.SpellTags.Any(st => st == SpellTags.Dash || st == SpellTags.Blink))
                 {
-                    E.Cast(args.Start.Extend(args.End, sdata.Range));
+                    E.Cast(args.Start.Extend(args.End, sdata.Range - _rand.Next(5, 50)));
                 }
             }
         }
