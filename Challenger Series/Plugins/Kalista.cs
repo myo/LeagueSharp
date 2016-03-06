@@ -58,7 +58,7 @@ namespace Challenger_Series.Plugins
                         {
                             var prediction = Q.GetPrediction(target);
                             var predictedPos = prediction.UnitPosition;
-                            if (predictedPos.Distance(ObjectManager.Player.ServerPosition) < 1100 && prediction.CollisionObjects.Count == 0 && (int)prediction.Hitchance > (int)HitChance.Medium)
+                            if (predictedPos.Distance(ObjectManager.Player.ServerPosition) < 1100 && prediction.CollisionObjects.Count == 0 && (int)prediction.Hitchance > (int)HitChance.Medium && predictedPos.CountEnemyHeroesInRange(100) >= 1)
                             {
                                 Q.Cast(predictedPos);
                             }
@@ -105,6 +105,7 @@ namespace Challenger_Series.Plugins
                         foreach (var enemy in GameObjects.EnemyHeroes.Where(en => en.Distance(ObjectManager.Player) > 1050 && en.Health > 1))
                         {
                             var prediction = Movement.GetPrediction(enemy, 0.25f, 40, 1400);
+                            if (prediction.UnitPosition.CountEnemyHeroesInRange(100) == 0) return;
                             var posLists = new List<Vector3>();
                             posLists.Add(ObjectManager.Player.ServerPosition);
                             posLists.Add(prediction.UnitPosition);
@@ -181,7 +182,7 @@ namespace Challenger_Series.Plugins
                         var predictedPos = prediction.UnitPosition;
                         if (predictedPos.Distance(ObjectManager.Player.ServerPosition) < 1100 &&
                             prediction.CollisionObjects.Count == 0 &&
-                            (int) prediction.Hitchance > (int) HitChance.Medium)
+                            (int)prediction.Hitchance > (int)HitChance.Medium && predictedPos.CountEnemyHeroesInRange(100) >= 1)
                         {
                             Q.Cast(predictedPos);
                         }
