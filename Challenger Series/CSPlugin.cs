@@ -10,6 +10,8 @@
 #endregion License
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using LeagueSharp.SDK.Core.UI.IMenu;
@@ -21,6 +23,7 @@ namespace Challenger_Series
         public CSPlugin()
         {
             MainMenu = new Menu("challengerseries", ObjectManager.Player.ChampionName + " To The Challenger", true, ObjectManager.Player.ChampionName);
+            LeagueSharp.SDK.Core.Utils.DelayAction.Add(15000, () => Orbwalker.Enabled = true);
         }
 
         #region Spells
@@ -33,6 +36,11 @@ namespace Challenger_Series
         public Spell R { get; set; }
         public Spell R2 { get; set; }
         #endregion Spells
+
+        public List<Obj_AI_Hero> ValidTargets
+        {
+            get { return GameObjects.EnemyHeroes.Where(enemy => enemy.IsValidTarget() && !enemy.IsZombie).ToList(); }
+        }
 
         public Orbwalker Orbwalker { get; } = Variables.Orbwalker;
         public TargetSelector TargetSelector { get; } = Variables.TargetSelector;
