@@ -30,7 +30,7 @@ namespace Mastery_Badge_Spammer
         public static void OnGameLoad(EventArgs args)
         {
             Menu = new Menu("Mastery Emote Spammer", "masteryemotespammermenu", true);
-            Menu.AddItem(new MenuItem("mode", "Mode").SetValue(new StringList(new[] { "MASTERY", "LAUGH" })));
+            Menu.AddItem(new MenuItem("mode", "Mode").SetValue(new StringList(new[] { "MASTERY", "LAUGH", "DISABLED" })));
             Menu.AddItem(
                 new MenuItem("chatdisrespectmode", "Chat Disrespect Mode").SetValue(
                     new StringList(new[] { "DISABLED", "CHAMPION NAME", "SUMMONER NAME" })));
@@ -46,7 +46,9 @@ namespace Mastery_Badge_Spammer
             Menu.AddItem(new MenuItem("aftere", "After E").SetValue(false));
             Menu.AddItem(new MenuItem("afterr", "After R").SetValue(false));
             Menu.AddItem(new MenuItem("usepackets", "PACKET CASTING? (GARENA FIX)").SetValue(false));
-            Menu.AddItem(new MenuItem("guccimode", "Are you THE GUCCI?").SetValue(false));
+            Menu.AddItem(new MenuItem("guccimode", "Use GUCCI Pack?").SetValue(false));
+            Menu.AddItem(new MenuItem("bonobomode", "Use Icy Pack?").SetValue(false));
+            Menu.AddItem(new MenuItem("myomode", "Use myo Pack?").SetValue(false));
             Menu.AddToMainMenu();
             Random = new Random();
             FlashSlot = ObjectManager.Player.GetSpellSlot("SummonerFlash");
@@ -164,12 +166,9 @@ namespace Mastery_Badge_Spammer
             if (Utils.GameTimeTickCount - LastEmoteSpam > Random.Next(5000, 15000))
             {
                 LastEmoteSpam = Utils.GameTimeTickCount;
-                if (Menu.Item("usepackets").GetValue<bool>())
-                {
-                    Game.SendEmote(Emote.Laugh);
-                    return;
-                }
-                Game.Say(Menu.Item("mode").GetValue<StringList>().SelectedValue == "MASTERY" ? "/masterybadge" : "/l");
+                var mode = Menu.Item("mode").GetValue<StringList>().SelectedValue;
+                if (mode == "DISABLED") return;
+                Game.Say(mode == "MASTERY" ? "/masterybadge" : "/l");
             }
         }
 
@@ -178,6 +177,129 @@ namespace Mastery_Badge_Spammer
             if (Utils.GameTimeTickCount - LastChat > Random.Next(5000, 20000))
             {
                 LastChat = Utils.GameTimeTickCount;
+                if (Menu.Item("myomode").GetValue<bool>() && Random.Next(0, 100) > 15)
+                {
+                    switch (Random.Next(0, 26))
+                    {
+                        case 0:
+                            Game.Say(String.Format("/all come on {0} atleast try", theTarget));
+                            return;
+                        case 1:
+                            Game.Say(String.Format("/all you're boring me {0}", theTarget));
+                            return;
+                        case 2:
+                            Game.Say(String.Format("/all you know {0}.. you're so bad that I'm gonna open a support ticket for you", theTarget));
+                            return;
+                        case 3:
+                            Game.Say(String.Format("/all my god {0} are you boosted or smth ROFLMAO", theTarget));
+                            return;
+                        case 4:
+                            Game.Say(String.Format("/all {0} reminds me of trick2g bronze subwars", theTarget));
+                            return;
+                        case 5:
+                            Game.Say(String.Format("/all my god this {0} guy is such a god.. at being bad", theTarget));
+                            return;
+                        case 6:
+                            Game.Say(String.Format("/all is {0} a bot guys?", theTarget));
+                            return;
+                        case 7:
+                            Game.Say(String.Format("/all you remind me of intro bots {0}", theTarget));
+                            return;
+                        case 8:
+                            Game.Say(String.Format("/all your stupidity knows no boundaries {0}", theTarget));
+                            return;
+                        case 9:
+                            Game.Say(String.Format("/all wp {0}! (jk that was soo EZreal)", theTarget));
+                            return;
+                        case 10:
+                            Game.Say(String.Format("/all thanks for the free LP {0}", theTarget));
+                            return;
+                        case 11:
+                            Game.Say(String.Format("/all haha this {0} is so troll", theTarget));
+                            return;
+                        case 12:
+                            Game.Say(String.Format("/all {0} is trolling no way someone can be this bad ROFL", theTarget));
+                            return;
+                        case 13:
+                            Game.Say(String.Format("/all ? {0} ???", theTarget));
+                            return;
+                        case 14:
+                            Game.Say(String.Format("/all I feel so bad for owning {0}", theTarget));
+                            return;
+                        case 15:
+                            Game.Say(String.Format("/all sorry {0} I know it's unfair for me to play against you...", theTarget));
+                            return;
+                        case 16:
+                            Game.Say(String.Format("/all how much did the boost cost {0}", theTarget));
+                            return;
+                        case 17:
+                            Game.Say(String.Format("/all I'm pretty sure that if monkeys would play league they'd do better than you {0}", theTarget));
+                            return;
+                        case 18:
+                            Game.Say(String.Format("/all dude {0} I'm not even trying ROFL", theTarget));
+                            return;
+                        case 19:
+                            Game.Say(String.Format("/all {0}.. you're such a fool man...", theTarget));
+                            return;
+                        case 20:
+                            Game.Say(String.Format("/all add me after the game {0} I'll teach u how to play", theTarget));
+                            return;
+                        case 21:
+                            Game.Say(String.Format("/all my god {0} just go afk.. you're dragging your team down...", theTarget));
+                            return;
+                        case 22:
+                            Game.Say(String.Format("/all {0} the legend coming back once again with the gold for his daddy", theTarget));
+                            return;
+                        case 23:
+                            Game.Say(String.Format("/all I'm going straight to the bank with this {0}", theTarget));
+                            return;
+                        case 24:
+                            Game.Say(String.Format("/all ty {0} I really needed this gold", theTarget));
+                            return;
+                        case 25:
+                            Game.Say(String.Format("/all Please don't report {0} it's not his fault he has to play against me..", theTarget));
+                            return;
+                        case 26:
+                            Game.Say("open mid?");
+                            return;
+                    }
+                }
+                if (Menu.Item("bonobomode").GetValue<bool>() && Random.Next(0, 100) > 30)
+                {
+                    switch (Random.Next(0, 9))
+                    {
+                        case 0:
+                            Game.Say(String.Format("/all l0l so bad {0}", theTarget));
+                            return;
+                        case 1:
+                            Game.Say(String.Format("/all jaja try again {0}", theTarget));
+                            return;
+                        case 2:
+                            Game.Say(String.Format("/all {0} xD ?", theTarget));
+                            return;
+                        case 3:
+                            Game.Say(String.Format("/all thanks for the free gold {0}", theTarget));
+                            return;
+                        case 4:
+                            Game.Say(String.Format("/all {0} get smashed you ape", theTarget));
+                            return;
+                        case 5:
+                            Game.Say(String.Format("/all easy {0}", theTarget));
+                            return;
+                        case 6:
+                            Game.Say(String.Format("/all {0} are you okay?", theTarget));
+                            return;
+                        case 7:
+                            Game.Say(String.Format("/all {0} ???", theTarget));
+                            return;
+                        case 8:
+                            Game.Say(String.Format("/all {0} gg m9-1", theTarget));
+                            return;
+                        case 9:
+                            Game.Say(String.Format("/all {0} l0l rekt", theTarget));
+                            return;
+                    }
+                }
                 if (Menu.Item("guccimode").GetValue<bool>() && Random.Next(0,100) > 1)
                 {
                     switch (Random.Next(0, 15))
