@@ -179,7 +179,7 @@ namespace Mastery_Badge_Spammer
                 LastChat = Utils.GameTimeTickCount;
                 if (Menu.Item("myomode").GetValue<bool>() && Random.Next(0, 100) > 30)
                 {
-                    switch (Random.Next(0, 26))
+                    switch (Random.Next(0, 29))
                     {
                         case 0:
                             Game.Say(String.Format("/all come on {0} atleast try", theTarget));
@@ -261,6 +261,15 @@ namespace Mastery_Badge_Spammer
                             return;
                         case 26:
                             Game.Say("open mid?");
+                            return;
+                        case 27:
+                            Game.Say("? Kappa?");
+                            return;
+                        case 28:
+                            Game.Say("ff?");
+                            return;
+                        case 29:
+                            Game.Say("surrender?");
                             return;
                     }
                 }
