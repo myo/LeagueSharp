@@ -177,7 +177,7 @@ namespace Mastery_Badge_Spammer
             if (Utils.GameTimeTickCount - LastChat > Random.Next(5000, 20000))
             {
                 LastChat = Utils.GameTimeTickCount;
-                if (Menu.Item("myomode").GetValue<bool>() && Random.Next(0, 100) > 15)
+                if (Menu.Item("myomode").GetValue<bool>() && Random.Next(0, 100) > 30)
                 {
                     switch (Random.Next(0, 26))
                     {
