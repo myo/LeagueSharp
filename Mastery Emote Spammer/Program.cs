@@ -260,16 +260,16 @@ namespace Mastery_Badge_Spammer
                             Game.Say(String.Format("/all Please don't report {0} it's not his fault he has to play against me..", theTarget));
                             return;
                         case 26:
-                            Game.Say("open mid?");
+                            Game.Say("/all open mid?");
                             return;
                         case 27:
-                            Game.Say("? Kappa?");
+                            Game.Say("/all ? Kappa?");
                             return;
                         case 28:
-                            Game.Say("ff?");
+                            Game.Say("/all ff?");
                             return;
                         case 29:
-                            Game.Say("surrender?");
+                            Game.Say("/all surrender?");
                             return;
                     }
                 }
