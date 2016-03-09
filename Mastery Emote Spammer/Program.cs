@@ -261,7 +261,7 @@ namespace Mastery_Badge_Spammer
 
                     }
 
-                    if (Menu.Item("zodiacmode").GetValue<bool>() && Random.Next(0, 100) > 45)
+                    if (Menu.Item("zodiacmode").GetValue<bool>() && Random.Next(0, 100) > 55)
                     {
                         switch (Random.Next(0, 15))
                         {
@@ -315,7 +315,7 @@ namespace Mastery_Badge_Spammer
                                 return;
                         }
                     }
-                    if (Menu.Item("myomode").GetValue<bool>() && Random.Next(0, 100) > 40)
+                    if (Menu.Item("myomode").GetValue<bool>() && Random.Next(0, 100) > 50)
                     {
                         switch (Random.Next(0, 29))
                         {
@@ -428,7 +428,7 @@ namespace Mastery_Badge_Spammer
                                 return;
                         }
                     }
-                    if (Menu.Item("bonobomode").GetValue<bool>() && Random.Next(0, 100) > 35)
+                    if (Menu.Item("bonobomode").GetValue<bool>() && Random.Next(0, 100) > 45)
                     {
                         switch (Random.Next(0, 9))
                         {
