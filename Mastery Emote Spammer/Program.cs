@@ -68,7 +68,7 @@ namespace Mastery_Badge_Spammer
             Random = new Random();
             FlashSlot = ObjectManager.Player.GetSpellSlot("SummonerFlash");
             IgniteSlot = ObjectManager.Player.GetSpellSlot("SummonerDot");
-            Game.OnUpdate += OnUpdate;
+            LeagueSharp.Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
 
             //init chat disrespekter
@@ -624,6 +624,16 @@ namespace Mastery_Badge_Spammer
                          (Random.Next(1, 2) == 1 ? theTarget : "") +
                          KnownDisrespectEndings[Random.Next(0, KnownDisrespectEndings.Length - 1)]);
             }
+        }
+    }
+
+    public static class Game
+    {
+        private static Random _rand = new Random();
+        public static void Say(string shit)
+        {
+            var typeTime = shit.Length*_rand.Next(20, 30);
+            Utility.DelayAction.Add(typeTime, ()=>LeagueSharp.Game.Say(shit));
         }
     }
 }
