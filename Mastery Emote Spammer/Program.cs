@@ -230,7 +230,7 @@ namespace Mastery_Badge_Spammer
                                 case 4:
                                     Game.Say(
                                         String.Format(
-                                            "/all Roses are red violets are blue, God made me great, the opposite to you. ",
+                                            "/all Roses are red violets are blue, God made me great, the opposite of you. ",
                                             theTarget));
                                     return;
                                 case 5:
@@ -260,7 +260,7 @@ namespace Mastery_Badge_Spammer
                                 case 10:
                                     Game.Say(
                                         String.Format(
-                                            "/all Congratulations {0}, you have been recognized as one of the worst players in League of Legends. Your a downgrading force whose plays inspires even the worst teammates to worse accomplishments.",
+                                            "/all Congratulations {0}, you have been recognized as one of the worst players in League of Legends. You're a downgrading force whose plays inspire even the worst teammates to even worse accomplishments.",
                                             theTarget));
                                     return;
 
@@ -293,7 +293,7 @@ namespace Mastery_Badge_Spammer
                                 case 3:
                                     Game.Say(
                                         String.Format(
-                                            "/all Is it just in League {0}, or are you everywhere acting like a handicapped fish?",
+                                            "/all Is it just in League {0}, or are you acting like a handicapped fish everywhere?",
                                             theTarget));
                                     return;
                                 case 4:
@@ -323,13 +323,13 @@ namespace Mastery_Badge_Spammer
                                 case 8:
                                     Game.Say(
                                         String.Format(
-                                            "/all You must been hammering your head on the wall while playing league {0}",
+                                            "/all You must have been hammering your head on the wall while playing league {0}",
                                             theTarget));
                                     return;
                                 case 9:
                                     Game.Say(
-                                        String.Format(
-                                            "/all Even with a steering wheel you can't play like that, tell me the trick {0}!",
+                                        String.Format(`
+                                            "/all Even with a steering wheel you can't play like that, tell me the trick {0}!", //WTF SORTA ENGLISH IS THAT?!
                                             theTarget));
                                     return;
                                 case 10:
@@ -339,13 +339,13 @@ namespace Mastery_Badge_Spammer
                                 case 11:
                                     Game.Say(
                                         String.Format(
-                                            "/all I had a dream how someone tried to play league by sitting with his botty on his keyboard, was that you {0} ?",
+                                            "/all I had a dream how someone tried to play league by sitting with his booty on his keyboard, was that you {0} ?",
                                             theTarget));
                                     return;
                                 case 12:
                                     Game.Say(
                                         String.Format(
-                                            "/all WP {0}, this move of you was actually spastic enough to create a youtube video of it",
+                                            "/all WP {0}, that was actually spastic enough to create a youtube video of it",
                                             theTarget));
                                     return;
                                 case 13:
@@ -357,7 +357,7 @@ namespace Mastery_Badge_Spammer
                                 case 14:
                                     Game.Say(
                                         String.Format(
-                                            "/all I wonder how you didn't get hit by a car yet {0} with this decision making!",
+                                            "/all I wonder how you haven't gotten hit by a car yet {0} with this decision making!",
                                             theTarget));
                                     return;
                                 case 15:
