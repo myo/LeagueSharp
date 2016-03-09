@@ -298,7 +298,7 @@ namespace Mastery_Badge_Spammer
                             Game.Say(String.Format("/all {0} are you okay?", theTarget));
                             return;
                         case 7:
-                            Game.Say(String.Format("/all {0} It amazes me how soemone can be so trash", theTarget));
+                            Game.Say(String.Format("/all {0} It amazes me how someone can be so trash", theTarget));
                             return;
                         case 8:
                             Game.Say(String.Format("/all {0} You lost that fight harder than germany lost the war", theTarget));
