@@ -194,7 +194,7 @@ namespace Mastery_Badge_Spammer
             if (Utils.GameTimeTickCount - LastChat > Random.Next(5000, 20000) || !Menu.Item("humanizer").GetValue<bool>())
             {
                 LastChat = Utils.GameTimeTickCount;
-                if (Menu.Item("gentlemanmode").GetValue<bool>() && Random.Next(0, 100) > 50)
+                if (Menu.Item("gentlemanmode").GetValue<bool>() && Random.Next(0, 100) > 60)
                 {
                     switch (Random.Next(0, 10))
                     {
