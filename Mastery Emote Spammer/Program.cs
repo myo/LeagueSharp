@@ -58,6 +58,7 @@ namespace Mastery_Badge_Spammer
             Menu.AddItem(new MenuItem("afterw", "After W").SetValue(false));
             Menu.AddItem(new MenuItem("aftere", "After E").SetValue(false));
             Menu.AddItem(new MenuItem("afterr", "After R").SetValue(false));
+            Menu.AddItem(new MenuItem("humanizer", "Use Humanizer?").SetValue(true));
             Menu.AddItem(new MenuItem("gentlemanmode", "Use GENTLEMAN Pack?").SetValue(true));
             Menu.AddItem(new MenuItem("myomode", "Use myo Pack?").SetValue(true));
             Menu.AddItem(new MenuItem("bonobomode", "Use Icy Pack?").SetValue(true));
@@ -189,7 +190,7 @@ namespace Mastery_Badge_Spammer
 
         public static void DoChatDisrespect(string theTarget)
         {
-            if (Utils.GameTimeTickCount - LastChat > Random.Next(5000, 20000))
+            if (Utils.GameTimeTickCount - LastChat > Random.Next(5000, 20000) || !Menu.Item("humanizer").GetValue<bool>())
             {
                 LastChat = Utils.GameTimeTickCount;
                 if (Menu.Item("gentlemanmode").GetValue<bool>() && Random.Next(0, 100) > 35)
