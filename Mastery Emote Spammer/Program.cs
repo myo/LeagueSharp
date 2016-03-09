@@ -60,6 +60,7 @@ namespace Mastery_Badge_Spammer
             Menu.AddItem(new MenuItem("afterr", "After R").SetValue(false));
             Menu.AddItem(new MenuItem("humanizer", "Use Humanizer?").SetValue(true));
             Menu.AddItem(new MenuItem("gentlemanmode", "Use GENTLEMAN Pack?").SetValue(true));
+            Menu.AddItem(new MenuItem("zodiacmode", "Use zodiac Pack?").SetValue(true));
             Menu.AddItem(new MenuItem("myomode", "Use myo Pack?").SetValue(true));
             Menu.AddItem(new MenuItem("bonobomode", "Use Icy Pack?").SetValue(true));
             Menu.AddItem(new MenuItem("guccimode", "Use GUCCI Pack?").SetValue(true));
@@ -258,6 +259,61 @@ namespace Mastery_Badge_Spammer
                                     theTarget));
                             return;
 
+                    }
+
+                    if (Menu.Item("zodiacmode").GetValue<bool>() && Random.Next(0, 100) > 35)
+                    {
+                        switch (Random.Next(0, 15))
+                        {
+                            case 0:
+                                Game.Say(String.Format("/all I don't know what techniques you are doing there {0} , but... keep doing them!", theTarget));
+                                return;
+                            case 1:
+                                Game.Say(String.Format("/all If you don't stop using your abilities like a monkey {0}, this game ain't get better!", theTarget));
+                                return;
+                            case 2:
+                                Game.Say(String.Format("/all How does it feel to be retarded {0} ?", theTarget));
+                                return;
+                            case 3:
+                                Game.Say(String.Format("/all Is it just in League {0}, or are you everywhere acting like a handicapped fish?", theTarget));
+                                return;
+                            case 4:
+                                Game.Say(String.Format("/all Because of players like you {0}, riot will change the surrender time to 10 minutes soon.", theTarget));
+                                return;
+                            case 5:
+                                Game.Say(String.Format("/all HAHA for a second I thought you stopped trolling {0}", theTarget));
+                                return;
+                            case 6:
+                                Game.Say(String.Format("/all We are currently experimenting with monkeys playing League in a team, we need one more player - are you interested {0} ?", theTarget));
+                                return;
+                            case 7:
+                                Game.Say(String.Format("/all After this {0}, I will NEVER EVER call Kaceytron a troll again.", theTarget));
+                                return;
+                            case 8:
+                                Game.Say(String.Format("/all You must been hammering your head on the wall while playing league {0}", theTarget));
+                                return;
+                            case 9:
+                                Game.Say(String.Format("/all Even with a steering wheel you can't play like that, tell me the trick {0}!", theTarget));
+                                return;
+                            case 10:
+                                Game.Say(String.Format("/all What drug can cause those mental issues {0}?", theTarget));
+                                return;
+                            case 11:
+                                Game.Say(String.Format("/all I had a dream how someone tried to play league by sitting with his botty on his keyboard, was that you {0} ?", theTarget));
+                                return;
+                            case 12:
+                                Game.Say(String.Format("/all WP {0}, this move of you was actually spastic enough to create a youtube video of it", theTarget));
+                                return;
+                            case 13:
+                                Game.Say(String.Format("/all This is not League of Retards, you downloaded the wrong game {0}.", theTarget));
+                                return;
+                            case 14:
+                                Game.Say(String.Format("/all I wonder how you didn't get hit by a car yet {0} with this decision making!", theTarget));
+                                return;
+                            case 15:
+                                Game.Say(String.Format("/all What kind of complexes do you have {0} ?", theTarget));
+                                return;
+                        }
                     }
                     if (Menu.Item("myomode").GetValue<bool>() && Random.Next(0, 100) > 35)
                     {
