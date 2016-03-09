@@ -328,7 +328,7 @@ namespace Mastery_Badge_Spammer
                                     return;
                                 case 9:
                                     Game.Say(
-                                        String.Format(`
+                                        String.Format(
                                             "/all Even with a steering wheel you can't play like that, tell me the trick {0}!", //WTF SORTA ENGLISH IS THAT?!
                                             theTarget));
                                     return;
