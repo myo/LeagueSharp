@@ -372,7 +372,7 @@ namespace Challenger_Series
         public void RLogic()
         {
             if (!R.IsReady()) return;
-            if (ObjectManager.Player.CountEnemyHeroesInRange(800) >= 1 &&
+            if (ObjectManager.Player.CountEnemyHeroesInRange(900) >= 1 && ObjectManager.Player.Health > 1 &&
                 ObjectManager.Player.HealthPercent <= UseUltForMeIfMyHpIsLessThanSlider.Value)
             {
                 R.Cast();
