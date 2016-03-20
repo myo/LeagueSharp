@@ -31,6 +31,7 @@ namespace Chat_Logger
 
                 //Show the user a message
                 Game.PrintChat("The chat log for this game can be found at " + LogFile);
+                Game.PrintChat(Game.IP + ":" + Game.Port);
 
                 //Subscribe to OnChat to do the magic
                 Game.OnChat += OnChat;
