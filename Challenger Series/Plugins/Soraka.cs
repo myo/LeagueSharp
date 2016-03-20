@@ -51,7 +51,9 @@ namespace Challenger_Series
                 //J4 wall E
                 if (obj != null && obj.Name.ToLower() == "jarvanivwall")
                 {
-                    E.Cast(obj.Position);
+                    var enemyJ4 = GameObjects.EnemyHeroes.First(h => h.CharData.BaseSkinName.Contains("Jarvan"));
+                    if (enemyJ4 != null && enemyJ4.IsValidTarget())
+                    E.Cast(enemyJ4.ServerPosition);
                 }
                 if (obj.Name.ToLower().Contains("soraka_base_e_rune.troy") &&
                     obj.Position.CountEnemyHeroesInRange(300) > 0)
