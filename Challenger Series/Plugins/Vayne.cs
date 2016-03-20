@@ -305,14 +305,14 @@ namespace Challenger_Series
                     var tg = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     if (E.IsReady())
                     {
-                        if (tg.Name.Contains("SRU_") && tg.IsValidTarget() && UseEJungleFarm)
+                        if (tg.CharData.BaseSkinName.Contains("SRU_") && !tg.CharData.BaseSkinName.Contains("Mini") && tg.IsValidTarget() && UseEJungleFarm)
                         {
                             E.CastOnUnit(tg);
                         }
                     }
                     if (UseQFarm && Q.IsReady())
                     {
-                        if (tg.Name.Contains("SRU_") && !IsDangerousPosition(Game.CursorPos))
+                        if (tg.CharData.BaseSkinName.Contains("SRU_") && !tg.CharData.BaseSkinName.Contains("Mini") && tg.IsValidTarget() && !IsDangerousPosition(Game.CursorPos))
                         {
                             Q.Cast(Game.CursorPos);
                         }

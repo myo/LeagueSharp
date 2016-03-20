@@ -24,6 +24,7 @@ namespace Challenger_Series
     public class Soraka : CSPlugin
     {
         private Random _rand;
+
         public Soraka()
         {
             this.Q = new Spell(SpellSlot.Q, 800);
@@ -31,15 +32,48 @@ namespace Challenger_Series
             this.E = new Spell(SpellSlot.E, 900);
             this.R = new Spell(SpellSlot.R);
 
-            Q.SetSkillshot(0.26f, 125, 1600, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.5f, 70f, 1600, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.5f, 125, 1750, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.5f, 70f, 1750, false, SkillshotType.SkillshotCircle);
 
             InitializeMenu();
 
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
+            GameObject.OnCreate += OnCreateObj;
             _rand = new Random();
+        }
+
+        private void OnCreateObj(GameObject obj, EventArgs args)
+        {
+            if (obj.Name != "missile" && obj.IsEnemy && obj.Distance(ObjectManager.Player.ServerPosition) < 900)
+            {
+                //J4 wall E
+                if (obj != null && obj.Name.ToLower() == "jarvanivwall")
+                {
+                    E.Cast(obj.Position);
+                }
+                if (obj.Name.ToLower().Contains("soraka_base_e_rune.troy") &&
+                    obj.Position.CountEnemyHeroesInRange(300) > 0)
+                {
+                    Q.Cast(obj.Position);
+                }
+                if (GameObjects.AllyHeroes.All(h => h.CharData.BaseSkinName != "Rengar"))
+                {
+                    if (obj.Name == "Rengar_LeapSound.troy")
+                    {
+                        E.Cast(obj.Position);
+                    }
+                    if (obj.Name == "Rengar_Base_P_Buf_Max.troy" || obj.Name == "Rengar_Base_P_Leap_Grass.troy")
+                    {
+                        E.Cast(ObjectManager.Player.ServerPosition);
+                    }
+                }
+                /*if (obj.Position.Distance(ObjectManager.Player.Position) < 600)
+                {
+                    Game.PrintChat(obj.Name);
+                }*/
+            }
         }
 
         #region Events
@@ -63,11 +97,16 @@ namespace Challenger_Series
             if (sender is Obj_AI_Hero && sender.IsEnemy)
             {
                 var sdata = SpellDatabase.GetByName(args.SData.Name);
-                if (sdata != null && args.End.Distance(ObjectManager.Player.ServerPosition) < E.Range && sdata.SpellTags != null &&
+                if (sdata != null && args.End.Distance(ObjectManager.Player.ServerPosition) < E.Range &&
+                    sdata.SpellTags != null &&
                     sdata.SpellTags.Any(st => st == SpellTags.Dash || st == SpellTags.Blink))
                 {
                     E.Cast(args.Start.Extend(args.End, sdata.Range - _rand.Next(5, 50)));
                 }
+            }
+            if (sender is Obj_AI_Hero && sender.Name == "Rengar" && args.Slot != SpellSlot.Q && args.Slot != SpellSlot.W && args.Slot != SpellSlot.E && args.Slot != SpellSlot.R && args.Slot != SpellSlot.Recall)
+            {
+                Game.PrintChat(args.SData.Name);
             }
         }
 
@@ -120,7 +159,6 @@ namespace Challenger_Series
         private Menu PriorityMenu;
         private Menu HealBlacklistMenu;
         private Menu UltBlacklistMenu;
-        private MenuList<string> PlayModeStringList;
         private MenuSlider OnlyQIfMyHPLessThanSlider;
         private MenuBool NoNeedForSpacebarBool;
         private MenuBool DontWTanksBool;
@@ -162,13 +200,11 @@ namespace Challenger_Series
                         GetPriorityFromDb(ally.ChampionName), 1, 5));
             }
 
-            PlayModeStringList =
-                MainMenu.Add(new MenuList<string>("playmode", "Play Mode: ", new[] {"CHALLENGER", "BRONZE"}));
-
             OnlyQIfMyHPLessThanSlider =
                 MainMenu.Add(new MenuSlider("rakaqonlyifmyhp", "Only Q if my HP < %", 100, 0, 100));
 
-            NoNeedForSpacebarBool = MainMenu.Add(new MenuBool("noneed4spacebar", "PLAY ONLY WITH MOUSE! NO SPACEBAR", true));
+            NoNeedForSpacebarBool =
+                MainMenu.Add(new MenuBool("noneed4spacebar", "PLAY ONLY WITH MOUSE! NO SPACEBAR", true));
 
             DisableQKey = MainMenu.Add(new MenuKeyBind("UseQ", "DISABLE AUTO Q HOTKEY: ", Keys.L, KeyBindType.Toggle));
 
@@ -261,76 +297,47 @@ namespace Challenger_Series
             if (!Q.IsReady() || DisableQKey.Active || (ObjectManager.Player.Mana < 3*GetWManaCost() && CanW())) return;
             var shouldntKS =
                 GameObjects.AllyHeroes.Any(
-                    h => h.Position.Distance(ObjectManager.Player.Position) < 900 && !h.IsDead && !h.IsMe);
-            switch (PlayModeStringList.SelectedValue)
+                    h => h.Position.Distance(ObjectManager.Player.Position) < 600 && !h.IsDead && !h.IsMe);
+
+            foreach (var hero in GameObjects.EnemyHeroes.Where(h => h.IsValidTarget(925)))
             {
-                case "CHALLENGER":
-                    if (ObjectManager.Player.CountAllyHeroesInRange(550) >= 1 && ObjectManager.Player.Health > 200 &&
-                        ObjectManager.Player.Mana < 100)
-                    {
-                        return;
-                    }
-                    if (ObjectManager.Player.HealthPercent <= OnlyQIfMyHPLessThanSlider && ObjectManager.Player.MaxHealth - ObjectManager.Player.Health > GetQHealingAmount())
-                    {
-                        foreach (var hero in GameObjects.EnemyHeroes.Where(h => h.IsValidTarget(925)))
-                        {
-                            if (shouldntKS && Q.GetDamage(hero) > hero.Health)
-                            {
-                                return;
-                            }
-                            var pred = Q.GetPrediction(hero);
-                            if ((int)pred.Hitchance > (int)HitChance.Medium && pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < Q.Range && pred.UnitPosition.CountEnemyHeroesInRange(450) >= 1)
-                            {
-                                Q.Cast(pred.UnitPosition);
-                            }
-                        }
-                    }
+                if (shouldntKS && Q.GetDamage(hero) > hero.Health)
+                {
                     break;
-                case "BRONZE":
-                    foreach (var hero in GameObjects.EnemyHeroes.Where(h => h.IsValidTarget(925)))
-                    {
-                        if (shouldntKS && Q.GetDamage(hero) > hero.Health)
-                        {
-                            return;
-                        }
-                        var pred = Q.GetPrediction(hero);
-                        if ((int)pred.Hitchance > (int)HitChance.Medium && pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < Q.Range && pred.UnitPosition.CountEnemyHeroesInRange(450) >= 1)
-                        {
-                            Q.Cast(pred.UnitPosition);
-                        }
-                    }
-                    break;
+                }
+                var pred = Q.GetPrediction(hero);
+                if ((int) pred.Hitchance > (int) HitChance.Medium &&
+                    pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < Q.Range)
+                {
+                    Q.Cast(pred.UnitPosition);
+                }
             }
         }
 
         public void WLogic()
         {
             if (!W.IsReady() || !CanW()) return;
-            var bestHealingCandidate =
-                GameObjects.AllyHeroes.Where(
-                    a =>
-                        !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
-                        a.MaxHealth - a.Health > GetWHealingAmount() && !a.IsRecalling())
-                    .OrderByDescending(GetPriority)
-                    .ThenBy(ally => ally.Health).FirstOrDefault();
-            if (bestHealingCandidate != null)
+            foreach (var ally in GameObjects.AllyHeroes.Where(
+                a =>
+                    !a.IsMe && a.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 700 &&
+                    a.MaxHealth - a.Health > GetWHealingAmount() && !a.IsRecalling())
+                .OrderByDescending(GetPriority)
+                .ThenBy(ally => ally.Health))
             {
-                if (HealBlacklistMenu["dontheal" + bestHealingCandidate.CharData.BaseSkinName] != null &&
-                    HealBlacklistMenu["dontheal" + bestHealingCandidate.CharData.BaseSkinName].GetValue<MenuBool>())
+                if (ally == null || ally.IsDead || ally.IsZombie) break;
+                if (HealBlacklistMenu["dontheal" + ally.CharData.BaseSkinName] != null &&
+                    HealBlacklistMenu["dontheal" + ally.CharData.BaseSkinName].GetValue<MenuBool>())
                 {
-                    Console.WriteLine("STTC: Skipped healing " + bestHealingCandidate.CharData.BaseSkinName +
-                                      " because he is blacklisted.");
-                    return;
+                    break;
                 }
-                if (DontWTanksBool != null && DontWTanksBool.GetValue<MenuBool>() && bestHealingCandidate.Health > 300 &&
+
+                if (DontWTanksBool != null && DontWTanksBool.GetValue<MenuBool>() && ally.Health > 500 &&
                     ATankTakesXHealsToHealSlider.Value*GetWHealingAmount() <
-                    bestHealingCandidate.MaxHealth - bestHealingCandidate.Health)
+                    ally.MaxHealth - ally.Health)
                 {
-                    Console.WriteLine("STTC: Skipped healing " + bestHealingCandidate.CharData.BaseSkinName +
-                                      " because he is a tank.");
-                    return;
+                    break;
                 }
-                W.Cast(bestHealingCandidate);
+                W.Cast(ally);
             }
         }
 
@@ -338,11 +345,11 @@ namespace Challenger_Series
         {
             if (!E.IsReady()) return;
             var goodTarget =
-                GameObjects.EnemyHeroes.FirstOrDefault(
+                GameObjects.EnemyHeroes.OrderByDescending(GetPriority).FirstOrDefault(
                     e =>
                         e.IsValidTarget(900) && e.HasBuffOfType(BuffType.Knockup) || e.HasBuffOfType(BuffType.Snare) ||
                         e.HasBuffOfType(BuffType.Stun) || e.HasBuffOfType(BuffType.Suppression) || e.IsCharmed ||
-                        e.IsCastingInterruptableSpell());
+                        e.IsCastingInterruptableSpell() || e.HasBuff("ChronoRevive") || e.HasBuff("ChronoShift"));
             if (goodTarget != null)
             {
                 var pos = goodTarget.ServerPosition;
@@ -361,7 +368,7 @@ namespace Challenger_Series
             {
                 DelayAction.Add(3250, () =>
                 {
-                    if (enemyMinion.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900)
+                    if (enemyMinion != null && enemyMinion.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900)
                     {
                         E.Cast(enemyMinion.ServerPosition);
                     }
@@ -381,10 +388,10 @@ namespace Challenger_Series
             if (minAllyHealth <= 1) return;
             foreach (var ally in GameObjects.AllyHeroes)
             {
-                if (HealBlacklistMenu["dontheal" + ally.CharData.BaseSkinName].GetValue<MenuBool>()) return;
-                if (TryToUltAfterIgniteBool && ally.HasBuff("summonerdot") && ally.Health > 400) return;
+                if (HealBlacklistMenu["dontheal" + ally.CharData.BaseSkinName].GetValue<MenuBool>()) break;
+                if (TryToUltAfterIgniteBool && ally.HasBuff("summonerdot") && ally.Health > 400) break;
                 if (CheckIfAllyCanSurviveBool && ally.CountAllyHeroesInRange(800) == 0 &&
-                    ally.CountEnemyHeroesInRange(800) > 2) return;
+                    ally.CountEnemyHeroesInRange(800) > 2) break;
                 if (ally.CountEnemyHeroesInRange(800) >= 1 && ally.HealthPercent > 2 &&
                     ally.HealthPercent <= minAllyHealth && !ally.IsZombie && !ally.IsDead)
                 {
