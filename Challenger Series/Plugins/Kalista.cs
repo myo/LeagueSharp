@@ -194,6 +194,18 @@ namespace Challenger_Series.Plugins
         public override void OnDraw(EventArgs args)
         {
             base.OnDraw(args);
+            #region Orbwalk On Minions
+
+            if (OrbwalkOnMinions && Orbwalker.ActiveMode == OrbwalkingMode.Combo && GameObjects.EnemyHeroes.Count(e=>e.Health > 1 && e.InAutoAttackRange()) == 0 && ObjectManager.Player.InventoryItems.Any(i => (int)i.IData.Id == 3085))
+            {
+                var minion =
+                    GameObjects.EnemyMinions.Where(m => m.InAutoAttackRange()).OrderBy(m => m.Health).FirstOrDefault();
+                if (minion != null)
+                {
+                    ObjectManager.Player.IssueOrder(GameObjectOrder.AttackUnit, minion);
+                }
+            }
+#endregion Orbwalk On Minions
             if (DrawERangeBool)
             {
                 Drawing.DrawCircle(
@@ -256,6 +268,7 @@ namespace Challenger_Series.Plugins
         private MenuBool DrawERangeBool;
         private MenuBool DrawRRangeBool;
         private MenuBool DrawEDamage;
+        private MenuBool OrbwalkOnMinions;
 
         private void InitMenu()
         {
@@ -264,6 +277,7 @@ namespace Challenger_Series.Plugins
             BalistaBool = WomboComboMenu.Add(new MenuBool("kalibalista", "Balista", true));
             TalistaBool = WomboComboMenu.Add(new MenuBool("kalitalista", "Talista", true));
             SalistaBool = WomboComboMenu.Add(new MenuBool("kalisalista", "Salista", true));
+            OrbwalkOnMinions = ComboMenu.Add(new MenuBool("kaliorbwalkonminions", "Orbwalk On Minions", false));
             UseQCantAABool = ComboMenu.Add(new MenuBool("kaliuseqcombo", "Use Q if cant AA", false));
             UseQIfECanKillBool = ComboMenu.Add(new MenuBool("kaliuseqecombo", "Use Q > E combo", true));
             UseQManaSlider = ComboMenu.Add(new MenuSlider("kaliuseqmanaslider", "Use Q if Mana% > ", 20));
