@@ -82,11 +82,22 @@ namespace Challenger_Series.Plugins
                     var minion = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     var targetName = minion.CharData.BaseSkinName;
 
-                    if (targetName.Contains("SRU_") && !targetName.Contains("Mini") && !GetJungleCampsOnCurrentMap().Contains(targetName) || (GetJungleCampsOnCurrentMap().Contains(targetName) && RendSmiteMenu[targetName].GetValue<MenuBool>())))
+                    if (targetName.Contains("SRU_") || targetName.Contains("TT_") && !targetName.Contains("Mini"))
                     {
-                        if (IsRendKillable(minion))
+                        if (GetJungleCampsOnCurrentMap().Contains(targetName) &&
+                            RendSmiteMenu[targetName].GetValue<MenuBool>())
                         {
-                            E.Cast();
+                            if (IsRendKillable(minion))
+                            {
+                                E.Cast();
+                            }
+                        }
+                        if (!GetJungleCampsOnCurrentMap().Contains(targetName))
+                        {
+                            if (IsRendKillable(minion))
+                            {
+                                E.Cast();
+                            }
                         }
                     }
                 }
