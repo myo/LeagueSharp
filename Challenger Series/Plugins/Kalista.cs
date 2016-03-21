@@ -79,11 +79,11 @@ namespace Challenger_Series.Plugins
                 }
                 if (orbwalkingActionArgs.Target is Obj_AI_Minion && GetJungleCampsOnCurrentMap() != null)
                 {
-                    var targetName = (orbwalkingActionArgs.Target as Obj_AI_Minion).CharData.BaseSkinName;
+                    var minion = orbwalkingActionArgs.Target as Obj_AI_Minion;
+                    var targetName = minion.CharData.BaseSkinName;
 
-                    if (GetJungleCampsOnCurrentMap().Contains(targetName) && RendSmiteMenu[targetName].GetValue<MenuBool>())
+                    if (!targetName.Contains("Mini") && !GetJungleCampsOnCurrentMap().Contains(targetName) || (GetJungleCampsOnCurrentMap().Contains(targetName) && RendSmiteMenu[targetName].GetValue<MenuBool>()))
                     {
-                        var minion = orbwalkingActionArgs.Target as Obj_AI_Minion;
                         if (IsRendKillable(minion))
                         {
                             E.Cast();
