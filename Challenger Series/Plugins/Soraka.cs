@@ -388,7 +388,7 @@ namespace Challenger_Series
             }
             var minAllyHealth = UltIfAnAllyHpIsLessThanSlider.Value;
             if (minAllyHealth <= 1) return;
-            foreach (var ally in GameObjects.AllyHeroes)
+            foreach (var ally in GameObjects.AllyHeroes.Where(h => !h.IsMe && h.Health > 50))
             {
                 if (HealBlacklistMenu["dontheal" + ally.CharData.BaseSkinName].GetValue<MenuBool>()) break;
                 if (TryToUltAfterIgniteBool && ally.HasBuff("summonerdot") && ally.Health > 400) break;

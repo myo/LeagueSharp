@@ -66,7 +66,7 @@ namespace Challenger_Series.Plugins
                     if (IsWActive())
                     {
                         if (!SuperAggressiveHumanizer && GameObjects.EnemyHeroes.Any(
-                                enemy =>
+                                enemy => enemy.Health > 1 &&
                                     enemy.IsValidTarget() && enemy.IsMelee &&
                                     enemy.Distance(ObjectManager.Player) < Rand.Next(350, 400)))
                         {
@@ -240,7 +240,7 @@ namespace Challenger_Series.Plugins
         private void WLogic()
         {
             if (W.IsReady() && !IsWActive() &&
-                GameObjects.EnemyHeroes.Any(h => h.Distance(ObjectManager.Player.ServerPosition) < GetAttackRangeAfterWIsApplied() && h.IsValidTarget()) && Orbwalker.ActiveMode == OrbwalkingMode.Combo)
+                GameObjects.EnemyHeroes.Any(h => h.Health > 1 && h.Distance(ObjectManager.Player.ServerPosition) < GetAttackRangeAfterWIsApplied() && h.IsValidTarget()) && Orbwalker.ActiveMode == OrbwalkingMode.Combo)
             {
                 W.Cast();
             }
