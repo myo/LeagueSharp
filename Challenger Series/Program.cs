@@ -38,6 +38,9 @@ namespace Challenger_Series
                     case "KogMaw":
                         new KogMaw();
                         break;
+                    case "Ashe":
+                        new Ashe();
+                        break;
                 }
             };
         }

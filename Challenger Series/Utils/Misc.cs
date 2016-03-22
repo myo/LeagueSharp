@@ -21,7 +21,10 @@ using Color = System.Drawing.Color;
 namespace Challenger_Series.Utils
 {
     public static class Misc
-    {        /// <summary>
+    {
+        private static Random _rand = new Random();
+
+        /// <summary>
         ///     Returns true if the unit is under tower range.
         /// </summary>
         public static bool UnderTurret(this Obj_AI_Base unit)
@@ -35,6 +38,15 @@ namespace Challenger_Series.Utils
         public static bool UnderTurret(this Obj_AI_Base unit, bool enemyTurretsOnly)
         {
             return UnderTurret(unit.Position, enemyTurretsOnly);
+        }
+
+        public static Vector3 RandomizeToVector3(this Vector2 position, int min, int max)
+        {
+            return new Vector2(position.X + _rand.Next(min, max), position.Y + _rand.Next(min, max)).ToVector3();
+        }
+        public static Vector3 Randomize(this Vector3 position, int min, int max)
+        {
+            return new Vector2(position.X + _rand.Next(min, max), position.Y + _rand.Next(min, max)).ToVector3();
         }
 
         public static bool UnderTurret(this Vector3 position, bool enemyTurretsOnly)

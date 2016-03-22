@@ -134,24 +134,6 @@ namespace Challenger_Series
                     }
                 }
             }
-            if (DrawEnemyWaypoints)
-            {
-                foreach (
-                    var e in
-                        GameObjects.EnemyHeroes.Where(
-                            en => en.IsValidTarget() && en.Distance(ObjectManager.Player) < 2500))
-                {
-                    var ip = Drawing.WorldToScreen(e.Position); //start pos
-
-                    var wp = MathUtils.GetWaypoints(e);
-                    var c = wp.Count - 1;
-                    if (wp.Count() <= 1) break;
-
-                    var w = Drawing.WorldToScreen(wp[c].ToVector3()); //endpos
-
-                    Drawing.DrawLine(ip.X, ip.Y, w.X, w.Y, 2, Color.Red);
-                }
-            }
         }
 
         #endregion Events
@@ -175,7 +157,6 @@ namespace Challenger_Series
         private MenuBool DrawW;
         private MenuBool DrawQ;
         private MenuBool DrawDebugBool;
-        private MenuBool DrawEnemyWaypoints;
 
         public override void InitializeMenu()
         {
@@ -233,8 +214,6 @@ namespace Challenger_Series
             DrawQ = MainMenu.Add(new MenuBool("drawq", "Draw Q?", true));
 
             DrawDebugBool = MainMenu.Add(new MenuBool("drawdebug", "Draw Heal Info", false));
-
-            DrawEnemyWaypoints = MainMenu.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints"));
 
             MainMenu.Attach();
         }

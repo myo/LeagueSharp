@@ -226,37 +226,16 @@ namespace Challenger_Series
 
                     if (W.Level > 0)
                     {
-                        if (DrawEnemyWaypointsBool != null) //Credits to lizzaran 
+                        int stacks = target.GetBuffCount("vaynesilvereddebuff");
+                        if (stacks > -1)
                         {
-                            int stacks = target.GetBuffCount("vaynesilvereddebuff");
-                            if (stacks > -1)
+                            for (var i = 0; i < 3; i++)
                             {
-                                for (var i = 0; i < 3; i++)
-                                {
-                                    Drawing.DrawLine(x + i*20, y, x + i*20 + 10, y, 10,
-                                        stacks <= i ? Color.DarkGray : Color.DeepSkyBlue);
-                                }
+                                Drawing.DrawLine(x + i*20, y, x + i*20 + 10, y, 10,
+                                    stacks <= i ? Color.DarkGray : Color.DeepSkyBlue);
                             }
                         }
                     }
-                }
-            }
-            if (DrawEnemyWaypointsBool)
-            {
-                foreach (
-                    var e in
-                        GameObjects.EnemyHeroes.Where(
-                            en => en.IsValidTarget() && en.Distance(ObjectManager.Player) < 2500))
-                {
-                    var ip = Drawing.WorldToScreen(e.Position); //start pos
-
-                    var wp = MathUtils.GetWaypoints(e);
-                    var c = wp.Count - 1;
-                    if (wp.Count() <= 1) break;
-
-                    var w = Drawing.WorldToScreen(wp[c].ToVector3()); //endpos
-
-                    Drawing.DrawLine(ip.X, ip.Y, w.X, w.Y, 2, Color.Red);
                 }
             }
         }
@@ -443,7 +422,6 @@ namespace Challenger_Series
         private MenuBool UseQFarm;
         private MenuBool UseEJungleFarm;
         private MenuKeyBind SemiAutomaticCondemnKey;
-        private MenuBool DrawEnemyWaypointsBool;
         private MenuBool DrawWStacksBool;
 
         private void InitMenu()
@@ -488,7 +466,6 @@ namespace Challenger_Series
             UseQOnlyAt2WStacksBool = HarassMenu.Add(new MenuBool("useqonlyon2stackedenemies", "Use Q If Enemy Have 2W Stacks", false));
             UseQFarm = FarmMenu.Add(new MenuBool("useqfarm", "Use Q"));
             UseEJungleFarm = FarmMenu.Add(new MenuBool("useejgfarm", "Use E Jungle", true));
-            DrawEnemyWaypointsBool = DrawMenu.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints", true));
             DrawWStacksBool = DrawMenu.Add(new MenuBool("drawwstacks", "Draw W Stacks", true));
             MainMenu.Attach();
         }
