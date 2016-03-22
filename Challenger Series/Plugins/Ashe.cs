@@ -31,7 +31,6 @@ namespace Challenger_Series.Plugins
             Drawing.OnDraw += OnDraw;
         }
 
-        private Random _rand = new Random();
         private List<Vector2> OrderScoutPositions = new List<Vector2> {new Vector2(7200, 2700), new Vector2(6900, 4700), new Vector2(3200, 6700), new Vector2(2700, 8300)};
         private List<Vector2> ChaosScoutPositions = new List<Vector2> {new Vector2(8200,10000), new Vector2(6800, 12000), new Vector2(11500, 8400), new Vector2(12000, 6700)};
         private Vector2 DragonScoutPosition = new Vector2(10300, 5000);
@@ -93,7 +92,7 @@ namespace Challenger_Series.Plugins
                                     .OrderByDescending(v2 => v2.Distance(ObjectManager.Player.Position.ToVector2()))
                                     .FirstOrDefault();
                             LastELocation = pos;
-                            E.Cast(new Vector2(pos.X + _rand.Next(-200, 200), pos.Y + _rand.Next(-200, 200)).ToVector3());
+                            E.Cast(pos.RandomizeToVector3(-150, 150));
                         }
                         else
                         {
@@ -102,7 +101,7 @@ namespace Challenger_Series.Plugins
                                     .OrderByDescending(v2 => v2.Distance(ObjectManager.Player.Position.ToVector2()))
                                     .FirstOrDefault();
                             LastELocation = pos;
-                            E.Cast(new Vector2(pos.X + _rand.Next(-200, 200), pos.Y + _rand.Next(-200, 200)).ToVector3());
+                            E.Cast(pos.RandomizeToVector3(-150,150));
                         }
                         break;
                     }
@@ -148,7 +147,7 @@ namespace Challenger_Series.Plugins
                 var target = args.Target as Obj_AI_Hero;
                 if (name.Contains("AsheBasicAttack") || name.Contains("AsheCritAttack"))
                 {
-                    if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseWCombo)
+                    if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseWCombo && target.ServerPosition.Distance(ObjectManager.Player.ServerPosition) > 300)
                     {
                         var pred = W.GetPrediction(target);
                         if (pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < 1000 &&
