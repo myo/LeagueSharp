@@ -258,6 +258,10 @@ namespace Challenger_Series
                             E.Cast(possible2WTarget);
                         }
                     }
+                    if (UseQOnlyAt2WStacksBool && Orbwalker.ActiveMode != OrbwalkingMode.Combo && possible2WTarget.IsValidTarget())
+                    {
+                        Q.Cast(GetTumblePos(possible2WTarget));
+                    }
                 }
                 if (orbwalkingActionArgs.Target is Obj_AI_Hero && UseQBool)
                 {
@@ -317,10 +321,6 @@ namespace Challenger_Series
                             }
                         }
                     }
-                }
-                if (UseQOnlyAt2WStacksBool && Orbwalker.ActiveMode != OrbwalkingMode.Combo && possible2WTarget.IsValidTarget())
-                {
-                    Q.Cast(GetTumblePos(possible2WTarget));
                 }
             }
             if (orbwalkingActionArgs.Type == OrbwalkingType.BeforeAttack)
