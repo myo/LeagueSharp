@@ -48,11 +48,16 @@ namespace Challenger_Series.Utils.Logic
                     {
                         Drawing.DrawCircle(savedLocation, 100, savedLocation.Distance(ObjectManager.Player.Position) < _spellToUse.Range ? Color.Gold : Color.White);
                     }
-                }
-                var positionCandidate = _core.Positions.FirstOrDefault(pos => pos.Distance(ObjectManager.Player.Position) < _spellToUse.Range);
-                if (positionCandidate != null && positionCandidate.IsValid() && !GameObjects.AllyMinions.Any(m => m.Position.Distance(positionCandidate) < 100))
-                {
-                    _spellToUse.Cast(positionCandidate);
+                    if (_spellToUse.IsReady())
+                    {
+                        foreach (var position in _core.Positions.Where(pos => pos.Distance(ObjectManager.Player.Position) < _spellToUse.Range))
+                        {
+                            if (position.IsValid() && !GameObjects.AllyMinions.Any(m => m.Position.Distance(position) < 100))
+                            {
+                                _spellToUse.Cast(position);
+                            }
+                        }
+                    }
                 }
             }
         }
