@@ -18,11 +18,13 @@ using LeagueSharp.SDK;
 using LeagueSharp.SDK.Core.UI.IMenu;
 using LeagueSharp.SDK.Core.UI.IMenu.Values;
 using LeagueSharp.SDK.Core.Utils;
+using LeagueSharp.SDK.Core.Wrappers.Damages;
 
 namespace Challenger_Series
 {
     public abstract class CSPlugin
     {
+        public MenuSlider DecreaseDamageToMinionsBy;
         public MenuBool MyoModeOn;
         public MenuBool DrawEnemyWaypoints;
         public Menu CrossAssemblySettings;
@@ -33,6 +35,8 @@ namespace Challenger_Series
             MyoModeOn = CrossAssemblySettings.Add(new MenuBool("myomode", "Anti-TOXIC", false));
             DrawEnemyWaypoints =
                 CrossAssemblySettings.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints", true));
+            DecreaseDamageToMinionsBy = CrossAssemblySettings.Add(new MenuSlider("decreasedamagetominionsby", "Decrease Damage To Minions By: ", 10, 0, 20));
+
             LeagueSharp.SDK.Core.Utils.DelayAction.Add(15000, () => Orbwalker.Enabled = true);
             Game.OnChat += args => 
             {
@@ -55,8 +59,8 @@ namespace Challenger_Series
                 {
                     foreach (
                         var e in
-                            GameObjects.EnemyHeroes.Where(
-                                en => en.IsValidTarget() && en.Distance(ObjectManager.Player) < 5000))
+                            ValidTargets.Where(
+                                en => en.Distance(ObjectManager.Player) < 5000))
                     {
                         var ip = Drawing.WorldToScreen(e.Position); //start pos
 
@@ -71,6 +75,18 @@ namespace Challenger_Series
                     }
                 }
             };
+
+            Orbwalker.OnAction+=(sender, orbwalkingArgs) =>
+                {
+                    if (orbwalkingArgs.Target is Obj_AI_Minion)
+                    {
+                        var target = orbwalkingArgs.Target as Obj_AI_Minion;
+                        if (target.Health < 100 && target.Health > ObjectManager.Player.GetAutoAttackDamage(target) - DecreaseDamageToMinionsBy.Value)
+                        {
+                            Game.PrintChat(target.Health + " " + ObjectManager.Player.GetAutoAttackDamage(target));
+                        }
+                    }
+                };
         }
 
         #region Spells
@@ -84,10 +100,7 @@ namespace Challenger_Series
         public Spell R2 { get; set; }
         #endregion Spells
 
-        public List<Obj_AI_Hero> ValidTargets
-        {
-            get { return GameObjects.EnemyHeroes.Where(enemy => enemy.IsValidTarget() && !enemy.IsZombie).ToList(); }
-        }
+        public IEnumerable<Obj_AI_Hero> ValidTargets => GameObjects.EnemyHeroes.Where(enemy=>enemy.Health > 5 && enemy.IsVisible && !enemy.IsZombie);
 
         public Orbwalker Orbwalker { get; } = Variables.Orbwalker;
         public TargetSelector TargetSelector { get; } = Variables.TargetSelector;
