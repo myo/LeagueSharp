@@ -384,7 +384,7 @@ namespace Challenger_Series
                         if (
                             possibleNearbyMeleeChampion.GetWaypoints()
                                 .LastOrDefault()
-                                .Distance(ObjectManager.Player.ServerPosition) < possibleNearbyMeleeChampion.AttackRange)
+                                .Distance(ObjectManager.Player.ServerPosition) < 350)
                         {
                             E.CastOnUnit(possibleNearbyMeleeChampion);
                         }
