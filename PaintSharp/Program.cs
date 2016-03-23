@@ -36,10 +36,6 @@ namespace PaintSharp
                             Drawing.DrawCircle(point.Position, point.Size, point.Color);
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine("Its empty, why dont u add a point?");
-                    }
                 };
             Game.OnUpdate += u =>
                 {
