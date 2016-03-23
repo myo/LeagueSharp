@@ -40,7 +40,7 @@ namespace Challenger_Series.Plugins
 
         private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender is Obj_AI_Hero && sender.IsEnemy && sender.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 1000 && sender.HealthPercent > ObjectManager.Player.HealthPercent)
+            if (R.IsReady() && sender is Obj_AI_Hero && sender.IsEnemy && sender.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 1000 && sender.HealthPercent > ObjectManager.Player.HealthPercent)
             {
             if (UseRInterrupt)
             {
