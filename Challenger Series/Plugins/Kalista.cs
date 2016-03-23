@@ -69,7 +69,7 @@ namespace Challenger_Series.Plugins
                 {
                     if (
                         GameObjects.EnemyHeroes.Any(
-                            e =>
+                            e => e.Health > 1 &&
                                 e.Distance(ObjectManager.Player.ServerPosition) > 615 &&
                                 GetRendBuff(e).Count >= MinEnemyStacksForEMinionResetSlider.Value) &&
                         GameObjects.EnemyMinions.Any(m => IsRendKillable(m)))
@@ -82,7 +82,7 @@ namespace Challenger_Series.Plugins
                     var minion = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     var targetName = minion.CharData.BaseSkinName;
 
-                    if (targetName.Contains("SRU_") || targetName.Contains("TT_") && !targetName.Contains("Mini"))
+                    if (!targetName.Contains("Mini") && targetName.Contains("SRU_") || targetName.Contains("TT_"))
                     {
                         if (GetJungleCampsOnCurrentMap().Contains(targetName) &&
                             RendSmiteMenu[targetName].GetValue<MenuBool>())
@@ -176,7 +176,7 @@ namespace Challenger_Series.Plugins
                     E.Cast();
                 }
             }
-            if (AlwaysUseEIf2MinionsKillableBool && GameObjects.EnemyMinions.Count(IsRendKillable) > 1)
+            if (AlwaysUseEIf2MinionsKillableBool && GameObjects.EnemyMinions.Count(IsRendKillable) >= 2)
             {
                 E.Cast();
             }
@@ -238,7 +238,7 @@ namespace Challenger_Series.Plugins
             }
             HpBarDamageIndicator.Enabled = DrawEDamage;
             //this is intended.
-            if (GameObjects.EnemyMinions.Any(m => m.BaseSkinName.Contains("MinionSiege") && IsRendKillable(m)))
+            if (GameObjects.EnemyMinions.Any(m => m.CharData.BaseSkinName.Contains("MinionSiege") && IsRendKillable(m)))
             {
                 E.Cast();
             }
