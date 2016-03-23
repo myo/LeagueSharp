@@ -29,6 +29,7 @@ namespace Challenger_Series.Plugins
             Orbwalker.OnAction += OnAction;
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
         }
 
         private List<Vector2> OrderScoutPositions = new List<Vector2> {new Vector2(7200, 2700), new Vector2(6900, 4700), new Vector2(3200, 6700), new Vector2(2700, 8300)};
@@ -36,6 +37,29 @@ namespace Challenger_Series.Plugins
         private Vector2 DragonScoutPosition = new Vector2(10300, 5000);
         private Vector2 BaronScoutPosition = new Vector2(4400, 9600);
         private Vector2 LastELocation = new Vector2(4400, 9600);
+
+        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (sender is Obj_AI_Hero && sender.IsEnemy && sender.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 1000 && sender.HealthPercent > ObjectManager.Player.HealthPercent)
+            {
+            if (UseRInterrupt)
+            {
+                var sdata = SpellDatabase.GetByName(args.SData.Name);
+                if (sdata != null && sdata.SpellTags != null && sdata.SpellTags.Any(tag => tag == SpellTags.Interruptable))
+                {
+                    R.Cast(sender.ServerPosition);
+                }
+            }
+            if (UseRAntiGapclose)
+            {
+                var sdata = SpellDatabase.GetByName(args.SData.Name);
+                if (sdata != null && sdata.SpellTags != null && sdata.SpellTags.Any(tag => tag == SpellTags.Blink || tag == SpellTags.Dash) && args.Target.IsMe && args.End.Distance(ObjectManager.Player.ServerPosition) < 400)
+                {
+                    R.Cast(sender.ServerPosition);
+                }
+            }
+            }
+        }
 
         private void OnDraw(EventArgs args)
         {

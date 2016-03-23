@@ -141,7 +141,7 @@ namespace Challenger_Series
                     E.CastOnUnit((Obj_AI_Hero) sender);
                 }
                 var sdata = SpellDatabase.GetByName(args.SData.Name);
-                if (sdata != null)
+                if (sdata != null && sdata.SpellTags != null)
                 {
                     if (UseEAntiGapcloserBool &&
                         (ObjectManager.Player.Distance(args.Start.Extend(args.End, sdata.Range)) < 350 ||
