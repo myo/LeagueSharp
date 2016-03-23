@@ -68,8 +68,7 @@ namespace Challenger_Series.Plugins
                 if (UseEIfResettedByAMinionBool && ObjectManager.Player.ManaPercent > EResetByAMinionMinManaSlider.Value)
                 {
                     if (
-                        GameObjects.EnemyHeroes.Any(
-                            e => e.Health > 1 &&
+                        base.ValidTargets.Any(e=>
                                 e.Distance(ObjectManager.Player.ServerPosition) > 615 &&
                                 GetRendBuff(e).Count >= MinEnemyStacksForEMinionResetSlider.Value) &&
                         GameObjects.EnemyMinions.Any(m => IsRendKillable(m)))
@@ -113,7 +112,7 @@ namespace Challenger_Series.Plugins
                         pi.Speed = 1400;
                         pi.From = target.Position;
                         pi.Type = SkillshotType.SkillshotLine;
-                        foreach (var enemy in GameObjects.EnemyHeroes.Where(en => en.Distance(ObjectManager.Player) > 1050 && en.Health > 1))
+                        foreach (var enemy in base.ValidTargets.Where(en => en.Distance(ObjectManager.Player) > 1050 && en.Health > 1))
                         {
                             var prediction = Movement.GetPrediction(enemy, 0.25f, 40, 1400);
                             if (prediction.UnitPosition.CountEnemyHeroesInRange(100) == 0) return;
@@ -134,7 +133,7 @@ namespace Challenger_Series.Plugins
                 if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && FocusWBuffedEnemyBool)
                 {
                     var wMarkedEnemy =
-                        GameObjects.EnemyHeroes.FirstOrDefault(
+                        base.ValidTargets.FirstOrDefault(
                             h => h.Distance(ObjectManager.Player.ServerPosition) < 600 && h.HasBuff("kalistacoopstrikemarkally"));
                     if (wMarkedEnemy != null && wMarkedEnemy.IsValidTarget())
                     {
@@ -144,7 +143,7 @@ namespace Challenger_Series.Plugins
                 if (Orbwalker.ActiveMode != OrbwalkingMode.Combo && FocusWBuffedEnemyInHarassBool)
                 {
                     var wMarkedEnemy =
-                        GameObjects.EnemyHeroes.FirstOrDefault(
+                        base.ValidTargets.FirstOrDefault(
                             h => h.Distance(ObjectManager.Player.ServerPosition) < 600 && h.HasBuff("kalistacoopstrikemarkally"));
                     if (wMarkedEnemy != null && wMarkedEnemy.IsValidTarget())
                     {
@@ -171,7 +170,7 @@ namespace Challenger_Series.Plugins
             base.OnUpdate(args);
             if (UseEBool)
             {
-                if (GameObjects.EnemyHeroes.Any(IsRendKillable))
+                if (base.ValidTargets.Any(IsRendKillable))
                 {
                     E.Cast();
                 }
@@ -207,7 +206,7 @@ namespace Challenger_Series.Plugins
             base.OnDraw(args);
             #region Orbwalk On Minions
 
-            if (OrbwalkOnMinions && Orbwalker.ActiveMode == OrbwalkingMode.Combo && GameObjects.EnemyHeroes.Count(e=>e.Health > 1 && e.InAutoAttackRange()) == 0 && ObjectManager.Player.InventoryItems.Any(i => (int)i.IData.Id == 3085))
+            if (OrbwalkOnMinions && Orbwalker.ActiveMode == OrbwalkingMode.Combo && base.ValidTargets.Count(e=>e.InAutoAttackRange()) == 0 && ObjectManager.Player.InventoryItems.Any(i => (int)i.IData.Id == 3085))
             {
                 var minion =
                     GameObjects.EnemyMinions.Where(m => m.InAutoAttackRange()).OrderBy(m => m.Health).FirstOrDefault();
@@ -615,7 +614,7 @@ namespace Challenger_Series.Plugins
             }
             if (UseREngageBool)
             {
-                foreach (var enemy in GameObjects.EnemyHeroes.Where(en => en.IsValidTarget(1000) && en.IsFacing(ObjectManager.Player)))
+                foreach (var enemy in base.ValidTargets.Where(en => en.IsValidTarget(1000) && en.IsFacing(ObjectManager.Player)))
                 {
                     var waypoints = enemy.GetWaypoints();
                     if (waypoints.LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 400)

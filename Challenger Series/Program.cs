@@ -41,6 +41,9 @@ namespace Challenger_Series
                     case "Ashe":
                         new Ashe();
                         break;
+                    case "Caitlyn":
+                        new Caitlyn();
+                        break;
                 }
             };
         }

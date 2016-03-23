@@ -42,8 +42,7 @@ namespace Challenger_Series.Utils
                 return;
             }
 
-            foreach (var unit in
-                GameObjects.EnemyHeroes.Where(h => h.IsValid && h.IsHPBarRendered && h.Distance(ObjectManager.Player.ServerPosition) < 1300))
+            foreach (var unit in GameObjects.EnemyHeroes.Where(h => h.IsValid && h.IsHPBarRendered && h.Distance(ObjectManager.Player.ServerPosition) < 1300))
             {
                 var damage = _damageToUnit(unit);
 

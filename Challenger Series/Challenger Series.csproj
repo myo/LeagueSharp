@@ -60,21 +60,26 @@
   <ItemGroup>
     <Compile Include="CSPlugin.cs" />
     <Compile Include="Plugins\Ashe.cs" />
+    <Compile Include="Plugins\Caitlyn.cs" />
     <Compile Include="Plugins\Kalista.cs" />
     <Compile Include="Plugins\KogMaw.cs" />
     <Compile Include="Plugins\Soraka.cs" />
     <Compile Include="Plugins\Vayne.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\FileOperations.cs" />
     <Compile Include="Utils\Geometry.cs" />
     <Compile Include="Plugins\Irelia.cs" />
     <Compile Include="Utils\HpBarDamageIndicator.cs" />
+    <Compile Include="Utils\Logic\PositionSaver.cs" />
+    <Compile Include="Utils\Logic\PositionSaverCore.cs" />
     <Compile Include="Utils\Misc.cs" />
     <Compile Include="Utils\VectorHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

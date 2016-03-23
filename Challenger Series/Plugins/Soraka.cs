@@ -51,7 +51,7 @@ namespace Challenger_Series
                 //J4 wall E
                 if (obj != null && obj.Name.ToLower() == "jarvanivwall")
                 {
-                    var enemyJ4 = GameObjects.EnemyHeroes.First(h => h.CharData.BaseSkinName.Contains("Jarvan"));
+                    var enemyJ4 = base.ValidTargets.First(h => h.CharData.BaseSkinName.Contains("Jarvan"));
                     if (enemyJ4 != null && enemyJ4.IsValidTarget())
                     E.Cast(enemyJ4.ServerPosition);
                 }
@@ -280,7 +280,7 @@ namespace Challenger_Series
                 GameObjects.AllyHeroes.Any(
                     h => h.Position.Distance(ObjectManager.Player.Position) < 600 && !h.IsDead && !h.IsMe);
 
-            foreach (var hero in GameObjects.EnemyHeroes.Where(h => h.IsValidTarget(925)))
+            foreach (var hero in base.ValidTargets.Where(h => h.IsValidTarget(925)))
             {
                 if (shouldntKS && Q.GetDamage(hero) > hero.Health)
                 {
@@ -326,7 +326,7 @@ namespace Challenger_Series
         {
             if (!E.IsReady()) return;
             var goodTarget =
-                GameObjects.EnemyHeroes.OrderByDescending(GetPriority).FirstOrDefault(
+                base.ValidTargets.OrderByDescending(GetPriority).FirstOrDefault(
                     e =>
                         e.IsValidTarget(900) && e.HasBuffOfType(BuffType.Knockup) || e.HasBuffOfType(BuffType.Snare) ||
                         e.HasBuffOfType(BuffType.Stun) || e.HasBuffOfType(BuffType.Suppression) || e.IsCharmed ||
