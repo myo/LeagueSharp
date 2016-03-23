@@ -22,7 +22,7 @@ namespace Challenger_Series.Plugins
             base.W = new Spell(SpellSlot.W, 1100);
             base.W.SetSkillshot(250f, 75f, 1500f, true, SkillshotType.SkillshotLine);
             base.E = new Spell(SpellSlot.E, 25000);
-            base.R = new Spell(SpellSlot.R, 2000);
+            base.R = new Spell(SpellSlot.R, 1400);
             base.R.SetSkillshot(250f, 120f, 1600f, false, SkillshotType.SkillshotLine);
             InitMenu();
             Obj_AI_Hero.OnDoCast += OnDoCast;
@@ -114,7 +114,7 @@ namespace Challenger_Series.Plugins
         private void OnUpdate(EventArgs args)
         {
             var wTarget = TargetSelector.GetTarget(1100);
-            var rTarget = TargetSelector.GetTarget(2000, DamageType.Physical, false);
+            var rTarget = TargetSelector.GetTarget(1400, DamageType.Physical, false);
             if (W.IsReady() && Orbwalker.ActiveMode != OrbwalkingMode.None && UseWHarass && !GameObjects.EnemyHeroes.Any(e=>e.Health > 1 && e.InAutoAttackRange()))
             {
                 var pred = W.GetPrediction(wTarget);
