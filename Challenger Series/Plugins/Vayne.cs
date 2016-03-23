@@ -245,15 +245,18 @@ namespace Challenger_Series
             if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
             {
                 Orbwalker.ForceTarget = null;
-                var possible2WTarget = GameObjects.EnemyHeroes.FirstOrDefault(
-                    h =>
-                        h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
-                        h.GetBuffCount("vaynesilvereddebuff") == 2);
-                if (Orbwalker.ActiveMode != OrbwalkingMode.Combo)
+                if (UseEAs3rdWProcBool)
                 {
-                    if (possible2WTarget.IsValidTarget() && UseEAs3rdWProcBool && possible2WTarget.GetWaypoints().LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 1000)
+                    var possible2WTarget = GameObjects.EnemyHeroes.FirstOrDefault(
+                        h =>
+                            h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
+                            h.GetBuffCount("vaynesilvereddebuff") == 2);
+                    if (Orbwalker.ActiveMode != OrbwalkingMode.Combo)
                     {
-                        E.Cast(possible2WTarget);
+                        if (possible2WTarget.IsValidTarget() && possible2WTarget.GetWaypoints().LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 600 && (ObjectManager.Player.Level < 11 || possible2WTarget.Health < W.GetDamage(possible2WTarget)))
+                        {
+                            E.Cast(possible2WTarget);
+                        }
                     }
                 }
                 if (orbwalkingActionArgs.Target is Obj_AI_Hero && UseQBool)
@@ -789,7 +792,7 @@ namespace Challenger_Series
             return GameObjects.EnemyHeroes.Any(
                 e => e.IsValidTarget() &&
                      (e.Distance(pos) < 375) && (e.GetWaypoints().LastOrDefault().Distance(pos) > 550)) ||
-                     (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true));
+                     (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true)) || (ObjectManager.Player.HealthPercent < 30 && pos.CountEnemyHeroesInRange(300) > 0);
         }
 
         public static bool IsKillable(Obj_AI_Hero hero)
