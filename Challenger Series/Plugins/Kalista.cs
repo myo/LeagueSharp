@@ -297,10 +297,9 @@ namespace Challenger_Series.Plugins
             UseEBool = ComboMenu.Add(new MenuBool("kaliuseecombo", "Use E if can kill enemy", true));
             //UseEBeforeYouDieBool = ComboMenu.Add(new MenuBool("kaliuseebeforedeath", "Use E Before You Die", false));
             UseRAllySaverBool = ComboMenu.Add(new MenuBool("kaliusersaveally", "Use R to save Soulbound", true));
-            UseREngageBool = ComboMenu.Add(new MenuBool("userengage", "Use R to engage", true));
+            UseREngageBool = ComboMenu.Add(new MenuBool("userengage", "Use R to engage", false));
             UseRCounterEngageBool = ComboMenu.Add(new MenuBool("kaliusercounternengage", "Use R counter-engage", true));
             UseRInterruptBool = ComboMenu.Add(new MenuBool("kaliuserinterrupt", "Use R to Interrupt"));
-            //OrbwalkOnMinionsBool = ComboMenu.Add(new MenuBool("kaliorbonminions", "Orbwalk On Minions?", false));
             HarassMenu = MainMenu.Add(new Menu("kaliharassmenu", "Harass Settings: "));
             UseQStackTransferBool = HarassMenu.Add(new MenuBool("kaliuseqstacktransfer", "Use Q Stack Transfer"));
             UseQStackTransferMinStacksSlider =
