@@ -89,7 +89,17 @@ namespace Challenger_Series.Plugins
                 if (UseQCombo && Q.IsReady() && ObjectManager.Player.CountEnemyHeroesInRange(715) == 0 && ObjectManager.Player.CountEnemyHeroesInRange(1100) > 0)
                 {
                     Q.CastIfWillHit(TargetSelector.GetTarget(1100, DamageType.Physical), 2);
+                var goodQTarget = ValidTargets.FirstOrDefault(t => t.Distance(ObjectManager.Player) < 1150 && t.Health < Q.GetDamage(t) || SquishyTargets.Contains(t.CharData.BaseSkinName));
+                    if (goodQTarget != null)
+                    {
+                        var pred = Q.GetPrediction(goodQTarget);
+                        if ((int)pred.Hitchance > (int)HitChance.Medium)
+                        {
+                            Q.Cast(pred.UnitPosition);
+                        }
+                    }
                 }
+
                 if (UseRCombo && R.IsReady() && ObjectManager.Player.CountEnemyHeroesInRange(900) == 0)
                 {
                     foreach(var rTarget in base.ValidTargets.Where(e=>SquishyTargets.Contains(e.CharData.BaseSkinName) && R.GetDamage(e) > 0.1*e.MaxHealth))
