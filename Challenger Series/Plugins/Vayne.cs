@@ -86,7 +86,7 @@ namespace Challenger_Series
             base.OnUpdate(args);
             if (UseEBool)
             {
-                foreach (var enemy in GameObjects.EnemyHeroes.Where(e => e.IsValidTarget(550)))
+                foreach (var enemy in ValidTargets.Where(e => e.IsValidTarget(550)))
                 {
                     if (IsCondemnable(enemy))
                     {
@@ -98,7 +98,7 @@ namespace Challenger_Series
             {
                 foreach (
                     var hero in
-                        GameObjects.EnemyHeroes.Where(
+                        ValidTargets.Where(
                             h => h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550))
                 {
                     var prediction = E.GetPrediction(hero);
@@ -120,7 +120,7 @@ namespace Challenger_Series
             if (UseEInterruptBool)
             {
                 var possibleChannelingTarget =
-                    GameObjects.EnemyHeroes.FirstOrDefault(
+                    ValidTargets.FirstOrDefault(
                         e =>
                             e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
                             e.IsCastingInterruptableSpell());
@@ -217,7 +217,7 @@ namespace Challenger_Series
             if (DrawWStacksBool)
             {
                 var target =
-                    GameObjects.EnemyHeroes.FirstOrDefault(
+                    ValidTargets.FirstOrDefault(
                         enemy => enemy.HasBuff("vaynesilvereddebuff") && enemy.IsValidTarget(2000));
                 if (target.IsValidTarget())
                 {
@@ -245,7 +245,7 @@ namespace Challenger_Series
             if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
             {
                 Orbwalker.ForceTarget = null;
-                var possible2WTarget = GameObjects.EnemyHeroes.FirstOrDefault(
+                var possible2WTarget = ValidTargets.FirstOrDefault(
                     h =>
                         h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
                         h.GetBuffCount("vaynesilvereddebuff") == 2);
@@ -322,7 +322,7 @@ namespace Challenger_Series
             }
             if (orbwalkingActionArgs.Type == OrbwalkingType.BeforeAttack)
             {
-                var possible2WTarget = GameObjects.EnemyHeroes.FirstOrDefault(
+                var possible2WTarget = ValidTargets.FirstOrDefault(
                     h =>
                         h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
                         h.GetBuffCount("vaynesilvereddebuff") == 2);
@@ -333,7 +333,7 @@ namespace Challenger_Series
                 if (ObjectManager.Player.HasBuff("vaynetumblefade") && DontAttackWhileInvisibleAndMeelesNearBool)
                 {
                     if (
-                        GameObjects.EnemyHeroes.Any(
+                        ValidTargets.Any(
                             e => e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 350 && e.IsMelee))
                     {
                         orbwalkingActionArgs.Process = false;
@@ -351,7 +351,7 @@ namespace Challenger_Series
                     }
                 }
                 var possibleNearbyMeleeChampion =
-                    GameObjects.EnemyHeroes.FirstOrDefault(
+                    ValidTargets.FirstOrDefault(
                         e => e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 350);
 
                 if (possibleNearbyMeleeChampion.IsValidTarget())
