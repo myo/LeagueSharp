@@ -35,7 +35,7 @@ namespace Challenger_Series
             MyoModeOn = CrossAssemblySettings.Add(new MenuBool("myomode", "Anti-TOXIC", false));
             DrawEnemyWaypoints =
                 CrossAssemblySettings.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints", true));
-            DecreaseDamageToMinionsBy = CrossAssemblySettings.Add(new MenuSlider("decreasedamagetominionsby", "Decrease Damage To Minions By: ", 12, 0, 20));
+            DecreaseDamageToMinionsBy = CrossAssemblySettings.Add(new MenuSlider("decreasedamagetominionsby", "Decrease Damage To Minions By: ", 0, 0, 20));
 
             LeagueSharp.SDK.Core.Utils.DelayAction.Add(15000, () => Orbwalker.Enabled = true);
             Game.OnChat += args => 
@@ -100,7 +100,7 @@ namespace Challenger_Series
         public Spell R2 { get; set; }
         #endregion Spells
 
-        public IEnumerable<Obj_AI_Hero> ValidTargets { get {return GameObjects.EnemyHeroes.Where(enemy=>enemy.Health > 5 && enemy.IsVisible && !enemy.IsZombie);}}
+        public IEnumerable<Obj_AI_Hero> ValidTargets { get {return GameObjects.EnemyHeroes.Where(enemy=>enemy.Health > 5 && enemy.IsVisible);}}
 
         public Orbwalker Orbwalker { get; } = Variables.Orbwalker;
         public TargetSelector TargetSelector { get; } = Variables.TargetSelector;
