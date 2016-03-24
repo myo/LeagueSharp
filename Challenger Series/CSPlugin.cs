@@ -35,6 +35,7 @@ namespace Challenger_Series
             MyoModeOn = CrossAssemblySettings.Add(new MenuBool("myomode", "Anti-TOXIC", false));
             DrawEnemyWaypoints =
                 CrossAssemblySettings.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints", true));
+            DecreaseDamageToMinionsBy = CrossAssemblySettings.Add(new MenuSlider("decreasedamagetominionsby", "Decrease Damage To Minions By: ", 0, 0, 20));
 
             LeagueSharp.SDK.Core.Utils.DelayAction.Add(15000, () => Orbwalker.Enabled = true);
             Game.OnChat += args => 
@@ -74,6 +75,18 @@ namespace Challenger_Series
                     }
                 }
             };
+
+            Orbwalker.OnAction+=(sender, orbwalkingArgs) =>
+                {
+                    if (orbwalkingArgs.Type == OrbwalkingType.BeforeAttack && orbwalkingArgs.Target is Obj_AI_Minion)
+                    {
+                        var target = orbwalkingArgs.Target as Obj_AI_Minion;
+                        if (target.Health < 150 && target.Health > ObjectManager.Player.GetAutoAttackDamage(target) - DecreaseDamageToMinionsBy.Value)
+                        {
+                            orbwalkingArgs.Process = false;
+                        }
+                    }
+                };
         }
 
         #region Spells
