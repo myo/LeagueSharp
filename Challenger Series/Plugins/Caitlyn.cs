@@ -102,7 +102,7 @@ namespace Challenger_Series.Plugins
 
                 if (UseRCombo && R.IsReady() && ObjectManager.Player.CountEnemyHeroesInRange(900) == 0)
                 {
-                    foreach(var rTarget in base.ValidTargets.Where(e=>SquishyTargets.Contains(e.CharData.BaseSkinName) && R.GetDamage(e) > 0.1*e.MaxHealth))
+                    foreach(var rTarget in ValidTargets.Where(e=>SquishyTargets.Contains(e.CharData.BaseSkinName) && R.GetDamage(e) > 0.1*e.MaxHealth))
                     {
                         var pred = R.GetPrediction(rTarget);
                         if (!pred.CollisionObjects.Any(obj => obj is Obj_AI_Hero))
@@ -168,7 +168,7 @@ namespace Challenger_Series.Plugins
             }
             else
             {
-                var eTarget = base.ValidTargets.FirstOrDefault(e=>e.IsMelee && e.Distance(ObjectManager.Player) < UseEOnEnemiesCloserThanSlider.Value && !e.IsZombie);
+                var eTarget = ValidTargets.FirstOrDefault(e=>e.IsMelee && e.Distance(ObjectManager.Player) < UseEOnEnemiesCloserThanSlider.Value && !e.IsZombie);
                 var pred = E.GetPrediction(eTarget);
                 if (pred.CollisionObjects.Count == 0 && (int)pred.Hitchance > (int)HitChance.Medium)
                 {

@@ -86,7 +86,7 @@ namespace Challenger_Series
             base.OnUpdate(args);
             if (UseEBool)
             {
-                foreach (var enemy in base.ValidTargets.Where(e => e.IsValidTarget(550)))
+                foreach (var enemy in ValidTargets.Where(e => e.IsValidTarget(550)))
                 {
                     if (IsCondemnable(enemy))
                     {
@@ -98,7 +98,7 @@ namespace Challenger_Series
             {
                 foreach (
                     var hero in
-                        base.ValidTargets.Where(
+                        ValidTargets.Where(
                             h => h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550))
                 {
                     var prediction = E.GetPrediction(hero);
@@ -120,7 +120,7 @@ namespace Challenger_Series
             if (UseEInterruptBool)
             {
                 var possibleChannelingTarget =
-                    base.ValidTargets.FirstOrDefault(
+                    ValidTargets.FirstOrDefault(
                         e =>
                             e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 550 &&
                             e.IsCastingInterruptableSpell());
@@ -217,9 +217,9 @@ namespace Challenger_Series
             if (DrawWStacksBool)
             {
                 var target =
-                    base.ValidTargets.FirstOrDefault(
-                        enemy => enemy.HasBuff("vaynesilvereddebuff") && enemy.IsValidTarget(2000));
-                if (target.IsValidTarget())
+                    ValidTargets.FirstOrDefault(
+                        enemy => enemy.HasBuff("vaynesilvereddebuff") && enemy.Distance(ObjectManager.Player) > 2000);
+                if (target != null)
                 {
                     var x = target.HPBarPosition.X + 50;
                     var y = target.HPBarPosition.Y - 20;
@@ -247,7 +247,7 @@ namespace Challenger_Series
                 Orbwalker.ForceTarget = null;
                 if (UseEAs3rdWProcBool)
                 {
-                    var possible2WTarget = base.ValidTargets.FirstOrDefault(
+                    var possible2WTarget = ValidTargets.FirstOrDefault(
                         h =>
                             h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
                             h.GetBuffCount("vaynesilvereddebuff") == 2);
@@ -325,7 +325,7 @@ namespace Challenger_Series
             }
             if (orbwalkingActionArgs.Type == OrbwalkingType.BeforeAttack)
             {
-                var possible2WTarget = base.ValidTargets.FirstOrDefault(
+                var possible2WTarget = ValidTargets.FirstOrDefault(
                     h =>
                         h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
                         h.GetBuffCount("vaynesilvereddebuff") == 2);
@@ -336,7 +336,7 @@ namespace Challenger_Series
                 if (ObjectManager.Player.HasBuff("vaynetumblefade") && DontAttackWhileInvisibleAndMeelesNearBool)
                 {
                     if (
-                        base.ValidTargets.Any(
+                        ValidTargets.Any(
                             e => e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 350 && e.IsMelee))
                     {
                         orbwalkingActionArgs.Process = false;
@@ -354,7 +354,7 @@ namespace Challenger_Series
                     }
                 }
                 var possibleNearbyMeleeChampion =
-                    base.ValidTargets.FirstOrDefault(
+                    ValidTargets.FirstOrDefault(
                         e => e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 350);
 
                 if (possibleNearbyMeleeChampion.IsValidTarget())
@@ -789,10 +789,10 @@ namespace Challenger_Series
 
         public bool IsDangerousPosition(Vector3 pos)
         {
-            return base.ValidTargets.Any(
-                e => e.IsValidTarget() &&
-                     ((e.Distance(pos) < 375) || (e.GetWaypoints().LastOrDefault().Distance(pos) > 550))) ||
-                     (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true)) || (ObjectManager.Player.HealthPercent < 30 && pos.CountEnemyHeroesInRange(300) > 0);
+            return ValidTargets.Any(
+                e => e.IsMelee &&
+                     ((e.Distance(pos) < 375) || (e.GetWaypoints().LastOrDefault().Distance(pos) > 700))) ||
+                     (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true)) || (ObjectManager.Player.HealthPercent < 20 && pos.CountEnemyHeroesInRange(300) > 0);
         }
 
         public static bool IsKillable(Obj_AI_Hero hero)

@@ -67,7 +67,7 @@ namespace Challenger_Series.Plugins
             {
                 Drawing.DrawCircle(ObjectManager.Player.Position, 1100, Color.Turquoise);
             }
-            if (E.IsReady() && Orbwalker.ActiveMode != OrbwalkingMode.Combo && Orbwalker.ActiveMode != OrbwalkingMode.None && base.ValidTargets.Count(e=>e.InAutoAttackRange()) == 0)
+            if (E.IsReady() && Orbwalker.ActiveMode != OrbwalkingMode.Combo && Orbwalker.ActiveMode != OrbwalkingMode.None && ValidTargets.Count(e=>e.InAutoAttackRange()) == 0)
             {
                 switch (ScoutMode.SelectedValue)
                 {
@@ -139,7 +139,7 @@ namespace Challenger_Series.Plugins
         {
             var wTarget = TargetSelector.GetTarget(1100);
             var rTarget = TargetSelector.GetTarget(1400, DamageType.Physical, false);
-            if (W.IsReady() && Orbwalker.ActiveMode != OrbwalkingMode.None && UseWHarass && !base.ValidTargets.Any(e=>e.InAutoAttackRange()))
+            if (W.IsReady() && Orbwalker.ActiveMode != OrbwalkingMode.None && UseWHarass && !ValidTargets.Any(e=>e.InAutoAttackRange()))
             {
                 var pred = W.GetPrediction(wTarget);
                 if (!pred.CollisionObjects.Any() &&
