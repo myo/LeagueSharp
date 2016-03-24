@@ -80,10 +80,14 @@ namespace Challenger_Series
                 {
                     if (orbwalkingArgs.Type == OrbwalkingType.BeforeAttack && orbwalkingArgs.Target is Obj_AI_Minion)
                     {
+                        var value = DecreaseDamageToMinionsBy.Value;
                         var target = orbwalkingArgs.Target as Obj_AI_Minion;
-                        if (target.Health < 150 && target.Health > ObjectManager.Player.GetAutoAttackDamage(target) - DecreaseDamageToMinionsBy.Value)
+                        if (value > 0)
+                        {
+                        if (target.Health < 150 && target.Health > ObjectManager.Player.GetAutoAttackDamage(target) - value)
                         {
                             orbwalkingArgs.Process = false;
+                        }
                         }
                     }
                 };
