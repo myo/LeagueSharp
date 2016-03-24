@@ -44,6 +44,9 @@ namespace Challenger_Series
                     case "Caitlyn":
                         new Caitlyn();
                         break;
+                    default:
+                        Variables.Orbwalker.Enabled = false;
+                        break;
                 }
             };
         }

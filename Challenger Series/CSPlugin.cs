@@ -78,7 +78,7 @@ namespace Challenger_Series
 
             Orbwalker.OnAction+=(sender, orbwalkingArgs) =>
                 {
-                    if (orbwalkingArgs.Target is Obj_AI_Minion)
+                    if (orbwalkingArgs.Type == OrbwalkingType.BeforeAttack && orbwalkingArgs.Target is Obj_AI_Minion)
                     {
                         var target = orbwalkingArgs.Target as Obj_AI_Minion;
                         if (target.Health < 100 && target.Health > ObjectManager.Player.GetAutoAttackDamage(target) - DecreaseDamageToMinionsBy.Value)
