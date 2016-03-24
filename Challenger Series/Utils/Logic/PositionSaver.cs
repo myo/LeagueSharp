@@ -25,7 +25,7 @@ namespace Challenger_Series.Utils.Logic
         {
             _core = new PositionSaverCore();
             _isEnabled = menu.Add(new MenuBool("positionsaverenabled", "Auto use in custom positions", true));
-            _saveKey = menu.Add(new MenuKeyBind("positionsaversavekey", "Save cursor position as custom pos!", Keys.O, KeyBindType.Press));
+            _saveKey = menu.Add(new MenuKeyBind("positionsaversavekey", "Save cursor position as custom pos!", Keys.I, KeyBindType.Press));
             _spellToUse = spellToUse;
             Drawing.OnDraw += OnDraw;
         }
