@@ -162,7 +162,7 @@ namespace Challenger_Series.Plugins
                 if (pred.CollisionObjects.Count == 0 && (int)pred.Hitchance >= (int)HitChance.Medium)
                 {
                     orbwalkingActionArgs.Process = false;
-                    E.Cast(eTarget);
+                    E.Cast(pred.UnitPosition);
                 }
             }
             }
@@ -173,7 +173,7 @@ namespace Challenger_Series.Plugins
                 if (pred.CollisionObjects.Count == 0 && (int)pred.Hitchance >= (int)HitChance.Medium)
                 {
                     orbwalkingActionArgs.Process = false;
-                    E.Cast(eTarget);
+                    E.Cast(pred.UnitPosition);
                 }
             }
                 }
