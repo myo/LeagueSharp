@@ -84,6 +84,14 @@ namespace Challenger_Series.Utils.Logic
                 }
                 CreateFile();
             }
+            if (!Directory.Exists(PositionSaverDirectory + (int)Game.MapId + @"\"))
+            {
+                for (var i = 8; i < 18; i++)
+                {
+                    Directory.CreateDirectory(PositionSaverDirectory + i);
+                }
+                CreateFile();
+            }
             else if (!File.Exists(xFile) || !File.Exists(yFile))
             {
                 CreateFile();
