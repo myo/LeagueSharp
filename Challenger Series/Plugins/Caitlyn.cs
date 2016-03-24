@@ -159,7 +159,7 @@ namespace Challenger_Series.Plugins
             if (eTarget != null)
             {
                 var pred = E.GetPrediction(eTarget);
-                if (pred.CollisionObjects.Count == 0 && (int)pred.Hitchance > (int)HitChance.Medium)
+                if (pred.CollisionObjects.Count == 0 && (int)pred.Hitchance >= (int)HitChance.Medium)
                 {
                     orbwalkingActionArgs.Process = false;
                     E.Cast(eTarget);
@@ -170,7 +170,7 @@ namespace Challenger_Series.Plugins
             {
                 var eTarget = ValidTargets.FirstOrDefault(e=>e.IsMelee && e.Distance(ObjectManager.Player) < UseEOnEnemiesCloserThanSlider.Value && !e.IsZombie);
                 var pred = E.GetPrediction(eTarget);
-                if (pred.CollisionObjects.Count == 0 && (int)pred.Hitchance > (int)HitChance.Medium)
+                if (pred.CollisionObjects.Count == 0 && (int)pred.Hitchance >= (int)HitChance.Medium)
                 {
                     orbwalkingActionArgs.Process = false;
                     E.Cast(eTarget);
