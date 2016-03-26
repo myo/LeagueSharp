@@ -20,14 +20,16 @@ namespace Challenger_Series.Utils.Logic
         private PositionSaverCore _core;
         private MenuKeyBind _saveKey;
         private MenuKeyBind _deleteKey;
+        private MenuKeyBind _deleteOneKey;
         private MenuBool _isEnabled;
         private Spell _spellToUse;
         public PositionSaver(Menu menu, Spell spellToUse)
         {
             _core = new PositionSaverCore();
             _isEnabled = menu.Add(new MenuBool("positionsaverenabled", "Auto use in custom positions", true));
-            _saveKey = menu.Add(new MenuKeyBind("positionsaversavekey", "Save cursor position as custom pos!", Keys.I, KeyBindType.Press));
-            _deleteKey = menu.Add(new MenuKeyBind("positionsaverpurge", "Delete all positions", Keys.NumPad7, KeyBindType.Press));
+            _saveKey = menu.Add(new MenuKeyBind("positionsaversavekey", "Save cursor pos as custom pos!", Keys.I, KeyBindType.Press));
+            _deleteOneKey = menu.Add(new MenuKeyBind("positionsaverdeleteone", "Delete cursor position", Keys.J, KeyBindType.Press));
+            _deleteKey = menu.Add(new MenuKeyBind("positionsaverpurge", "Delete all positions", Keys.Delete, KeyBindType.Press));
             _spellToUse = spellToUse;
             Drawing.OnDraw += OnDraw;
         }
@@ -48,11 +50,15 @@ namespace Challenger_Series.Utils.Logic
                 {
                     _core.PurgeAllPositions();
                 }
+                if (_deleteOneKey.Active)
+                {
+                    _core.RemovePosition(Game.CursorPos);
+                }
                 if (_core.Positions.Any())
                 {
                     foreach (var savedLocation in _core.Positions.Where(pos => pos.Distance(ObjectManager.Player.Position) < 4000))
                     {
-                        Drawing.DrawCircle(savedLocation, 100, savedLocation.Distance(ObjectManager.Player.Position) < _spellToUse.Range ? Color.Gold : Color.White);
+                        Drawing.DrawCircle(savedLocation, 60, savedLocation.Distance(ObjectManager.Player.Position) < _spellToUse.Range ? Color.Gold : Color.White);
                     }
                     if (_spellToUse.IsReady())
                     {

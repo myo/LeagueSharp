@@ -123,7 +123,7 @@ namespace Challenger_Series.Utils.Logic
             #region Get Location
             for (var i = 0; i < xInt.Length; i++)
             {
-                Positions.Add(new Vector2(xInt[i], yInt[i]).RandomizeToVector3(-15,15));
+                Positions.Add(new Vector2(xInt[i], yInt[i]).ToVector3());
             }
 
             #endregion
@@ -143,7 +143,23 @@ namespace Challenger_Series.Utils.Logic
         }
         public void RemovePosition(Vector3 position)
         {
+            try
+            {
+                var elementInList = Positions.FirstOrDefault(p => p.Distance(position) < 100);
+                Positions.Remove(elementInList);
 
+                File.WriteAllText(xFile, string.Empty);
+                File.WriteAllText(yFile, string.Empty);
+
+                foreach (var pos in Positions)
+                {
+                    SavePosition(pos);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public void PurgeAllPositions()
