@@ -141,6 +141,17 @@ namespace Challenger_Series.Utils.Logic
                 writer.Dispose();
             }
         }
+        public void RemovePosition(Vector3 position)
+        {
+
+        }
+
+        public void PurgeAllPositions()
+        {
+            Positions.Clear();
+            File.WriteAllText(xFile, string.Empty);
+            File.WriteAllText(yFile, string.Empty);
+        }
 
         /// <summary>
         /// Converts String to Integer

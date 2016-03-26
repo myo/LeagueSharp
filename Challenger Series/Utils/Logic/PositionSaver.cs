@@ -19,6 +19,7 @@ namespace Challenger_Series.Utils.Logic
     {
         private PositionSaverCore _core;
         private MenuKeyBind _saveKey;
+        private MenuKeyBind _deleteKey;
         private MenuBool _isEnabled;
         private Spell _spellToUse;
         public PositionSaver(Menu menu, Spell spellToUse)
@@ -26,6 +27,7 @@ namespace Challenger_Series.Utils.Logic
             _core = new PositionSaverCore();
             _isEnabled = menu.Add(new MenuBool("positionsaverenabled", "Auto use in custom positions", true));
             _saveKey = menu.Add(new MenuKeyBind("positionsaversavekey", "Save cursor position as custom pos!", Keys.I, KeyBindType.Press));
+            _deleteKey = menu.Add(new MenuKeyBind("positionsaverpurge", "Delete all positions", Keys.NumPad7, KeyBindType.Press));
             _spellToUse = spellToUse;
             Drawing.OnDraw += OnDraw;
         }
@@ -41,6 +43,10 @@ namespace Challenger_Series.Utils.Logic
                         _core.SavePosition(Game.CursorPos);
                         _core.Positions.Add(Game.CursorPos);
                     }
+                }
+                if (_deleteKey.Active)
+                {
+                    _core.PurgeAllPositions();
                 }
                 if (_core.Positions.Any())
                 {
