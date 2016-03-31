@@ -80,20 +80,25 @@ namespace Challenger_Series.Plugins
         private void OnDraw(EventArgs args)
         {
             var drawRange = DrawRange.Value;
-            if (drawRange>0)
+            if (drawRange > 0)
             {
                 Drawing.DrawCircle(ObjectManager.Player.Position, drawRange, Color.Gold);
             }
             if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
             {
-                if (UseQCombo && Q.IsReady() && ObjectManager.Player.CountEnemyHeroesInRange(715) == 0 && ObjectManager.Player.CountEnemyHeroesInRange(1100) > 0)
+                if (UseQCombo && Q.IsReady() && ObjectManager.Player.CountEnemyHeroesInRange(715) == 0 &&
+                    ObjectManager.Player.CountEnemyHeroesInRange(1100) > 0)
                 {
                     Q.CastIfWillHit(TargetSelector.GetTarget(1100, DamageType.Physical), 2);
-                var goodQTarget = ValidTargets.FirstOrDefault(t => t.Distance(ObjectManager.Player) < 1150 && t.Health < Q.GetDamage(t) || SquishyTargets.Contains(t.CharData.BaseSkinName));
+                    var goodQTarget =
+                        ValidTargets.FirstOrDefault(
+                            t =>
+                                t.Distance(ObjectManager.Player) < 1150 && t.Health < Q.GetDamage(t) ||
+                                SquishyTargets.Contains(t.CharData.BaseSkinName));
                     if (goodQTarget != null)
                     {
                         var pred = Q.GetPrediction(goodQTarget);
-                        if ((int)pred.Hitchance > (int)HitChance.Medium)
+                        if ((int) pred.Hitchance > (int) HitChance.Medium)
                         {
                             Q.Cast(pred.UnitPosition);
                         }
@@ -102,7 +107,12 @@ namespace Challenger_Series.Plugins
 
                 if (UseRCombo && R.IsReady() && ObjectManager.Player.CountEnemyHeroesInRange(900) == 0)
                 {
-                    foreach(var rTarget in ValidTargets.Where(e=>SquishyTargets.Contains(e.CharData.BaseSkinName) && R.GetDamage(e) > 0.1*e.MaxHealth))
+                    foreach (
+                        var rTarget in
+                            ValidTargets.Where(
+                                e =>
+                                    SquishyTargets.Contains(e.CharData.BaseSkinName) && R.GetDamage(e) > 0.1*e.MaxHealth)
+                        )
                     {
                         var pred = R.GetPrediction(rTarget);
                         if (!pred.CollisionObjects.Any(obj => obj is Obj_AI_Hero))
@@ -112,7 +122,8 @@ namespace Challenger_Series.Plugins
                     }
                 }
             }
-            if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo && ObjectManager.Player.CountEnemyHeroesInRange(715) == 0)
+            if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo &&
+                ObjectManager.Player.CountEnemyHeroesInRange(715) == 0)
             {
                 var qHarassMode = QHarassMode.SelectedValue;
                 if (qHarassMode != "DISABLED")
@@ -121,7 +132,7 @@ namespace Challenger_Series.Plugins
                     if (qTarget != null)
                     {
                         var pred = Q.GetPrediction(qTarget);
-                        if ((int)pred.Hitchance > (int)HitChance.Medium)
+                        if ((int) pred.Hitchance > (int) HitChance.Medium)
                         {
                             if (qHarassMode == "ALLOWMINIONS")
                             {
@@ -135,6 +146,37 @@ namespace Challenger_Series.Plugins
                     }
                 }
             }
+
+            #region ELogic
+
+            if (!W.IsReady()) return;
+            var goodTarget =
+                ValidTargets.FirstOrDefault(
+                    e =>
+                        e.IsValidTarget(820) && e.HasBuffOfType(BuffType.Knockup) || e.HasBuffOfType(BuffType.Snare) ||
+                        e.HasBuffOfType(BuffType.Stun) || e.HasBuffOfType(BuffType.Suppression) || e.IsCharmed ||
+                        e.IsCastingInterruptableSpell() || e.HasBuff("ChronoRevive") || e.HasBuff("ChronoShift"));
+            if (goodTarget != null)
+            {
+                var pos = goodTarget.ServerPosition;
+                if (pos.Distance(ObjectManager.Player.ServerPosition) < 820)
+                {
+                    W.Cast(goodTarget.ServerPosition);
+                }
+            }
+            foreach (
+                var enemyMinion in
+                    ObjectManager.Get<Obj_AI_Base>()
+                        .Where(
+                            m =>
+                                m.IsEnemy && m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < W.Range &&
+                                m.HasBuff("teleport_target")))
+            {
+                
+                        W.Cast(enemyMinion.ServerPosition);
+            }
+
+            #endregion ELogic
         }
 
         private void OnAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
