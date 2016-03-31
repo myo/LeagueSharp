@@ -68,9 +68,9 @@ namespace Challenger_Series.Plugins
             }
             if (UseWInterrupt)
             {
-                if (sdata.SpellTags.Any(tag => tag == SpellTags.Interruptable))
+                if (sdata.SpellTags.Any(tag => tag == SpellTags.Interruptable && sender.Distance(ObjectManager.Player) < 820))
                 {
-                    //W.Cast(sender.ServerPosition);
+                    W.Cast(sender.ServerPosition);
                 }
             }
             }
@@ -183,7 +183,7 @@ namespace Challenger_Series.Plugins
         {
             if (orbwalkingActionArgs.Type == OrbwalkingType.BeforeAttack)
             {
-                if (orbwalkingActionArgs.Target is Obj_AI_Minion && HasPassive && FocusOnHeadShotting)
+                if (orbwalkingActionArgs.Target is Obj_AI_Minion && HasPassive && FocusOnHeadShotting && Orbwalker.ActiveMode != OrbwalkingMode.LaneClear)
                 {
                     var target = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     if (!target.CharData.BaseSkinName.Contains("MinionSiege") && target.Health > 60)
