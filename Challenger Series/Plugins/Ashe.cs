@@ -23,7 +23,7 @@ namespace Challenger_Series.Plugins
             base.W.SetSkillshot(250f, 75f, 1500f, true, SkillshotType.SkillshotLine);
             base.E = new Spell(SpellSlot.E, 25000);
             base.R = new Spell(SpellSlot.R, 1400);
-            base.R.SetSkillshot(250f, 120f, 1600f, false, SkillshotType.SkillshotLine);
+            base.R.SetSkillshot(250f, 120f, 1400f, false, SkillshotType.SkillshotLine);
             InitMenu();
             Obj_AI_Hero.OnDoCast += OnDoCast;
             Orbwalker.OnAction += OnAction;
