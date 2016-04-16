@@ -31,6 +31,8 @@ namespace Challenger_Series.Plugins
             Drawing.OnDraw += OnDraw;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Obj_AI_Base.OnPlayAnimation += OnPlayAnimation;
+            Events.OnGapCloser += OnGapCloser;
+            Events.OnInterruptableTarget += OnInterruptableTarget;
         }
 
         private void OnPlayAnimation(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
@@ -51,29 +53,40 @@ namespace Challenger_Series.Plugins
                 }
             }
         }
+        
+        private void OnGapCloser(object oSender, Events.GapCloserEventArgs args)
+        {
+            var sender = args.Sender;
+            if (UseEAntiGapclose)
+            {
+                if (args.IsDirectedToPlayer)
+                {
+                    if (E.IsReady())
+                    {
+                        E.Cast(sender.ServerPosition);
+                    }
+                }
+            }
+        }
+        
+        private void OnInterruptableTarget(object oSender, Events.InterruptableTargetEventArgs args)
+        {
+            var sender = args.Sender;
+            if (args.DangerLevel >= DangerLevel.Medium && ObjectManager.Player.Distance(sender) < 550)
+            {
+                W.Cast(sender.ServerPosition);
+            }
+        }
 
         private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender is Obj_AI_Hero && sender.IsEnemy && !sender.IsZombie)
+            base.OnProcessSpellCast(sender, args);
+            if (sender is Obj_AI_Hero && sender.IsEnemy)
             {
-            var sdata = SpellDatabase.GetByName(args.SData.Name);
-            if (sdata != null && sdata.SpellTags != null)
-            {
-            if (UseEAntiGapclose)
-            {
-                if (sdata.SpellTags.Any(tag => tag == SpellTags.Blink || tag == SpellTags.Dash) && args.Target.IsMe && args.End.Distance(ObjectManager.Player.ServerPosition) < 400)
+                if (args.SData.Name == "summonerflash" && args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
                 {
-                    E.Cast(sender.ServerPosition);
+                    E.Cast(args.End);
                 }
-            }
-            if (UseWInterrupt)
-            {
-                if (sdata.SpellTags.Any(tag => tag == SpellTags.Interruptable && sender.Distance(ObjectManager.Player) < 820))
-                {
-                    W.Cast(sender.ServerPosition);
-                }
-            }
-            }
             }
         }
 
