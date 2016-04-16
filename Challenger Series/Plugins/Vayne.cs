@@ -71,7 +71,10 @@ namespace Challenger_Series
             Orbwalker.OnAction += OnOrbwalkingAction;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Drawing.OnDraw += OnDraw;
+            Events.OnGapCloser += OnGapCloser;
+            Events.OnInterruptableTarget += OnInterruptableTarget;
         }
+
         #endregion
 
         #region Cache bik
@@ -90,6 +93,12 @@ namespace Challenger_Series
                 {
                     if (IsCondemnable(enemy))
                     {
+                        if (EDelaySlider.Value > 0)
+                        {
+                            var thisEnemy = enemy;
+                            DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
+                            return;
+                        }
                         E.CastOnUnit(enemy);
                     }
                 }
@@ -111,6 +120,12 @@ namespace Challenger_Series
                                 .ToVector3());
                         if (flags.HasFlag(CollisionFlags.Wall) || flags.HasFlag(CollisionFlags.Building))
                         {
+                            if (EDelaySlider.Value > 0)
+                            {
+                                var thisEnemy = hero;
+                                DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
+                                return;
+                            }
                             E.CastOnUnit(hero);
                             return;
                         }
@@ -126,37 +141,63 @@ namespace Challenger_Series
                             e.IsCastingInterruptableSpell());
                 if (possibleChannelingTarget.IsValidTarget())
                 {
+                    if (EDelaySlider.Value > 0)
+                    {
+                        var thisEnemy = possibleChannelingTarget;
+                        DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
+                        return;
+                    }
                     E.CastOnUnit(possibleChannelingTarget);
                 }
             }
         }
 
-        public override void OnProcessSpellCast(GameObject sender, GameObjectProcessSpellCastEventArgs args)
+        private void OnGapCloser(object oSender, Events.GapCloserEventArgs args)
         {
-            base.OnProcessSpellCast(sender, args);
-            if (sender is Obj_AI_Hero && sender.IsEnemy)
+            var sender = args.Sender;
+            var castedE = false;
+            if (UseEAntiGapcloserBool)
             {
-                if (args.SData.Name == "summonerflash" && args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
+                if (args.IsDirectedToPlayer)
                 {
-                    E.CastOnUnit((Obj_AI_Hero)sender);
-                }
-                var sdata = SpellDatabase.GetByName(args.SData.Name);
-                if (sdata != null)
-                {
-                    if (UseEAntiGapcloserBool &&
-                        (ObjectManager.Player.Distance(args.Start.Extend(args.End, sdata.Range)) < 350 ||
-                         args.Target.IsMe) &&
-                        sdata.SpellTags.Any(st => st == SpellTags.Dash || st == SpellTags.Blink))
+                    if (E.IsReady())
                     {
-                        if (E.IsReady())
+                        if (EDelaySlider.Value > 0)
                         {
-                            E.CastOnUnit((Obj_AI_Hero)sender);
+                            var thisEnemy = sender;
+                            DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
+                            return;
                         }
-                        if (Q.IsReady())
+                        E.CastOnUnit(sender);
+                        castedE = true;
+                    }
+                    if (Q.IsReady())
+                    {
+                        switch (UseQAntiGapcloserStringList.SelectedValue)
                         {
-                            switch (UseQAntiGapcloserStringList.SelectedValue)
-                            {
-                                case "ALWAYS":
+                            case "ALWAYS":
+                                {
+                                    if (args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
+                                    {
+                                        var pos = ObjectManager.Player.ServerPosition.Extend(args.End, -300);
+                                        if (!IsDangerousPosition(pos))
+                                        {
+                                            Q.Cast(pos);
+                                        }
+                                    }
+                                    if (sender.Distance(ObjectManager.Player) < 350)
+                                    {
+                                        var pos = ObjectManager.Player.ServerPosition.Extend(sender.Position, -300);
+                                        if (!IsDangerousPosition(pos))
+                                        {
+                                            Q.Cast(pos);
+                                        }
+                                    }
+                                    break;
+                                }
+                            case "E-NOT-READY":
+                                {
+                                    if (!E.IsReady() && !castedE)
                                     {
                                         if (args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
                                         {
@@ -174,39 +215,45 @@ namespace Challenger_Series
                                                 Q.Cast(pos);
                                             }
                                         }
-                                        break;
                                     }
-                                case "E-NOT-READY":
-                                    {
-                                        if (!E.IsReady())
-                                        {
-                                            if (args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
-                                            {
-                                                var pos = ObjectManager.Player.ServerPosition.Extend(args.End, -300);
-                                                if (!IsDangerousPosition(pos))
-                                                {
-                                                    Q.Cast(pos);
-                                                }
-                                            }
-                                            if (sender.Distance(ObjectManager.Player) < 350)
-                                            {
-                                                var pos = ObjectManager.Player.ServerPosition.Extend(sender.Position, -300);
-                                                if (!IsDangerousPosition(pos))
-                                                {
-                                                    Q.Cast(pos);
-                                                }
-                                            }
-                                        }
-                                        break;
-                                    }
-                            }
+                                    break;
+                                }
                         }
                     }
-                    if (UseEInterruptBool && sdata.SpellTags.Any(st => st == SpellTags.Interruptable) &&
-                        ObjectManager.Player.Distance(sender) < 550)
+                }
+            }
+        }
+
+        private void OnInterruptableTarget(object oSender, Events.InterruptableTargetEventArgs args)
+        {
+            var sender = args.Sender;
+            if (args.DangerLevel >= DangerLevel.Medium && ObjectManager.Player.Distance(sender) < 550 && !IsInvulnerable(sender))
+            {
+                if (EDelaySlider.Value > 0)
+                {
+                    var thisEnemy = sender;
+                    DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
+                    return;
+                }
+                E.CastOnUnit(sender);
+            }
+        }
+
+        public override void OnProcessSpellCast(GameObject sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            base.OnProcessSpellCast(sender, args);
+            if (sender is Obj_AI_Hero && sender.IsEnemy)
+            {
+                var objaiherosender = (Obj_AI_Hero) sender;
+                if (!IsInvulnerable(objaiherosender) && args.SData.Name == "summonerflash" && args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
+                {
+                    if (EDelaySlider.Value > 0)
                     {
-                        E.CastOnUnit((Obj_AI_Hero)sender);
+                        var thisEnemy = objaiherosender;
+                        DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
+                        return;
                     }
+                    E.CastOnUnit(objaiherosender);
                 }
             }
         }
@@ -253,6 +300,12 @@ namespace Challenger_Series
                 {
                     if (possible2WTarget.IsValidTarget() && UseEAs3rdWProcBool && possible2WTarget.GetWaypoints().LastOrDefault().Distance(ObjectManager.Player.ServerPosition) < 1000)
                     {
+                        if (EDelaySlider.Value > 0)
+                        {
+                            var thisEnemy = possible2WTarget;
+                            DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
+                            return;
+                        }
                         E.Cast(possible2WTarget);
                     }
                 }
@@ -284,8 +337,14 @@ namespace Challenger_Series
                     var tg = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     if (E.IsReady())
                     {
-                        if (tg.CharData.BaseSkinName.Contains("SRU_") && !tg.CharData.BaseSkinName.Contains("Mini") && tg.IsValidTarget() && UseEJungleFarm)
+                        if (IsMinionCondemnable(tg) && tg.IsValidTarget() && UseEJungleFarm)
                         {
+                            if (EDelaySlider.Value > 0)
+                            {
+                                var thisEnemy = tg;
+                                DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
+                                return;
+                            }
                             E.CastOnUnit(tg);
                         }
                     }
@@ -386,6 +445,12 @@ namespace Challenger_Series
                                 .LastOrDefault()
                                 .Distance(ObjectManager.Player.ServerPosition) < possibleNearbyMeleeChampion.AttackRange)
                         {
+                            if (EDelaySlider.Value > 0)
+                            {
+                                var thisEnemy = possibleNearbyMeleeChampion;
+                                DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
+                                return;
+                            }
                             E.CastOnUnit(possibleNearbyMeleeChampion);
                         }
                     }
@@ -440,7 +505,7 @@ namespace Challenger_Series
                     new[] { "NEVER", "E-NOT-READY", "ALWAYS" }));
             TryToFocus2WBool = ComboMenu.Add(new MenuBool("focus2w", "Try To Focus 2W", false));
             UseEBool = CondemnMenu.Add(new MenuBool("usee", "Auto E", true));
-            EDelaySlider = CondemnMenu.Add(new MenuSlider("edelay", "E Delay: ", 0, 0, 100));
+            EDelaySlider = CondemnMenu.Add(new MenuSlider("edelay", "E Delay (in ms): ", 0, 0, 100));
             EModeStringList =
                 CondemnMenu.Add(new MenuList<string>("emode", "E Mode: ",
                     new[]
@@ -474,7 +539,7 @@ namespace Challenger_Series
 
         #region ChampionLogic
 
-        public bool IsCondemnable(Obj_AI_Hero hero)
+        private bool IsCondemnable(Obj_AI_Hero hero)
         {
             if (!hero.IsValidTarget(550f) || hero.HasBuffOfType(BuffType.SpellShield) ||
                 hero.HasBuffOfType(BuffType.SpellImmunity) || hero.IsDashing()) return false;
@@ -705,7 +770,24 @@ namespace Challenger_Series
             return false;
         }
 
-        public Vector3 GetAggressiveTumblePos(Obj_AI_Base target)
+        private bool IsMinionCondemnable(Obj_AI_Minion minion)
+        {
+                return minion.CharData.BaseSkinName.Contains("SRU_") && !minion.CharData.BaseSkinName.Contains("Mini") && !minion.CharData.BaseSkinName.Contains("Baron") && !minion.CharData.BaseSkinName.Contains("Dragon") &&
+                    NavMesh.GetCollisionFlags(
+            minion.Position.ToVector2()
+                        .Extend(
+                            ObjectManager.Player.Position.ToVector2(),
+                            -400)
+                        .ToVector3()).HasFlag(CollisionFlags.Wall) ||
+                       NavMesh.GetCollisionFlags(
+            minion.Position.ToVector2()
+                               .Extend(
+                                   ObjectManager.Player.Position.ToVector2(),
+                                   -200)
+                               .ToVector3()).HasFlag(CollisionFlags.Wall);
+        }
+
+        private Vector3 GetAggressiveTumblePos(Obj_AI_Base target)
         {
             var cursorPos = Game.CursorPos;
 
@@ -730,7 +812,7 @@ namespace Challenger_Series
             return Vector3.Zero;
         }
 
-        public Vector3 GetTumblePos(Obj_AI_Base target)
+        private Vector3 GetTumblePos(Obj_AI_Base target)
         {
             if (Orbwalker.ActiveMode != OrbwalkingMode.Combo)
                 return GetAggressiveTumblePos(target);
@@ -770,7 +852,7 @@ namespace Challenger_Series
                 : Vector3.Zero;
         }
 
-        public static int VayneWStacks(Obj_AI_Base o)
+        private int VayneWStacks(Obj_AI_Base o)
         {
             if (o == null) return 0;
             if (o.Buffs.FirstOrDefault(b => b.Name.Contains("vaynesilver")) == null ||
@@ -778,38 +860,37 @@ namespace Challenger_Series
             return o.Buffs.FirstOrDefault(b => b.Name.Contains("vaynesilver")).Count;
         }
 
-        public static Vector3 Randomize(Vector3 pos)
+        private Vector3 Randomize(Vector3 pos)
         {
             var r = new Random(Environment.TickCount);
             return new Vector2(pos.X + r.Next(-150, 150), pos.Y + r.Next(-150, 150)).ToVector3();
         }
 
-        public static bool IsDangerousPosition(Vector3 pos)
+        private bool IsDangerousPosition(Vector3 pos)
         {
             return GameObjects.EnemyHeroes.Any(
                 e => e.IsValidTarget() &&
-                     (e.Distance(pos) < 375) && (e.GetWaypoints().LastOrDefault().Distance(pos) > 550)) ||
+                     (e.Distance(pos) < 375) && (Q.GetPrediction(e).UnitPosition.Distance(pos) > 550)) ||
                      (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true));
         }
 
-        public static bool IsKillable(Obj_AI_Hero hero)
+        private bool IsKillable(Obj_AI_Hero hero)
         {
             return ObjectManager.Player.GetAutoAttackDamage(hero) * 2 < hero.Health;
         }
 
-        public static bool IsCollisionable(Vector3 pos)
+        private bool IsCollisionable(Vector3 pos)
         {
             return NavMesh.GetCollisionFlags(pos).HasFlag(CollisionFlags.Wall) ||
                    (NavMesh.GetCollisionFlags(pos).HasFlag(CollisionFlags.Building));
         }
 
-        public static bool IsValidState(Obj_AI_Hero target)
+        private bool IsInvulnerable(Obj_AI_Hero target)
         {
-            return !target.HasBuffOfType(BuffType.SpellShield) && !target.HasBuffOfType(BuffType.SpellImmunity) &&
-                   !target.HasBuffOfType(BuffType.Invulnerability);
+            return target.HasBuffOfType(BuffType.SpellShield) || target.HasBuffOfType(BuffType.SpellImmunity);
         }
 
-        public static int CountHerosInRange(Obj_AI_Hero target, bool checkteam, float range = 1200f)
+        private int CountHeroesInRange(Obj_AI_Hero target, bool checkteam, float range = 1200f)
         {
             var objListTeam =
                 ObjectManager.Get<Obj_AI_Hero>()
