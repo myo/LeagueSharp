@@ -36,6 +36,30 @@ namespace Challenger_Series.Plugins
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += EventsOnOnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
+            Orbwalker.OnAction += OnAction;
+        }
+
+        private void OnAction(object sender, OrbwalkingActionArgs args)
+        {
+            if (args.Type == OrbwalkingType.BeforeAttack)
+            {
+                var possibleNearbyMeleeChampion =
+                    ValidTargets.FirstOrDefault(
+                        e => e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 350);
+
+                if (possibleNearbyMeleeChampion.IsValidTarget())
+                {
+                    if (E.IsReady() && UseEAntiMelee)
+                    {
+                        var pos = ObjectManager.Player.ServerPosition.Extend(possibleNearbyMeleeChampion.ServerPosition,
+                            -Misc.GiveRandomInt(300, 475));
+                        if (!IsDangerousPosition(pos))
+                        {
+                            E.Cast(pos);
+                        }
+                    }
+                }
+            }
         }
 
         private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
@@ -255,6 +279,7 @@ namespace Challenger_Series.Plugins
         private MenuBool UseWCombo;
         private MenuList<string> UseEMode;
         private MenuBool UseEGapclose;
+        private MenuBool UseEAntiMelee;
         private MenuBool ForceR;
         private Menu HarassMenu;
         private MenuBool UseQExtended;
@@ -274,6 +299,7 @@ namespace Challenger_Series.Plugins
             UseWCombo = ComboMenu.Add(new MenuBool("Lucianwcombo", "Use W", true));
             UseEMode =
                 ComboMenu.Add(new MenuList<string>("Lucianecombo", "E Mode", new[] {"Side", "Cursor", "Enemy", "Never"}));
+            UseEAntiMelee = ComboMenu.Add(new MenuBool("Lucianecockblocker", "Use E to get away from melees", true));
             UseEGapclose = ComboMenu.Add(new MenuBool("Lucianegoham", "Use E to go HAM", false));
             ForceR = ComboMenu.Add(new MenuBool("Lucianrcombo", "Auto R", true));
             HarassMenu = MainMenu.Add(new Menu("Lucianharassmenu", "Harass Settings: "));
