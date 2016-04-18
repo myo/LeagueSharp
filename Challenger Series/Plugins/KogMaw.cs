@@ -37,24 +37,14 @@ namespace Challenger_Series.Plugins
             Drawing.OnDraw += OnDraw;
             Orbwalker.OnAction += OnAction;
             Obj_AI_Hero.OnDoCast += OnDoCast;
-            Rand = new Random();
         }
 
         private void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (args.SData.Name.Contains("BarrageAttack"))
             {
-                AttacksLanded++;
-            }
-            if (IsWActive() && AttacksLanded > HumanizerMaxAttacks.Value && ObjectManager.Player.AttackSpeedMod / 2 > HumanizerAttackSpeed.Value)
-            {
-                Orbwalker.SetMovementState(false);
             }
         }
-
-        private Random Rand;
-        private int AttacksLanded = 0;
-        private int HumanizerArmTime = 0;
 
         private void OnAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
         {
@@ -63,16 +53,6 @@ namespace Challenger_Series.Plugins
                 if (orbwalkingActionArgs.Target is Obj_AI_Hero)
                 {
                     var target = orbwalkingActionArgs.Target as Obj_AI_Hero;
-                    if (IsWActive())
-                    {
-                        if (!SuperAggressiveHumanizer && ValidTargets.Any(
-                                enemy => enemy.Health > 1 &&
-                                    enemy.IsValidTarget() && enemy.IsMelee &&
-                                    enemy.Distance(ObjectManager.Player) < Rand.Next(350, 400)))
-                        {
-                                Orbwalker.SetMovementState(true);
-                        }
-                    }
                     var distFromTargetToMe = target.Distance(ObjectManager.Player.ServerPosition);
                     if (Q.IsReady())
                     {
@@ -82,23 +62,9 @@ namespace Challenger_Series.Plugins
                     {
                         ELogic(target);
                     }
-                    if (IsWActive() && distFromTargetToMe > GetAttackRangeAfterWIsApplied() - 100)
-                    {
-                        ELogic(target);
-                    }
                 }
                 if (orbwalkingActionArgs.Target is Obj_AI_Minion)
                 {
-                    if (IsWActive())
-                    {
-                        if (AttacksLanded > HumanizerMaxAttacks &&
-                            ObjectManager.Player.AttackSpeedMod/2 > HumanizerAttackSpeed.Value)
-                        {
-                            Orbwalker.SetMovementState(false);
-                            AttacksLanded++;
-                            HumanizerArmTime = Environment.TickCount;
-                        }
-                    }
                     if (GetJungleCampsOnCurrentMap() != null && Orbwalker.ActiveMode == OrbwalkingMode.LaneClear)
                     {
                         var targetName = (orbwalkingActionArgs.Target as Obj_AI_Minion).CharData.BaseSkinName;
@@ -141,24 +107,11 @@ namespace Challenger_Series.Plugins
             {
                 Drawing.DrawCircle(ObjectManager.Player.Position, GetRRange() + 25, R.IsReady() ? Color.LimeGreen : Color.Red);
             }
-            if (Environment.TickCount - HumanizerArmTime > HumanizerChillTime.Value || !IsWActive())
+            var attackrange = GetAttackRangeAfterWIsApplied();
+            var target = TargetSelector.GetTarget(attackrange, DamageType.Physical);
+            if (IsWActive() && target.Distance(ObjectManager.Player) > attackrange - 150)
             {
-                AttacksLanded = 0;
-                HumanizerArmTime = Environment.TickCount;
-                Orbwalker.SetMovementState(true);
-            }
-            foreach(var targetCloseToMouse in ValidTargets.Where(en => en.Distance(ObjectManager.Player.ServerPosition) > ObjectManager.Player.GetRealAutoAttackRange() && en.Distance(ObjectManager.Player.ServerPosition) < 1400 && en.Position.Distance(Game.CursorPos) < 250))
-            {
-                ELogic(targetCloseToMouse);
-            }
-            if (!SuperAggressiveHumanizer &&
-                !GameObjects.Enemy.Any(
-                    en =>
-                        en.IsValidTarget() &&
-                        en.Distance(ObjectManager.Player) < ObjectManager.Player.GetRealAutoAttackRange()))
-            {
-                AttacksLanded = 0;
-                Orbwalker.SetMovementState(true);
+                E.CastIfHitchanceMinimum(target, HitChance.Medium);
             }
         }
 
@@ -173,9 +126,6 @@ namespace Challenger_Series.Plugins
         private MenuBool UseWBool;
         private MenuBool UseEBool;
         private MenuBool UseRBool;
-        private Menu HumanizerMenu;
-        private MenuSlider HumanizerAttackSpeed;
-        private MenuSlider HumanizerMaxAttacks;
         private MenuBool SuperAggressiveHumanizer;
         private MenuSlider HumanizerChillTime;
         private MenuSlider MaxRStacksSlider;
@@ -193,15 +143,6 @@ namespace Challenger_Series.Plugins
             UseWBool = ComboMenu.Add(new MenuBool("koggieusew", "Use W", true));
             UseEBool = ComboMenu.Add(new MenuBool("koggieusee", "Use E", true));
             UseRBool = ComboMenu.Add(new MenuBool("koggieuser", "Use R", true));
-            HumanizerMenu = MainMenu.Add(new Menu("koggiehumanizer", "Humanizer Settings: "));
-            HumanizerAttackSpeed =
-                HumanizerMenu.Add(new MenuSlider("koggiedontmoveifasbiggerthan", "Don't move if AS > %", 10, 2, 10));
-            HumanizerMaxAttacks =
-                HumanizerMenu.Add(new MenuSlider("koggiehumanizerminattacks", "Min W Attacks before Moving", 3, 0, 13));
-            HumanizerChillTime =
-                HumanizerMenu.Add(new MenuSlider("koggiehumanizerchilltime", "Chill Time (ms)", 200, 0, 2000));
-            SuperAggressiveHumanizer =
-                HumanizerMenu.Add(new MenuBool("koggiesuperaggrohumanizer", "Super Aggressive Humanizer", false));
             GetInPositionForWBeforeActivatingBool =
                 ComboMenu.Add(new MenuBool("koggiewintime", "Dont Activate W if In Danger!", false));
             HarassMenu = MainMenu.Add(new Menu("koggieharassmenu", "Harass Settings"));
@@ -264,11 +205,8 @@ namespace Challenger_Series.Plugins
             var myPos = ObjectManager.Player.ServerPosition;
             foreach (
                 var enemy in
-                    ValidTargets.Where(h => h.Distance(myPos) < R.Range && (!IsWActive() || h.Distance(myPos) > W.Range) && h.Health < R.GetDamage(h) * 2 && h.IsValidTarget()))
+                    ValidTargets.Where(h => h.Distance(myPos) < R.Range && (!IsWActive() || h.Distance(myPos) > W.Range + 85) && h.HealthPercent < 25 && h.IsValidTarget()))
             {
-                var dist = enemy.Distance(myPos);
-                if (IsWActive() && dist < GetAttackRangeAfterWIsApplied() + 25) break;
-                if (Orbwalker.CanAttack() && dist < 550) break;
                 var prediction = R.GetPrediction(enemy, true);
                 if ((int)prediction.Hitchance >= (int)HitChance.Medium)
                 {
