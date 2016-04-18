@@ -55,7 +55,7 @@ namespace Challenger_Series.Plugins
         private Vector2 BaronScoutPosition = new Vector2(4400, 9600);
         private Vector2 LastELocation = new Vector2(4400, 9600);
 
-        private void OnDraw(EventArgs args)
+        public void OnDraw(EventArgs args)
         {
             if (DrawWRange)
             {
@@ -129,7 +129,7 @@ namespace Challenger_Series.Plugins
             }
         }
 
-        private void OnUpdate(EventArgs args)
+        public override void OnUpdate(EventArgs args)
         {
             var wTarget = TargetSelector.GetTarget(1100);
             var rTarget = TargetSelector.GetTarget(1400, DamageType.Physical, false);
@@ -139,7 +139,7 @@ namespace Challenger_Series.Plugins
                 if (!pred.CollisionObjects.Any() &&
                     pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < 1100)
                 {
-                    if (pred.UnitPosition.CountEnemyHeroesInRange(350) > 1)
+                    if (pred.UnitPosition.CountEnemyHeroesInRange(400) >= 1)
                     W.Cast(pred.UnitPosition);
                 }
             }
@@ -173,7 +173,7 @@ namespace Challenger_Series.Plugins
                         if (pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < 1000 &&
                             !pred.CollisionObjects.Any())
                         {
-                    if (pred.UnitPosition.CountEnemyHeroesInRange(350) > 1)
+                    if (pred.UnitPosition.CountEnemyHeroesInRange(400) > 0)
                             W.Cast(pred.UnitPosition);
                         }
                     }
