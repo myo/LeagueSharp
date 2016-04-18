@@ -62,7 +62,7 @@ namespace Challenger_Series.Plugins
             var sender = args.Sender;
             if (UseEAntiGapclose)
             {
-                if (args.IsDirectedToPlayer)
+                if (args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
                 {
                     if (E.IsReady())
                     {
@@ -75,7 +75,7 @@ namespace Challenger_Series.Plugins
         private void OnInterruptableTarget(object oSender, Events.InterruptableTargetEventArgs args)
         {
             var sender = args.Sender;
-            if (args.DangerLevel >= DangerLevel.Medium && ObjectManager.Player.Distance(sender) < 550)
+            if (!GameObjects.AllyMinions.Any(m => m.Position.Distance(sender.ServerPosition) < 100) && args.DangerLevel >= DangerLevel.Medium && ObjectManager.Player.Distance(sender) < 550)
             {
                 W.Cast(sender.ServerPosition);
             }

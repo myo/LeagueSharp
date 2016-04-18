@@ -35,7 +35,7 @@ namespace Challenger_Series.Plugins
 
         private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
         {
-            if (R.IsReady() && args.DangerLevel >= DangerLevel.Medium)
+            if (R.IsReady() && args.DangerLevel >= DangerLevel.Medium && args.Sender.Distance(ObjectManager.Player) < 1300)
             {
                 R.Cast(args.Sender.ServerPosition);
             }
@@ -43,7 +43,7 @@ namespace Challenger_Series.Plugins
 
         private void EventsOnOnGapCloser(object sender, Events.GapCloserEventArgs args)
         {
-            if (R.IsReady() && args.IsDirectedToPlayer)
+            if (R.IsReady() && args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 1300)
             {
                 R.Cast(args.Sender.ServerPosition);
             }
