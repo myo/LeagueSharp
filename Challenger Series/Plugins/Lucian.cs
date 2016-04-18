@@ -72,7 +72,8 @@ namespace Challenger_Series.Plugins
             if (R.IsReady() && ForceR)
             {
                 var target = TargetSelector.GetTarget(900);
-                if (target.IsHPBarRendered && target.Health < R.GetDamage(target) * 0.8 && target.Distance(ObjectManager.Player) > 300)
+                if (target.IsHPBarRendered && target.Health < R.GetDamage(target)*0.8 &&
+                    target.Distance(ObjectManager.Player) > 300)
                 {
                     var pred = R.GetPrediction(target);
                     if (!pred.CollisionObjects.Any() && pred.Hitchance >= HitChance.High)
@@ -91,6 +92,43 @@ namespace Challenger_Series.Plugins
                 }
             }
             Orbwalker.ForceTarget = null;
+            if (E.IsReady() && Orbwalker.CanMove() && Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseEGapclose)
+            {
+                switch (UseEMode.SelectedValue)
+                {
+                    case "Side":
+                    {
+                        var pos =
+                            Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(),
+                                65).ToVector3();
+                        if (!IsDangerousPosition(pos))
+                        {
+                            E.Cast(pos);
+                        }
+                        break;
+                    }
+                    case "Cursor":
+                    {
+                        var pos = ObjectManager.Player.Position.Extend(Game.CursorPos,
+                            Misc.GiveRandomInt(50, 300));
+                        if (!IsDangerousPosition(pos))
+                        {
+                            E.Cast(pos);
+                        }
+                        break;
+                    }
+                    case "Enemy":
+                    {
+                        var pos = ObjectManager.Player.Position.Extend(tg.Position,
+                            Misc.GiveRandomInt(50, 300));
+                        if (!IsDangerousPosition(pos))
+                        {
+                            E.Cast();
+                        }
+                        break;
+                    }
+                }
+            }
             var q2tg = TargetSelector.GetTarget(Q2.Range);
             if (Q.IsReady() && tg.IsHPBarRendered)
             {
@@ -215,6 +253,7 @@ namespace Challenger_Series.Plugins
         private MenuBool UseQCombo;
         private MenuBool UseWCombo;
         private MenuList<string> UseEMode;
+        private MenuBool UseEGapclose;
         private MenuBool ForceR;
         private Menu HarassMenu;
         private MenuBool UseQExtended;
@@ -234,6 +273,7 @@ namespace Challenger_Series.Plugins
             UseWCombo = ComboMenu.Add(new MenuBool("Lucianwcombo", "Use W", true));
             UseEMode =
                 ComboMenu.Add(new MenuList<string>("Lucianecombo", "E Mode", new[] {"Side", "Cursor", "Enemy", "Never"}));
+            UseEGapclose = ComboMenu.Add(new MenuBool("Lucianegoham", "Use E to go HAM", false));
             ForceR = ComboMenu.Add(new MenuBool("Lucianrcombo", "Auto R", true));
             HarassMenu = MainMenu.Add(new Menu("Lucianharassmenu", "Harass Settings: "));
             UseQExtended = HarassMenu.Add(new MenuBool("Lucianqextended", "Use Extended Q", true));
@@ -258,6 +298,14 @@ namespace Challenger_Series.Plugins
             result.Y = (float) (temp.X*Math.Sin(angle) + temp.Y*Math.Cos(angle))/4;
             result = Vector2.Add(result, point1);
             return result;
+        }
+
+        private bool IsDangerousPosition(Vector3 pos)
+        {
+            return GameObjects.EnemyHeroes.Any(
+                e => e.IsValidTarget() &&
+                     (e.Distance(pos) < 375) && (Q.GetPrediction(e).UnitPosition.Distance(pos) > 550)) ||
+                   (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true));
         }
 
         public bool HasPassive => ObjectManager.Player.HasBuff("LucianPassiveBuff");
