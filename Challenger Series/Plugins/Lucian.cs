@@ -92,14 +92,15 @@ namespace Challenger_Series.Plugins
                 }
             }
             Orbwalker.ForceTarget = null;
-            if (E.IsReady() && Orbwalker.CanMove() && Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseEGapclose)
+            var etg = TargetSelector.GetTarget(ObjectManager.Player.AttackRange + 250);
+            if (E.IsReady() && etg.IsHPBarRendered && Orbwalker.CanMove() && Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseEGapclose && etg.Distance(ObjectManager.Player) > 450)
             {
                 switch (UseEMode.SelectedValue)
                 {
                     case "Side":
                     {
                         var pos =
-                            Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(),
+                            Deviation(ObjectManager.Player.Position.ToVector2(), etg.Position.ToVector2(),
                                 65).ToVector3();
                         if (!IsDangerousPosition(pos))
                         {
@@ -119,7 +120,7 @@ namespace Challenger_Series.Plugins
                     }
                     case "Enemy":
                     {
-                        var pos = ObjectManager.Player.Position.Extend(tg.Position,
+                        var pos = ObjectManager.Player.Position.Extend(etg.Position,
                             Misc.GiveRandomInt(50, 300));
                         if (!IsDangerousPosition(pos))
                         {
