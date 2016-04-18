@@ -29,6 +29,18 @@ namespace Challenger_Series.Utils
     {
         private const int CircleLineSegmentN = 22;
 
+        public static bool IsOutside(this Vector3 point, Geometry.Polygon poly)
+        {
+            var p = new IntPoint(point.X, point.Y);
+            return Clipper.PointInPolygon(p, poly.ToClipperPath()) != 1;
+        }
+
+        public static bool IsOutside(this Vector2 point, Polygon poly)
+        {
+            var p = new IntPoint(point.X, point.Y);
+            return Clipper.PointInPolygon(p, poly.ToClipperPath()) != 1;
+        }
+
         public static Vector3 SwitchYZ(this Vector3 v)
         {
             return new Vector3(v.X, v.Z, v.Y);
@@ -166,35 +178,81 @@ namespace Challenger_Series.Utils
             }
         }
 
-        public class Rectangle
+
+        /// <summary>
+        /// Represents a rectangle polygon.
+        /// </summary>
+        public class Rectangle : Polygon
         {
-            public Vector2 Direction;
-            public Vector2 Perpendicular;
-            public Vector2 REnd;
-            public Vector2 RStart;
+            /// <summary>
+            /// Gets the direction.
+            /// </summary>
+            /// <value>
+            /// The direction.
+            /// </value>
+            public Vector2 Direction { get { return (End - Start).Normalized(); } }
+
+            /// <summary>
+            /// Gets the perpendicular.
+            /// </summary>
+            /// <value>
+            /// The perpendicular.
+            /// </value>
+            public Vector2 Perpendicular { get { return Direction.Perpendicular(); } }
+
+            /// <summary>
+            /// The end
+            /// </summary>
+            public Vector2 End;
+
+            /// <summary>
+            /// The start
+            /// </summary>
+            public Vector2 Start;
+
+            /// <summary>
+            /// The width
+            /// </summary>
             public float Width;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Rectangle"/> class.
+            /// </summary>
+            /// <param name="start">The start.</param>
+            /// <param name="end">The end.</param>
+            /// <param name="width">The width.</param>
+            public Rectangle(Vector3 start, Vector3 end, float width) : this(start.ToVector2(), end.ToVector2(), width) { }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Rectangle"/> class.
+            /// </summary>
+            /// <param name="start">The start.</param>
+            /// <param name="end">The end.</param>
+            /// <param name="width">The width.</param>
             public Rectangle(Vector2 start, Vector2 end, float width)
             {
-                RStart = start;
-                REnd = end;
+                Start = start;
+                End = end;
                 Width = width;
-                Direction = (end - start).Normalized();
-                Perpendicular = Direction.Perpendicular();
+                UpdatePolygon();
             }
 
-            public Polygon ToPolygon(int offset = 0, float overrideWidth = -1)
+            /// <summary>
+            /// Updates the polygon.
+            /// </summary>
+            /// <param name="offset">The offset.</param>
+            /// <param name="overrideWidth">Width of the override.</param>
+            public void UpdatePolygon(int offset = 0, float overrideWidth = -1)
             {
-                var result = new Polygon();
-                result.Add(
-                    RStart + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
-                result.Add(
-                    RStart - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
-                result.Add(
-                    REnd - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
-                result.Add(
-                    REnd + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
-                return result;
+                Points.Clear();
+                Points.Add(
+                    Start + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
+                Points.Add(
+                    Start - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
+                Points.Add(
+                    End - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
+                Points.Add(
+                    End + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
             }
         }
 

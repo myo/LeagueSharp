@@ -24,7 +24,6 @@ namespace Challenger_Series
 {
     public class Soraka : CSPlugin
     {
-        private Random _rand;
 
         public Soraka()
         {
@@ -42,7 +41,6 @@ namespace Challenger_Series
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             GameObject.OnCreate += OnCreateObj;
-            _rand = new Random();
             Events.OnGapCloser += OnGapCloser;
             Events.OnInterruptableTarget += EventsOnOnInterruptableTarget;
         }
@@ -161,7 +159,6 @@ namespace Challenger_Series
         private MenuBool CheckIfAllyCanSurviveBool;
         private MenuBool TryToUltAfterIgniteBool;
         private MenuBool BlockAutoAttacksBool;
-        private MenuKeyBind DisableQKey;
         private MenuSlider DontHealIfImBelowHpSlider;
         private MenuBool DrawW;
         private MenuBool DrawQ;
@@ -197,8 +194,6 @@ namespace Challenger_Series
 
             NoNeedForSpacebarBool =
                 MainMenu.Add(new MenuBool("noneed4spacebar", "PLAY ONLY WITH MOUSE! NO SPACEBAR", true));
-
-            DisableQKey = MainMenu.Add(new MenuKeyBind("UseQ", "DISABLE AUTO Q HOTKEY: ", Keys.L, KeyBindType.Toggle));
 
             DontHealIfImBelowHpSlider = MainMenu.Add(new MenuSlider("wmyhp", "Don't Heal (W) if Below HP%: ", 20, 1));
 
@@ -284,7 +279,7 @@ namespace Challenger_Series
 
         public void QLogic()
         {
-            if (!Q.IsReady() || DisableQKey.Active || (ObjectManager.Player.Mana < 3*GetWManaCost() && CanW())) return;
+            if (!Q.IsReady() || (ObjectManager.Player.Mana < 3*GetWManaCost() && CanW())) return;
             var shouldntKS =
                 GameObjects.AllyHeroes.Any(
                     h => h.Position.Distance(ObjectManager.Player.Position) < 600 && !h.IsDead && !h.IsMe);

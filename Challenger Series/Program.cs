@@ -44,6 +44,9 @@ namespace Challenger_Series
                     case "Caitlyn":
                         new Caitlyn();
                         break;
+                    case "Lucian":
+                        new Lucian();
+                        break;
                     default:
                         Variables.Orbwalker.Enabled = false;
                         break;

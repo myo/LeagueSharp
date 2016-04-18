@@ -49,6 +49,11 @@ namespace Challenger_Series.Utils
             return new Vector2(position.X + _rand.Next(min, max), position.Y + _rand.Next(min, max)).ToVector3();
         }
 
+        public static int GiveRandomInt(int min, int max)
+        {
+            return _rand.Next(min, max);
+        }
+
         public static bool UnderTurret(this Vector3 position, bool enemyTurretsOnly)
         {
             return
