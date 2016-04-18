@@ -56,7 +56,7 @@ namespace Challenger_Series
                     E.Cast(enemyJ4.ServerPosition);
                 }
                 if (obj.Name.ToLower().Contains("soraka_base_e_rune.troy") &&
-                    obj.Position.CountEnemyHeroesInRange(300) > 0)
+                    GameObjects.EnemyHeroes.Count(e => e.IsHPBarRendered && e.Distance(obj.Position) < 300) > 0)
                 {
                     Q.Cast(obj.Position);
                 }
@@ -71,10 +71,6 @@ namespace Challenger_Series
                         E.Cast(ObjectManager.Player.ServerPosition);
                     }
                 }
-                /*if (obj.Position.Distance(ObjectManager.Player.Position) < 600)
-                {
-                    Game.PrintChat(obj.Name);
-                }*/
             }
         }
 
