@@ -12,6 +12,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using Challenger_Series.Utils;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using LeagueSharp.SDK.Core.UI.IMenu.Values;
@@ -42,6 +43,25 @@ namespace Challenger_Series
             Drawing.OnDraw += OnDraw;
             GameObject.OnCreate += OnCreateObj;
             _rand = new Random();
+            Events.OnGapCloser += OnGapCloser;
+            Events.OnInterruptableTarget += EventsOnOnInterruptableTarget;
+        }
+
+        private void EventsOnOnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
+        {
+            if (args.Sender.Distance(ObjectManager.Player) < 800)
+            {
+                E.Cast(args.Sender);
+            }
+        }
+
+        private void OnGapCloser(object sender, Events.GapCloserEventArgs args)
+        {
+            var ally = GameObjects.AllyHeroes.FirstOrDefault(a => a.Distance(args.End) < 300 || args.Sender.Distance(a) < 300);
+            if (ally.IsHPBarRendered && ally.Distance(ObjectManager.Player) < 800)
+            {
+                E.Cast(ally.ServerPosition.Randomize(-25, 25));
+            }
         }
 
         private void OnCreateObj(GameObject obj, EventArgs args)
@@ -92,20 +112,6 @@ namespace Challenger_Series
         public override void OnProcessSpellCast(GameObject sender, GameObjectProcessSpellCastEventArgs args)
         {
             base.OnProcessSpellCast(sender, args);
-            if (sender is Obj_AI_Hero && sender.IsEnemy)
-            {
-                var sdata = SpellDatabase.GetByName(args.SData.Name);
-                if (sdata != null && args.End.Distance(ObjectManager.Player.ServerPosition) < E.Range &&
-                    sdata.SpellTags != null &&
-                    sdata.SpellTags.Any(st => st == SpellTags.Dash || st == SpellTags.Blink))
-                {
-                    E.Cast(args.Start.Extend(args.End, sdata.Range - _rand.Next(5, 50)));
-                }
-            }
-            if (sender is Obj_AI_Hero && sender.Name == "Rengar" && args.Slot != SpellSlot.Q && args.Slot != SpellSlot.W && args.Slot != SpellSlot.E && args.Slot != SpellSlot.R && args.Slot != SpellSlot.Recall)
-            {
-                Game.PrintChat(args.SData.Name);
-            }
         }
 
         public override void OnDraw(EventArgs args)
@@ -129,6 +135,13 @@ namespace Challenger_Series
                             "1W Heals " + Math.Round(GetWHealingAmount()) + "HP");
                     }
                 }
+            }
+            var victim =
+                GameObjects.AllyHeroes.FirstOrDefault(
+                    a => GameObjects.EnemyHeroes.Any(e => e.IsMelee && e.IsHPBarRendered && e.Distance(a) < 200));
+            if (victim.Distance(ObjectManager.Player) < 800)
+            {
+                E.Cast(victim.ServerPosition);
             }
         }
 

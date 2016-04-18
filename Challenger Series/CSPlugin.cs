@@ -104,7 +104,7 @@ namespace Challenger_Series
         public Spell R2 { get; set; }
         #endregion Spells
 
-        public IEnumerable<Obj_AI_Hero> ValidTargets { get {return GameObjects.EnemyHeroes.Where(enemy=>enemy.Health > 5 && enemy.IsVisible);}}
+        public IEnumerable<Obj_AI_Hero> ValidTargets { get {return GameObjects.EnemyHeroes.Where(enemy=>enemy.IsHPBarRendered);}}
 
         public Orbwalker Orbwalker { get; } = Variables.Orbwalker;
         public TargetSelector TargetSelector { get; } = Variables.TargetSelector;
