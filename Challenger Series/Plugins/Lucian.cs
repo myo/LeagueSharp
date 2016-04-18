@@ -99,7 +99,7 @@ namespace Challenger_Series.Plugins
                                 var QHit = new Utils.Geometry.Rectangle(ObjectManager.Player.Position,
                                     ObjectManager.Player.Position.Extend(minion.Position, Q2.Range), Q2.Width);
                                 var QPred = Q2.GetPrediction(q2tg);
-                                if (QPred.UnitPosition.IsOutside(QHit) && QPred.Hitchance >= HitChance.High)
+                                if (!QPred.UnitPosition.IsOutside(QHit) && QPred.Hitchance >= HitChance.High)
                                 {
                                     Q.Cast(minion);
                                     return;
