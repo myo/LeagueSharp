@@ -178,7 +178,7 @@ namespace Challenger_Series.Plugins
                         }
                         if (UseWCombo && W.IsReady())
                         {
-                            W.Cast(target);
+                            W.CastIfWillHit(target);
                             return;
                         }
                     }
@@ -192,7 +192,7 @@ namespace Challenger_Series.Plugins
                         }
                         if (WJg && W.IsReady())
                         {
-                            W.Cast(tg);
+                            W.CastIfWillHit(tg);
                             return;
                         }
                         if (EJg && E.IsReady())
