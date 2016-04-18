@@ -185,23 +185,26 @@ namespace Challenger_Series.Plugins
                     if (args.Target is Obj_AI_Minion)
                     {
                         var tg = args.Target as Obj_AI_Minion;
-                        if (QJg && Q.IsReady())
+                        if (tg.CharData.BaseSkinName.Contains("SRU") && !tg.CharData.BaseSkinName.Contains("Mini"))
                         {
-                            Q.Cast(tg);
-                            return;
-                        }
-                        if (WJg && W.IsReady())
-                        {
-                            W.CastIfWillHit(tg);
-                            return;
-                        }
-                        if (EJg && E.IsReady())
-                        {
+                            if (QJg && Q.IsReady())
+                            {
+                                Q.Cast(tg);
+                                return;
+                            }
+                            if (WJg && W.IsReady())
+                            {
+                                W.CastIfWillHit(tg);
+                                return;
+                            }
+                            if (EJg && E.IsReady())
+                            {
 
-                            E.Cast(
-                                Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(),
-                                    60).ToVector3());
-                            return;
+                                E.Cast(
+                                    Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(),
+                                        60).ToVector3());
+                                return;
+                            }
                         }
                     }
                 }
