@@ -25,34 +25,17 @@ namespace Challenger_Series
     public abstract class CSPlugin
     {
         public MenuSlider DecreaseDamageToMinionsBy;
-        public MenuBool MyoModeOn;
         public MenuBool DrawEnemyWaypoints;
         public Menu CrossAssemblySettings;
         public CSPlugin()
         {
             MainMenu = new Menu("challengerseries", ObjectManager.Player.ChampionName + " To The Challenger", true, ObjectManager.Player.ChampionName);
             CrossAssemblySettings = MainMenu.Add(new Menu("crossassemblysettings", "Challenger Utils: "));
-            MyoModeOn = CrossAssemblySettings.Add(new MenuBool("myomode", "Anti-TOXIC", false));
             DrawEnemyWaypoints =
                 CrossAssemblySettings.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints", true));
             DecreaseDamageToMinionsBy = CrossAssemblySettings.Add(new MenuSlider("decreasedamagetominionsby", "Decrease Damage To Minions By: ", 0, 0, 20));
 
-            LeagueSharp.SDK.Core.Utils.DelayAction.Add(15000, () => Orbwalker.Enabled = true);
-            Game.OnChat += args => 
-            {
-                if (MyoModeOn && args.Sender.IsMe)
-                {
-                    var msg = args.Message.ToLower();
-                    if (msg.Contains("mid") || msg.Contains("top") || msg.Contains("bot") || msg.Contains("jungle") ||
-                        msg.Contains("jg") || msg.Contains("supp") || msg.Contains("adc"))
-                        args.Process = false;
-                    foreach (var ally in GameObjects.AllyHeroes)
-                    {
-                        if (msg.Contains(ally.CharData.BaseSkinName.ToLower()))
-                            args.Process = false;
-                    }
-                }
-            };
+            DelayAction.Add(15000, () => Orbwalker.Enabled = true);
             Drawing.OnDraw += args =>
             {
                 if (DrawEnemyWaypoints)

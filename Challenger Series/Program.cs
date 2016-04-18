@@ -47,6 +47,9 @@ namespace Challenger_Series
                     case "Lucian":
                         new Lucian();
                         break;
+                    case "Ezreal":
+                        new Ezreal();
+                        break;
                     default:
                         Variables.Orbwalker.Enabled = false;
                         break;

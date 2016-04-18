@@ -63,6 +63,7 @@
     <Compile Include="Plugins\Caitlyn.cs" />
     <Compile Include="Plugins\Kalista.cs" />
     <Compile Include="Plugins\KogMaw.cs" />
+    <Compile Include="Plugins\Ezreal.cs" />
     <Compile Include="Plugins\Lucian.cs" />
     <Compile Include="Plugins\Soraka.cs" />
     <Compile Include="Plugins\Vayne.cs" />
