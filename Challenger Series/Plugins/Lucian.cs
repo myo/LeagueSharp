@@ -178,7 +178,7 @@ namespace Challenger_Series.Plugins
                         }
                         if (UseWCombo && W.IsReady())
                         {
-                            W.CastIfWillHit(target);
+                            W.CastIfHitchanceMinimum(target, HitChance.High);
                             return;
                         }
                     }
