@@ -69,6 +69,18 @@ namespace Challenger_Series.Plugins
                     }
                 }
             }
+            if (R.IsReady() && ForceR)
+            {
+                var target = TargetSelector.GetTarget(900);
+                if (target.IsHPBarRendered && target.Health < R.GetDamage(target) * 0.8 && target.Distance(ObjectManager.Player) > 300)
+                {
+                    var pred = R.GetPrediction(target);
+                    if (!pred.CollisionObjects.Any() && pred.Hitchance >= HitChance.High)
+                    {
+                        R.Cast(pred.UnitPosition);
+                    }
+                }
+            }
             var tg = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
             if (HasPassive)
             {
