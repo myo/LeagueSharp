@@ -110,7 +110,7 @@ namespace Challenger_Series.Plugins
 
         public override void OnDraw(EventArgs args)
         {
-            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseSheenCombo && HasSheenBuff)
+            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseSheenCombo && HasSheenBuff && ObjectManager.Player.CountEnemyHeroesInRange(550) > 0)
             {
                 return;
             }
