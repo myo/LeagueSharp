@@ -313,7 +313,7 @@ namespace Challenger_Series.Plugins
             if (GetRStacks() >= MaxRStacksSlider.Value) return;
             if (IsWActive() || (Orbwalker.ActiveMode != OrbwalkingMode.Combo && !UseRHarass)) return;
 
-            foreach (var enemy in ValidTargets.Where(h => h.Distance(myPos) < R.Range && h.IsValidTarget() && h.HealthPercent < 25))
+            foreach (var enemy in ValidTargets.Where(h => h.Distance(myPos) < R.Range && h.IsValidTarget() && h.HealthPercent < 35))
             {
                 var dist = enemy.Distance(ObjectManager.Player.ServerPosition);
                 if (Orbwalker.CanAttack() && dist < 550) break;
