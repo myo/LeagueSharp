@@ -241,7 +241,7 @@ namespace Challenger_Series.Plugins
             HumanizerMinAttacks = HumanizerMenu.Add(new MenuSlider("koggieminattacks", "Min attacks before moving", 2, 1, 10));
             HumanizerMovementTime =
                 HumanizerMenu.Add(new MenuSlider("koggiehumanizermovetime", "Time for moving (milliseconds)", 200, 0,
-                    500));
+                    1000));
             HumanizerEnabled = HumanizerMenu.Add(new MenuBool("koggiehumanizerenabled", "Enable Humanizer? ", true));
             MaxRStacksSlider = MainMenu.Add(new MenuSlider("koggiermaxstacks", "R Max Stacks: ", 2, 0, 11));
             AlwaysSaveManaForWBool = MainMenu.Add(new MenuBool("koggiesavewmana", "Always Save Mana For W!", true));
