@@ -135,7 +135,7 @@ namespace Challenger_Series.Plugins
             {
                 foreach (
                     var enemy in
-                        ValidTargets.Where(t => t.Distance(ObjectManager.Player) < 900)
+                        ValidTargets.Where(t => t.Distance(ObjectManager.Player) < 800)
                             .OrderBy(e => e.Distance(ObjectManager.Player)))
                 {
                     var prediction = Q.GetPrediction(enemy);
