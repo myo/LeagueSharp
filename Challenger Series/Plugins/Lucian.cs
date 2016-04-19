@@ -62,7 +62,7 @@ namespace Challenger_Series.Plugins
             }
             if (args.Type == OrbwalkingType.AfterAttack)
             {
-                
+
                 if (!HasPassive)
                 {
                     if (args.Target is Obj_AI_Minion)
@@ -77,7 +77,7 @@ namespace Challenger_Series.Plugins
                             }
                             if (WJg && W.IsReady())
                             {
-                                W.CastIfWillHit(tg);
+                                W.Cast(tg.Position);
                                 return;
                             }
                             if (EJg && E.IsReady())
@@ -112,40 +112,18 @@ namespace Challenger_Series.Plugins
 
         public override void OnDraw(EventArgs args)
         {
-            #region Logicif (!HasPassive)
+            #region Logic
+
+            if (!HasPassive)
 
             {
                 var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
                 if (Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
                     target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
                 {
-                    if (E.IsReady())
-                    {
-                        switch (UseEMode.SelectedValue)
-                        {
-                            case "Side":
-                                E.Cast(
-                                    Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(),
-                                        65).ToVector3());
-                                break;
-                            case "Cursor":
-                                E.Cast(ObjectManager.Player.Position.Extend(Game.CursorPos,
-                                    Misc.GiveRandomInt(50, 100)));
-                                break;
-                            case "Enemy":
-                                E.Cast(ObjectManager.Player.Position.Extend(target.Position,
-                                    Misc.GiveRandomInt(50, 100)));
-                                break;
-                        }
-                    }
                     if (UseQCombo && Q.IsReady())
                     {
                         Q.Cast(target);
-                        return;
-                    }
-                    if (UseWCombo && W.IsReady())
-                    {
-                        W.CastIfHitchanceMinimum(target, HitChance.High);
                         return;
                     }
                 }
@@ -196,8 +174,9 @@ namespace Challenger_Series.Plugins
                 {
                     if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
                     {
+                        var menuItem = QExtendedBlacklist["qexbl" + q2tg.CharData.BaseSkinName];
                         if (UseQExtended &&
-                            ObjectManager.Player.ManaPercent > QExManaPercent)
+                            ObjectManager.Player.ManaPercent > QExManaPercent && menuItem != null && !menuItem.GetValue<MenuBool>())
                         {
                             var QPred = Q2.GetPrediction(q2tg);
                             if (QPred.Hitchance >= HitChance.Medium)
@@ -228,6 +207,74 @@ namespace Challenger_Series.Plugins
 
         private void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            if (args.SData.Name == "LucianPassiveShot" || args.SData.Name.Contains("LucianBasicAttack"))
+            {
+                if (!HasPassive)
+                {
+                    var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
+                    if (Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
+                        target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
+                    {
+                        if (E.IsReady())
+                        {
+                            switch (UseEMode.SelectedValue)
+                            {
+                                case "Side":
+                                    E.Cast(
+                                        Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(),
+                                            65).ToVector3());
+                                    break;
+                                case "Cursor":
+                                {
+                                    if (!IsDangerousPosition(Game.CursorPos))
+                                    E.Cast(ObjectManager.Player.Position.Extend(Game.CursorPos,
+                                        Misc.GiveRandomInt(50, 100)));
+                                    break;
+                                }
+                                case "Enemy":
+                                    E.Cast(ObjectManager.Player.Position.Extend(target.Position,
+                                        Misc.GiveRandomInt(50, 100)));
+                                    break;
+                            }
+                        }
+                        if (UseQCombo && Q.IsReady())
+                        {
+                            Q.Cast(target);
+                            return;
+                        }
+                        if (UseWCombo && W.IsReady())
+                        {
+                            W.CastIfHitchanceMinimum(target, HitChance.High);
+                            return;
+                        }
+                    }
+                    if (args.Target is Obj_AI_Minion)
+                    {
+                        var tg = args.Target as Obj_AI_Minion;
+                        if (tg.CharData.BaseSkinName.Contains("SRU") && !tg.CharData.BaseSkinName.Contains("Mini"))
+                        {
+                            if (QJg && Q.IsReady())
+                            {
+                                Q.Cast(tg);
+                                return;
+                            }
+                            if (WJg && W.IsReady())
+                            {
+                                W.CastIfWillHit(tg);
+                                return;
+                            }
+                            if (EJg && E.IsReady())
+                            {
+
+                                E.Cast(
+                                    Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(),
+                                        60).ToVector3());
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private Menu ComboMenu;
@@ -240,6 +287,7 @@ namespace Challenger_Series.Plugins
         private Menu HarassMenu;
         private MenuBool UseQExtended;
         private MenuSlider QExManaPercent;
+        private Menu QExtendedBlacklist;
         private MenuBool UseQHarass;
         private MenuBool UsePassiveOnEnemy;
         private Menu JungleMenu;
@@ -262,6 +310,12 @@ namespace Challenger_Series.Plugins
             UseQExtended = HarassMenu.Add(new MenuBool("Lucianqextended", "Use Extended Q", true));
             QExManaPercent =
                 HarassMenu.Add(new MenuSlider("Lucianqexmanapercent", "Only use extended Q if mana > %", 75, 0, 100));
+            QExtendedBlacklist = HarassMenu.Add(new Menu("Lucianqexblacklist", "Extended Q Blacklist: "));
+            foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly && !h.IsMe))
+            {
+                var championName = ally.CharData.BaseSkinName;
+                QExtendedBlacklist.Add(new MenuBool("qexbl" + championName, championName, false));
+            }
             UseQHarass = HarassMenu.Add(new MenuBool("Lucianqharass", "Use Q Harass", true));
             UsePassiveOnEnemy = HarassMenu.Add(new MenuBool("Lucianpassivefocus", "Use Passive On Champions", true));
             JungleMenu = MainMenu.Add(new Menu("Lucianjunglemenu", "Jungle Settings: "));

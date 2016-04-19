@@ -56,7 +56,7 @@ namespace Challenger_Series.Plugins
         {
             if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
             {
-                if (Orbwalker.ActiveMode != OrbwalkingMode.Combo && Orbwalker.ActiveMode != OrbwalkingMode.None)
+                if (QFarm && Orbwalker.ActiveMode != OrbwalkingMode.Combo && Orbwalker.ActiveMode != OrbwalkingMode.None)
                 {
                     if (_lastTurretTarget != null && _lastTurretTarget.IsHPBarRendered &&
                         Q.GetDamage(_lastTurretTarget) > _lastTurretTarget.Health &&
@@ -112,6 +112,10 @@ namespace Challenger_Series.Plugins
             {
                 return;
             }
+            if (!_lastTurretTarget.IsHPBarRendered)
+            {
+                _lastTurretTarget = null;
+            }
             if (Q.IsReady())
             {
                 var targets = ValidTargets.Where(x => x.IsValidTarget(Q.Range) && !x.IsZombie);
@@ -122,7 +126,7 @@ namespace Challenger_Series.Plugins
                          !target.HasBuff("JudicatorIntervention")))
                     {
                         var pred = Q.GetPrediction(target);
-                        if (Q.IsReady() && UseQ && pred.Hitchance >= HitChance.High)
+                        if (Q.IsReady() && UseQ && pred.Hitchance >= HitChance.High && !pred.CollisionObjects.Any())
                         {
                             Q.Cast(pred.UnitPosition);
                             return;
@@ -138,7 +142,7 @@ namespace Challenger_Series.Plugins
                     if (qtarget.IsHPBarRendered)
                     {
                         var pred = Q.GetPrediction(qtarget);
-                        if (Q.IsReady() && UseQ && pred.Hitchance >= HitChance.High)
+                        if (Q.IsReady() && UseQ && pred.Hitchance >= HitChance.High && !pred.CollisionObjects.Any())
                         {
                             Q.Cast(pred.UnitPosition);
                             return;
