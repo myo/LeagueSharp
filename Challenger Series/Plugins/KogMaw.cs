@@ -139,7 +139,7 @@ namespace Challenger_Series.Plugins
                             .OrderBy(e => e.Distance(ObjectManager.Player)))
                 {
                     var prediction = Q.GetPrediction(enemy);
-                    if ((int)prediction.Hitchance >= (int)HitChance.High)
+                    if ((int)prediction.Hitchance >= (int)HitChance.VeryHigh)
                     {
                         Q.Cast(prediction.UnitPosition);
                     }
