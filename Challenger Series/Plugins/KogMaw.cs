@@ -138,9 +138,6 @@ namespace Challenger_Series.Plugins
                 E.CastIfHitchanceMinimum(target, HitChance.Medium);
             }
 
-            var wts = Drawing.WorldToScreen(ObjectManager.Player.Position);
-            Drawing.DrawText(wts.X, wts.Y, Color.White, "x " + _attacksSoFar);
-
             #region Humanizer
             if (_humanizer != null)
             {
