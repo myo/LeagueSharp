@@ -151,13 +151,28 @@ namespace Challenger_Series.Plugins
                     if (wMode == "ALWAYS" || (wMode == "COMBO" && Orbwalker.ActiveMode == OrbwalkingMode.Combo))
                     {
                         var wtarget = TargetSelector.GetTarget(W);
-                        if (wtarget.IsHPBarRendered)
+                        if (wMode == "COMBO" && wtarget.Distance(ObjectManager.Player) < 500)
                         {
-                            var pred = W.GetPrediction(wtarget);
-                            if (pred.Hitchance >= HitChance.High)
+                            if (wtarget.IsHPBarRendered)
                             {
-                                W.Cast(pred.UnitPosition);
-                                return;
+                                var pred = W.GetPrediction(wtarget);
+                                if (pred.Hitchance >= HitChance.High)
+                                {
+                                    W.Cast(pred.UnitPosition);
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (wtarget.IsHPBarRendered)
+                            {
+                                var pred = W.GetPrediction(wtarget);
+                                if (pred.Hitchance >= HitChance.High)
+                                {
+                                    W.Cast(pred.UnitPosition);
+                                    return;
+                                }
                             }
                         }
                     }
