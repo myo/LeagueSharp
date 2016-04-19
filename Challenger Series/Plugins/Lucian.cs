@@ -28,7 +28,7 @@ namespace Challenger_Series.Plugins
 
             Q.SetTargetted(0.25f, 1400f);
             Q2.SetSkillshot(0.5f, 50, float.MaxValue, false, SkillshotType.SkillshotLine);
-            W.SetSkillshot(0.30f, 80f, 1600f, true, SkillshotType.SkillshotLine);
+            W.SetSkillshot(0.30f, 70f, 1600f, true, SkillshotType.SkillshotLine);
             R.SetSkillshot(0.2f, 110f, 2500, true, SkillshotType.SkillshotLine);
             InitMenu();
             Obj_AI_Hero.OnDoCast += OnDoCast;
@@ -77,7 +77,8 @@ namespace Challenger_Series.Plugins
                             }
                             if (WJg && W.IsReady())
                             {
-                                W.Cast(tg.Position);
+                                var pred = W.GetPrediction(tg);
+                                W.Cast(pred.UnitPosition);
                                 return;
                             }
                             if (EJg && E.IsReady())
@@ -271,7 +272,8 @@ namespace Challenger_Series.Plugins
                             }
                             if (WJg && W.IsReady())
                             {
-                                W.CastIfWillHit(tg);
+                                var pred = W.GetPrediction(tg);
+                                W.Cast(pred.UnitPosition);
                                 return;
                             }
                             if (EJg && E.IsReady())

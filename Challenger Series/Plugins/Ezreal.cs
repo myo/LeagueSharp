@@ -118,8 +118,8 @@ namespace Challenger_Series.Plugins
             }
             if (Q.IsReady())
             {
-                var targets = ValidTargets.Where(x => x.IsValidTarget(Q.Range) && !x.IsZombie);
-                if (targets.Any())
+                var targets = ValidTargets.Where(x => x.IsHPBarRendered && x.Health < Q.GetDamage(x) && x.IsValidTarget(Q.Range) && !x.IsZombie);
+                if (targets != null && targets.Any())
                 {
                     foreach (var target in targets)
                     {
@@ -128,10 +128,9 @@ namespace Challenger_Series.Plugins
                              !target.HasBuff("JudicatorIntervention")))
                         {
                             var pred = Q.GetPrediction(target);
-                            if (Q.IsReady() && UseQ && pred.Hitchance >= HitChance.High && !pred.CollisionObjects.Any())
+                            if (pred.Hitchance >= HitChance.High && !pred.CollisionObjects.Any())
                             {
                                 Q.Cast(pred.UnitPosition);
-                                return;
                             }
                         }
                     }
