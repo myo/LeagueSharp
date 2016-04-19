@@ -117,7 +117,7 @@ namespace Challenger_Series.Plugins
             if (!HasPassive)
 
             {
-                var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
+                var target = TargetSelector.GetTarget(Q);
                 
                 if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
                     target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)

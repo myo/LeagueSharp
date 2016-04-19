@@ -112,24 +112,27 @@ namespace Challenger_Series.Plugins
             {
                 return;
             }
-            if (!_lastTurretTarget.IsHPBarRendered)
+            if (_lastTurretTarget == null || !_lastTurretTarget.IsHPBarRendered)
             {
                 _lastTurretTarget = null;
             }
             if (Q.IsReady())
             {
                 var targets = ValidTargets.Where(x => x.IsValidTarget(Q.Range) && !x.IsZombie);
-                foreach (var target in targets)
+                if (targets.Any())
                 {
-                    if (target.Health < Q.GetDamage(target) &&
-                        (!target.HasBuff("kindrednodeathbuff") && !target.HasBuff("Undying Rage") &&
-                         !target.HasBuff("JudicatorIntervention")))
+                    foreach (var target in targets)
                     {
-                        var pred = Q.GetPrediction(target);
-                        if (Q.IsReady() && UseQ && pred.Hitchance >= HitChance.High && !pred.CollisionObjects.Any())
+                        if (target.Health < Q.GetDamage(target) &&
+                            (!target.HasBuff("kindrednodeathbuff") && !target.HasBuff("Undying Rage") &&
+                             !target.HasBuff("JudicatorIntervention")))
                         {
-                            Q.Cast(pred.UnitPosition);
-                            return;
+                            var pred = Q.GetPrediction(target);
+                            if (Q.IsReady() && UseQ && pred.Hitchance >= HitChance.High && !pred.CollisionObjects.Any())
+                            {
+                                Q.Cast(pred.UnitPosition);
+                                return;
+                            }
                         }
                     }
                 }

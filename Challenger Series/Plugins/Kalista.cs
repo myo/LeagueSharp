@@ -48,6 +48,7 @@ namespace Challenger_Series.Plugins
         {
             if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
             {
+                if (orbwalkingActionArgs.Target == null) return;
                 Orbwalker.ForceTarget = null;
                 if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && orbwalkingActionArgs.Target is Obj_AI_Hero)
                 {
