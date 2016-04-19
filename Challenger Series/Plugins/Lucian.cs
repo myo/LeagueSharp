@@ -134,8 +134,8 @@ namespace Challenger_Series.Plugins
 
             if (QKS && Q.IsReady())
             {
-                var targets = ValidTargets.Where(x => x.IsValidTarget(Q.Range) && !x.IsZombie);
-                if (targets.Any())
+                var targets = ValidTargets.Where(x => x.IsHPBarRendered && x.Health < Q.GetDamage(x) && x.IsValidTarget(Q.Range) && !x.IsZombie);
+                if (targets != null && targets.Any())
                 {
                     foreach (var target in targets)
                     {
@@ -218,7 +218,7 @@ namespace Challenger_Series.Plugins
             {
                 if (!HasPassive)
                 {
-                    var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
+                    var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange + 250, DamageType.Physical);
                     if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
                         target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
                     {
@@ -352,7 +352,7 @@ namespace Challenger_Series.Plugins
         {
             return GameObjects.EnemyHeroes.Any(
                 e => e.IsValidTarget() &&
-                     (e.Distance(pos) < 375) && (Q.GetPrediction(e).UnitPosition.Distance(pos) > 550)) ||
+                     (e.Distance(pos) < 375) && (E.GetPrediction(e).UnitPosition.Distance(pos) > 500)) ||
                    (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true));
         }
 
