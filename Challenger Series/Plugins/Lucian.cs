@@ -222,44 +222,6 @@ namespace Challenger_Series.Plugins
                 }
             }
             Orbwalker.ForceTarget = null;
-            var etg = TargetSelector.GetTarget(ObjectManager.Player.AttackRange + 250);
-            if (E.IsReady() && etg.IsHPBarRendered && Orbwalker.CanMove() && Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseEGapclose && etg.Distance(ObjectManager.Player) > 450)
-            {
-                switch (UseEMode.SelectedValue)
-                {
-                    case "Side":
-                    {
-                        var pos =
-                            Deviation(ObjectManager.Player.Position.ToVector2(), etg.Position.ToVector2(),
-                                65).ToVector3();
-                        if (!IsDangerousPosition(pos))
-                        {
-                            E.Cast(pos);
-                        }
-                        break;
-                    }
-                    case "Cursor":
-                    {
-                        var pos = ObjectManager.Player.Position.Extend(Game.CursorPos,
-                            Misc.GiveRandomInt(50, 300));
-                        if (!IsDangerousPosition(pos))
-                        {
-                            E.Cast(pos);
-                        }
-                        break;
-                    }
-                    case "Enemy":
-                    {
-                        var pos = ObjectManager.Player.Position.Extend(etg.Position,
-                            Misc.GiveRandomInt(50, 300));
-                        if (!IsDangerousPosition(pos))
-                        {
-                            E.Cast();
-                        }
-                        break;
-                    }
-                }
-            }
             var q2tg = TargetSelector.GetTarget(Q2.Range);
             if (Q.IsReady() && tg.IsHPBarRendered)
             {
@@ -286,25 +248,6 @@ namespace Challenger_Series.Plugins
                                     return;
                                 }
                             }
-                        }
-                    }
-                }
-                if (q2tg.Health < Q.GetDamage(q2tg) &&
-                    (!q2tg.HasBuff("kindrednodeathbuff") && !q2tg.HasBuff("Undying Rage") &&
-                     !q2tg.HasBuff("JudicatorIntervention")))
-                {
-                    var minions =
-                        GameObjects.EnemyMinions.Where(
-                            m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
-                    foreach (var minion in minions)
-                    {
-                        var QHit = new Utils.Geometry.Rectangle(ObjectManager.Player.Position,
-                            ObjectManager.Player.Position.Extend(minion.Position, Q2.Range), Q2.Width);
-                        var QPred = Q2.GetPrediction(q2tg);
-                        if (QPred.UnitPosition.IsOutside(QHit) && QPred.Hitchance >= HitChance.High)
-                        {
-                            Q.Cast(minion);
-                            return;
                         }
                     }
                 }
