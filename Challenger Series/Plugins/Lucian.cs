@@ -118,7 +118,8 @@ namespace Challenger_Series.Plugins
 
             {
                 var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
-                if (Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
+                
+                if (target != null Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
                     target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
                 {
                     if (UseQCombo && Q.IsReady())
@@ -134,20 +135,23 @@ namespace Challenger_Series.Plugins
             if (QKS && Q.IsReady())
             {
                 var targets = ValidTargets.Where(x => x.IsValidTarget(Q.Range) && !x.IsZombie);
-                foreach (var target in targets)
+                if (targets.Any())
                 {
-                    if (target.Health < Q.GetDamage(target) &&
-                        (!target.HasBuff("kindrednodeathbuff") && !target.HasBuff("Undying Rage") &&
-                         !target.HasBuff("JudicatorIntervention")))
+                    foreach (var target in targets)
                     {
-                        Q.Cast(target);
+                        if (target.Health < Q.GetDamage(target) &&
+                            (!target.HasBuff("kindrednodeathbuff") && !target.HasBuff("Undying Rage") &&
+                             !target.HasBuff("JudicatorIntervention")))
+                        {
+                            Q.Cast(target);
+                        }
                     }
                 }
             }
             if (R.IsReady() && ForceR)
             {
                 var target = TargetSelector.GetTarget(900);
-                if (target.IsHPBarRendered && target.Health < R.GetDamage(target)*0.8 &&
+                if (target != null && target.IsHPBarRendered && target.Health < R.GetDamage(target)*0.8 &&
                     target.Distance(ObjectManager.Player) > 300)
                 {
                     var pred = R.GetPrediction(target);
@@ -158,7 +162,7 @@ namespace Challenger_Series.Plugins
                 }
             }
             var tg = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
-            if (HasPassive)
+            if (tg != null && HasPassive)
             {
                 if (UsePassiveOnEnemy && tg.IsValidTarget())
                 {
@@ -168,7 +172,7 @@ namespace Challenger_Series.Plugins
             }
             Orbwalker.ForceTarget = null;
             var q2tg = TargetSelector.GetTarget(Q2.Range);
-            if (Q.IsReady() && tg.IsHPBarRendered)
+            if (q2tg != null && Q.IsReady() && tg.IsHPBarRendered)
             {
                 if (q2tg.Distance(ObjectManager.Player) > Q.Range)
                 {
