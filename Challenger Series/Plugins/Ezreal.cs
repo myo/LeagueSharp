@@ -14,6 +14,7 @@ using LeagueSharp.SDK.Core.Utils;
 using SharpDX;
 using Color = System.Drawing.Color;
 using Challenger_Series.Utils;
+using LeagueSharp.SDK.Core.Wrappers.Damages;
 
 namespace Challenger_Series.Plugins
 {
@@ -36,7 +37,60 @@ namespace Challenger_Series.Plugins
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += EventsOnOnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
+            Spellbook.OnCastSpell += OnCastSpell;
+            Orbwalker.OnAction += OnAction;
+            Obj_AI_Base.OnTarget += ObjAiBaseOnOnTarget;
         }
+
+        private Obj_AI_Minion _lastTurretTarget;
+
+        private bool HasSheenBuff
+            => ObjectManager.Player.HasBuff("sheen") || ObjectManager.Player.HasBuff("itemfrozenfist");
+        private void ObjAiBaseOnOnTarget(Obj_AI_Base sender, Obj_AI_BaseTargetEventArgs args)
+        {
+            if (sender is Obj_AI_Turret && sender.Distance(ObjectManager.Player) < 850 && args.Target is Obj_AI_Minion && args.Target.IsEnemy)
+            {
+                _lastTurretTarget = args.Target as Obj_AI_Minion;
+            }
+        }
+
+        private void OnAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
+        {
+            if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
+            {
+                if (Orbwalker.ActiveMode != OrbwalkingMode.Combo && Orbwalker.ActiveMode != OrbwalkingMode.None)
+                {
+                    if (_lastTurretTarget != null && _lastTurretTarget.IsHPBarRendered &&
+                        Q.GetDamage(_lastTurretTarget) > _lastTurretTarget.Health &&
+                        _lastTurretTarget.Health > ObjectManager.Player.GetAutoAttackDamage(_lastTurretTarget))
+                    {
+                        var pred = Q.GetPrediction(_lastTurretTarget);
+                        if (!pred.CollisionObjects.Any())
+                        {
+                            Q.Cast(pred.UnitPosition);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
+        {
+            if (sender.Owner.IsMe && args.Slot == SpellSlot.R)
+            {
+                if (!castedR && ObjectManager.Player.CountEnemyHeroesInRange(2500) > 0)
+                {
+                    args.Process = false;
+                }
+                else
+                {
+                    args.Process = true;
+                    castedR = false;
+                }
+            }
+        }
+
+        private bool castedR = false;
 
         private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
         {
@@ -56,6 +110,10 @@ namespace Challenger_Series.Plugins
 
         public override void OnDraw(EventArgs args)
         {
+            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseSheenCombo && HasSheenBuff)
+            {
+                return;
+            }
             if (Q.IsReady())
             {
                 var targets = ValidTargets.Where(x => x.IsValidTarget(Q.Range) && !x.IsZombie);
@@ -110,26 +168,72 @@ namespace Challenger_Series.Plugins
                     var pred = R.GetPrediction(rtarget);
                     if (pred.Hitchance >= HitChance.High)
                     {
-                        Q.Cast(pred.UnitPosition);
+                        castedR = true;
+                        R.Cast(pred.UnitPosition);
                         return;
                     }
                 }
                 if (ObjectManager.Player.CountEnemyHeroesInRange(800) < 1)
                 {
                     R.CastIfWillHit(rtarget, 3);
+                    return;
+                }
+            }
+            if (Orbwalker.CanMove() && QFarm && ObjectManager.Player.ManaPercent > QMana &&
+                (Orbwalker.ActiveMode == OrbwalkingMode.LaneClear || Orbwalker.ActiveMode == OrbwalkingMode.LastHit))
+            {
+                var minions =
+                    GameObjects.EnemyMinions.Where(
+                        m =>
+                            m.Distance(ObjectManager.Player) < 1000 && m.IsHPBarRendered && Q.GetDamage(m) > m.Health);
+                var lowhp = minions.FirstOrDefault(m => m.Health < ObjectManager.Player.GetAutoAttackDamage(m)/2 + 10);
+                if (lowhp != null)
+                {
+                    var pred = Q.GetPrediction(lowhp);
+                    if (!pred.CollisionObjects.Any())
+                    {
+                        Q.Cast(pred.UnitPosition);
+                        return;
+                    }
+                }
+                    var cannon = minions.FirstOrDefault(m => m.CharData.BaseSkinName.Contains("Siege"));
+                if (cannon != null)
+                {
+                    var pred = Q.GetPrediction(cannon);
+                    if (!pred.CollisionObjects.Any())
+                    {
+                        Q.Cast(pred.UnitPosition);
+                        return;
+                    }
+                }
+                if (minions.Count() > 1)
+                {
+                    var lowesthp = minions.OrderBy(m => m.Health).FirstOrDefault();
+                    var pred = Q.GetPrediction(lowesthp);
+                    if (!pred.CollisionObjects.Any())
+                    {
+                        Q.Cast(pred.UnitPosition);
+                        return;
+                    }
                 }
             }
         }
 
         private MenuBool UseQ;
         private MenuList<string> UseWMode;
+        private MenuBool QFarm;
+        private MenuSlider QMana;
+        private MenuBool UseSheenCombo;
         private MenuKeyBind UseRKey;
 
         public void InitMenu()
         {
             UseQ = MainMenu.Add(new MenuBool("Ezrealq", "Use Q", true));
+            QFarm = MainMenu.Add(new MenuBool("Ezrealqfarm", "Use Q Farm", true));
+            QMana = MainMenu.Add(new MenuSlider("Ezrealqfarmmana", "Q Farm Mana", 80, 0, 100));
             UseWMode = MainMenu.Add(new MenuList<string>("Ezrealw", "Use W", new [] {"COMBO", "ALWAYS", "NEVER"}));
             UseRKey = MainMenu.Add(new MenuKeyBind("Ezrealr", "Use R Key: ", Keys.R, KeyBindType.Press));
+            UseSheenCombo = MainMenu.Add(new MenuBool("Ezrealsheencombo", "Use SHEEN Combo", true));
             MainMenu.Attach();
         }
 
