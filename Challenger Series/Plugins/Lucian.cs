@@ -65,7 +65,7 @@ namespace Challenger_Series.Plugins
                 
                 if (!HasPassive)
                 {
-                    var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
+                    /*var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
                     if (Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
                         target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
                     {
@@ -98,7 +98,7 @@ namespace Challenger_Series.Plugins
                             W.CastIfHitchanceMinimum(target, HitChance.High);
                             return;
                         }
-                    }
+                    }*/
                     if (args.Target is Obj_AI_Minion)
                     {
                         var tg = args.Target as Obj_AI_Minion;
