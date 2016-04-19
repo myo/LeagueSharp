@@ -44,8 +44,6 @@ namespace Challenger_Series.Plugins
 
         private Obj_AI_Minion _lastTurretTarget;
 
-        private bool HasSheenBuff
-            => ObjectManager.Player.HasBuff("sheen") || ObjectManager.Player.HasBuff("itemfrozenfist");
         private void ObjAiBaseOnOnTarget(Obj_AI_Base sender, Obj_AI_BaseTargetEventArgs args)
         {
             if (sender is Obj_AI_Turret && sender.Distance(ObjectManager.Player) < 850 && args.Target is Obj_AI_Minion && args.Target.IsEnemy)
@@ -247,5 +245,8 @@ namespace Challenger_Series.Plugins
             result = Vector2.Add(result, point1);
             return result;
         }
+
+        private bool HasSheenBuff
+            => ObjectManager.Player.HasBuff("sheen") || ObjectManager.Player.HasBuff("itemfrozenfist");
     }
 }

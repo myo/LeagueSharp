@@ -13,14 +13,32 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 using LeagueSharp;
 using LeagueSharp.SDK;
-using LeagueSharp.SDK.Core.UI.IMenu;
 using LeagueSharp.SDK.Core.UI.IMenu.Values;
 using LeagueSharp.SDK.Core.Utils;
+using Menu = LeagueSharp.SDK.Core.UI.IMenu.Menu;
 
 namespace Challenger_Series.Plugins
 {
+    public class Humanizer
+    {
+        public Humanizer(int lifespan)
+        {
+            ExpireTime = Variables.TickCount + lifespan;
+        }
+        private int ExpireTime;
+
+        public bool ShouldDestroy
+        {
+            get
+            {
+                return !ObjectManager.Player.HasBuff("KogMawBioArcaneBarrage") || Variables.TickCount > ExpireTime;
+            }
+        }
+    }
+
     public class KogMaw : CSPlugin
     {
         public KogMaw()
@@ -37,14 +55,20 @@ namespace Challenger_Series.Plugins
             Drawing.OnDraw += OnDraw;
             Orbwalker.OnAction += OnAction;
             Obj_AI_Hero.OnDoCast += OnDoCast;
+            _rand = new Random();
         }
 
         private void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (args.SData.Name.Contains("BarrageAttack"))
             {
+                _attacksSoFar++;
             }
         }
+
+        private Humanizer _humanizer;
+        private int _attacksSoFar;
+        private Random _rand;
 
         private void OnAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
         {
@@ -109,10 +133,64 @@ namespace Challenger_Series.Plugins
             }
             var attackrange = GetAttackRangeAfterWIsApplied();
             var target = TargetSelector.GetTarget(attackrange, DamageType.Physical);
-            if (IsWActive() && target.Distance(ObjectManager.Player) > attackrange - 150)
+            if (IsWActive() && target != null && target.Distance(ObjectManager.Player) > attackrange - 150)
             {
                 E.CastIfHitchanceMinimum(target, HitChance.Medium);
             }
+
+            var wts = Drawing.WorldToScreen(ObjectManager.Player.Position);
+            Drawing.DrawText(wts.X, wts.Y, Color.White, "x " + _attacksSoFar);
+
+            #region Humanizer
+            if (_humanizer != null)
+            {
+                _attacksSoFar = 0;
+            }
+            else if (_attacksSoFar > HumanizerMinAttacks.Value)
+            {
+                _humanizer = new Humanizer(HumanizerMovementTime.Value);
+            }
+            if (!IsWActive())
+            {
+                _humanizer = null;
+                _attacksSoFar = 0;
+            }
+            if (_humanizer != null && _humanizer.ShouldDestroy)
+            {
+                _humanizer = null;
+            }
+            Orbwalker.SetMovementState(CanMove());
+            Orbwalker.SetAttackState(CanAttack());
+            #endregion Humanizer
+        }
+
+        private bool CanAttack()
+        {
+            if (!HumanizerEnabled) return true;
+            if (IsWActive())
+            {
+                return _humanizer == null;
+            }
+            return true;
+        }
+        private bool CanMove()
+        {
+            if (!HumanizerEnabled) return true;
+            if (IsWActive() && ObjectManager.Player.AttackSpeedMod / 2 > _rand.Next(160, 230)/100)
+            {
+                if ((Variables.Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
+                        ObjectManager.Player.CountEnemyHeroesInRange(GetAttackRangeAfterWIsApplied() - 25) < 1)
+                       ||
+                       (Variables.Orbwalker.ActiveMode != OrbwalkingMode.None &&
+                        Variables.Orbwalker.ActiveMode != OrbwalkingMode.Combo &&
+                        (!GameObjects.EnemyMinions.Any(
+                            m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < GetAttackRangeAfterWIsApplied() - 25) && !GameObjects.Jungle.Any(m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < GetAttackRangeAfterWIsApplied() - 25))))
+                {
+                    return true;
+                }
+                return _humanizer != null;
+            }
+            return true;
         }
 
         #endregion Events
@@ -122,12 +200,14 @@ namespace Challenger_Series.Plugins
         private Menu JungleclearMenu;
         private Menu UseWJungleClearMenu;
         private Menu DrawMenu;
+        private Menu HumanizerMenu;
+        private MenuSlider HumanizerMinAttacks;
+        private MenuSlider HumanizerMovementTime;
+        private MenuBool HumanizerEnabled;
         private MenuBool UseQBool;
         private MenuBool UseWBool;
         private MenuBool UseEBool;
         private MenuBool UseRBool;
-        private MenuBool SuperAggressiveHumanizer;
-        private MenuSlider HumanizerChillTime;
         private MenuSlider MaxRStacksSlider;
         private MenuBool AlwaysSaveManaForWBool;
         private MenuBool UseRHarass;
@@ -160,6 +240,12 @@ namespace Challenger_Series.Plugins
             DrawMenu = MainMenu.Add(new Menu("koggiedrawmenu", "Drawing Settings"));
             DrawWRangeBool = DrawMenu.Add(new MenuBool("koggiedraww", "Draw W Range", true));
             DrawRRangeBool = DrawMenu.Add(new MenuBool("koggiedrawr", "Draw R Range", true));
+            HumanizerMenu = MainMenu.Add(new Menu("koggiehumanizermenu", "Humanizer Settings: "));
+            HumanizerMinAttacks = HumanizerMenu.Add(new MenuSlider("koggieminattacks", "Min attacks before moving", 2, 1, 10));
+            HumanizerMovementTime =
+                HumanizerMenu.Add(new MenuSlider("koggiehumanizermovetime", "Time for moving (milliseconds)", 200, 0,
+                    500));
+            HumanizerEnabled = HumanizerMenu.Add(new MenuBool("koggiehumanizerenabled", "Enable Humanizer? ", true));
             MaxRStacksSlider = MainMenu.Add(new MenuSlider("koggiermaxstacks", "R Max Stacks: ", 2, 0, 11));
             AlwaysSaveManaForWBool = MainMenu.Add(new MenuBool("koggiesavewmana", "Always Save Mana For W!", true));
             MainMenu.Attach();
