@@ -121,7 +121,12 @@ namespace Challenger_Series.Plugins
                         (!target.HasBuff("kindrednodeathbuff") && !target.HasBuff("Undying Rage") &&
                          !target.HasBuff("JudicatorIntervention")))
                     {
-                        Q.CastIfHitchanceMinimum(target, HitChance.High);
+                        var pred = Q.GetPrediction(target);
+                        if (Q.IsReady() && UseQ && pred.Hitchance >= HitChance.High)
+                        {
+                            Q.Cast(pred.UnitPosition);
+                            return;
+                        }
                     }
                 }
             }

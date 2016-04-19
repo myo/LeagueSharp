@@ -173,7 +173,7 @@ namespace Challenger_Series.Plugins
         private bool CanMove()
         {
             if (!HumanizerEnabled) return true;
-            if (IsWActive() && ObjectManager.Player.AttackSpeedMod / 2 > _rand.Next(160, 230)/100)
+            if (IsWActive() && ObjectManager.Player.AttackSpeedMod / 2 > _rand.Next(167, 230)/100)
             {
                 if ((Variables.Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
                         ObjectManager.Player.CountEnemyHeroesInRange(GetAttackRangeAfterWIsApplied() - 25) < 1)
