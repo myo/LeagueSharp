@@ -188,14 +188,17 @@ namespace Challenger_Series.Plugins
                                 var minions =
                                     GameObjects.EnemyMinions.Where(
                                         m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
-                                foreach (var minion in minions)
+                                if (minions.Any())
                                 {
-                                    var QHit = new Utils.Geometry.Rectangle(ObjectManager.Player.Position,
-                                        ObjectManager.Player.Position.Extend(minion.Position, Q2.Range), Q2.Width);
-                                    if (!QPred.UnitPosition.IsOutside(QHit))
+                                    foreach (var minion in minions)
                                     {
-                                        Q.Cast(minion);
-                                        return;
+                                        var QHit = new Utils.Geometry.Rectangle(ObjectManager.Player.Position,
+                                            ObjectManager.Player.Position.Extend(minion.Position, Q2.Range), Q2.Width);
+                                        if (!QPred.UnitPosition.IsOutside(QHit))
+                                        {
+                                            Q.Cast(minion);
+                                            return;
+                                        }
                                     }
                                 }
                             }
@@ -216,7 +219,7 @@ namespace Challenger_Series.Plugins
                 if (!HasPassive)
                 {
                     var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
-                    if (Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
+                    if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
                         target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
                     {
                         if (E.IsReady())
@@ -248,14 +251,18 @@ namespace Challenger_Series.Plugins
                         }
                         if (UseWCombo && W.IsReady())
                         {
-                            W.CastIfHitchanceMinimum(target, HitChance.High);
+                            var pred = W.GetPrediction(target);
+                            if (pred.Hitchance >= HitChance.High)
+                            {
+                                W.Cast(pred.UnitPosition);
+                            }
                             return;
                         }
                     }
-                    if (args.Target is Obj_AI_Minion)
+                    if (args.Target != null && args.Target is Obj_AI_Minion)
                     {
                         var tg = args.Target as Obj_AI_Minion;
-                        if (tg.CharData.BaseSkinName.Contains("SRU") && !tg.CharData.BaseSkinName.Contains("Mini"))
+                        if (tg.IsHPBarRendered && tg.CharData.BaseSkinName.Contains("SRU") && !tg.CharData.BaseSkinName.Contains("Mini"))
                         {
                             if (QJg && Q.IsReady())
                             {
