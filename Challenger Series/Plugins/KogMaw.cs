@@ -143,7 +143,7 @@ namespace Challenger_Series.Plugins
             {
                 _attacksSoFar = 0;
             }
-            else if (_attacksSoFar > HumanizerMinAttacks.Value)
+            else if (_attacksSoFar >= HumanizerMinAttacks.Value)
             {
                 _humanizer = new Humanizer(HumanizerMovementTime.Value);
             }
