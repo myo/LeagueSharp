@@ -119,7 +119,7 @@ namespace Challenger_Series.Plugins
             {
                 var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
                 
-                if (target != null Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
+                if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
                     target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
                 {
                     if (UseQCombo && Q.IsReady())
