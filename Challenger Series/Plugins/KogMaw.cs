@@ -131,6 +131,20 @@ namespace Challenger_Series.Plugins
             {
                 Drawing.DrawCircle(ObjectManager.Player.Position, GetRRange() + 25, R.IsReady() ? Color.LimeGreen : Color.Red);
             }
+            if (Q.IsReady() && UseQBool && Orbwalker.ActiveMode == OrbwalkingMode.Combo && ObjectManager.Player.Mana > GetQMana() + GetWMana())
+            {
+                foreach (
+                    var enemy in
+                        ValidTargets.Where(t => t.Distance(ObjectManager.Player) < 900)
+                            .OrderBy(e => e.Distance(ObjectManager.Player)))
+                {
+                    var prediction = Q.GetPrediction(enemy);
+                    if ((int)prediction.Hitchance >= (int)HitChance.High)
+                    {
+                        Q.Cast(prediction.UnitPosition);
+                    }
+                }
+            }
             var attackrange = GetAttackRangeAfterWIsApplied();
             var target = TargetSelector.GetTarget(attackrange, DamageType.Physical);
             if (IsWActive() && target != null && target.Distance(ObjectManager.Player) > attackrange - 150)
