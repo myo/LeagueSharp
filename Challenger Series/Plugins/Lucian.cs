@@ -60,6 +60,72 @@ namespace Challenger_Series.Plugins
                     }
                 }
             }
+            if (args.Type == OrbwalkingType.AfterAttack)
+            {
+                
+                if (!HasPassive)
+                {
+                    var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
+                    if (Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
+                        target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
+                    {
+                        if (E.IsReady())
+                        {
+                            switch (UseEMode.SelectedValue)
+                            {
+                                case "Side":
+                                    E.Cast(
+                                        Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(),
+                                            65).ToVector3());
+                                    break;
+                                case "Cursor":
+                                    E.Cast(ObjectManager.Player.Position.Extend(Game.CursorPos,
+                                        Misc.GiveRandomInt(50, 100)));
+                                    break;
+                                case "Enemy":
+                                    E.Cast(ObjectManager.Player.Position.Extend(target.Position,
+                                        Misc.GiveRandomInt(50, 100)));
+                                    break;
+                            }
+                        }
+                        if (UseQCombo && Q.IsReady())
+                        {
+                            Q.Cast(target);
+                            return;
+                        }
+                        if (UseWCombo && W.IsReady())
+                        {
+                            W.CastIfHitchanceMinimum(target, HitChance.High);
+                            return;
+                        }
+                    }
+                    if (args.Target is Obj_AI_Minion)
+                    {
+                        var tg = args.Target as Obj_AI_Minion;
+                        if (tg.CharData.BaseSkinName.Contains("SRU") && !tg.CharData.BaseSkinName.Contains("Mini"))
+                        {
+                            if (QJg && Q.IsReady())
+                            {
+                                Q.Cast(tg);
+                                return;
+                            }
+                            if (WJg && W.IsReady())
+                            {
+                                W.CastIfWillHit(tg);
+                                return;
+                            }
+                            if (EJg && E.IsReady())
+                            {
+
+                                E.Cast(
+                                    Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(),
+                                        60).ToVector3());
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
