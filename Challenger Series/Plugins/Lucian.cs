@@ -65,40 +65,6 @@ namespace Challenger_Series.Plugins
                 
                 if (!HasPassive)
                 {
-                    /*var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
-                    if (Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
-                        target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
-                    {
-                        if (E.IsReady())
-                        {
-                            switch (UseEMode.SelectedValue)
-                            {
-                                case "Side":
-                                    E.Cast(
-                                        Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(),
-                                            65).ToVector3());
-                                    break;
-                                case "Cursor":
-                                    E.Cast(ObjectManager.Player.Position.Extend(Game.CursorPos,
-                                        Misc.GiveRandomInt(50, 100)));
-                                    break;
-                                case "Enemy":
-                                    E.Cast(ObjectManager.Player.Position.Extend(target.Position,
-                                        Misc.GiveRandomInt(50, 100)));
-                                    break;
-                            }
-                        }
-                        if (UseQCombo && Q.IsReady())
-                        {
-                            Q.Cast(target);
-                            return;
-                        }
-                        if (UseWCombo && W.IsReady())
-                        {
-                            W.CastIfHitchanceMinimum(target, HitChance.High);
-                            return;
-                        }
-                    }*/
                     if (args.Target is Obj_AI_Minion)
                     {
                         var tg = args.Target as Obj_AI_Minion;
@@ -146,7 +112,7 @@ namespace Challenger_Series.Plugins
 
         public override void OnDraw(EventArgs args)
         {
-#region Logicif (!HasPassive)
+            #region Logicif (!HasPassive)
 
             {
                 var target = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
@@ -186,6 +152,7 @@ namespace Challenger_Series.Plugins
             }
 
             #endregion
+
             if (QKS && Q.IsReady())
             {
                 var targets = ValidTargets.Where(x => x.IsValidTarget(Q.Range) && !x.IsZombie);
@@ -225,8 +192,6 @@ namespace Challenger_Series.Plugins
             var q2tg = TargetSelector.GetTarget(Q2.Range);
             if (Q.IsReady() && tg.IsHPBarRendered)
             {
-                if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo &&
-                    UseQHarass) Q.Cast(tg);
                 if (q2tg.Distance(ObjectManager.Player) > Q.Range)
                 {
                     if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
@@ -234,22 +199,29 @@ namespace Challenger_Series.Plugins
                         if (UseQExtended &&
                             ObjectManager.Player.ManaPercent > QExManaPercent)
                         {
-                            var minions =
-                                GameObjects.EnemyMinions.Where(
-                                    m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
-                            foreach (var minion in minions)
+                            var QPred = Q2.GetPrediction(q2tg);
+                            if (QPred.Hitchance >= HitChance.Medium)
                             {
-                                var QHit = new Utils.Geometry.Rectangle(ObjectManager.Player.Position,
-                                    ObjectManager.Player.Position.Extend(minion.Position, Q2.Range), Q2.Width);
-                                var QPred = Q2.GetPrediction(q2tg);
-                                if (!QPred.UnitPosition.IsOutside(QHit) && QPred.Hitchance >= HitChance.High)
+                                var minions =
+                                    GameObjects.EnemyMinions.Where(
+                                        m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
+                                foreach (var minion in minions)
                                 {
-                                    Q.Cast(minion);
-                                    return;
+                                    var QHit = new Utils.Geometry.Rectangle(ObjectManager.Player.Position,
+                                        ObjectManager.Player.Position.Extend(minion.Position, Q2.Range), Q2.Width);
+                                    if (!QPred.UnitPosition.IsOutside(QHit))
+                                    {
+                                        Q.Cast(minion);
+                                        return;
+                                    }
                                 }
                             }
                         }
                     }
+                }
+                else if (Q.IsReady() && UseQCombo)
+                {
+                    Q.Cast(q2tg);
                 }
             }
         }
