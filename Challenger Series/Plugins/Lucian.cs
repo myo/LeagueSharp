@@ -120,7 +120,7 @@ namespace Challenger_Series.Plugins
                 var target = TargetSelector.GetTarget(Q);
                 
                 if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
-                    target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
+                    target.Distance(ObjectManager.Player) < Q.Range)
                 {
                     if (UseQCombo && Q.IsReady())
                     {
