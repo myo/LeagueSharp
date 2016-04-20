@@ -125,11 +125,11 @@ namespace Challenger_Series.Plugins
             base.R.Range = GetRRange();
             if (DrawWRangeBool)
             {
-                Drawing.DrawCircle(ObjectManager.Player.Position, GetAttackRangeAfterWIsApplied(), W.IsReady() || IsWActive() ? Color.LimeGreen : Color.Red);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, GetAttackRangeAfterWIsApplied(), W.IsReady() || IsWActive() ? Color.LimeGreen : Color.Red);
             }
             if (DrawRRangeBool)
             {
-                Drawing.DrawCircle(ObjectManager.Player.Position, GetRRange() + 25, R.IsReady() ? Color.LimeGreen : Color.Red);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, GetRRange() + 25, R.IsReady() ? Color.LimeGreen : Color.Red);
             }
             if (Q.IsReady() && UseQBool && Orbwalker.ActiveMode == OrbwalkingMode.Combo && ObjectManager.Player.Mana > GetQMana() + GetWMana())
             {
@@ -305,7 +305,7 @@ namespace Challenger_Series.Plugins
                     ValidTargets.Where(h => h.Distance(myPos) < R.Range && (!IsWActive() || h.Distance(myPos) > W.Range + 85) && h.HealthPercent < 25 && h.IsValidTarget()))
             {
                 var prediction = R.GetPrediction(enemy, true);
-                if ((int)prediction.Hitchance >= (int)HitChance.Medium)
+                if ((int)prediction.Hitchance > (int)HitChance.Medium)
                 {
                     R.Cast(prediction.UnitPosition);
                 }
@@ -318,7 +318,7 @@ namespace Challenger_Series.Plugins
                 var dist = enemy.Distance(ObjectManager.Player.ServerPosition);
                 if (Orbwalker.CanAttack() && dist < 550) break;
                 var prediction = R.GetPrediction(enemy, true);
-                if ((int) prediction.Hitchance >= (int) HitChance.Medium)
+                if ((int) prediction.Hitchance > (int) HitChance.Medium)
                 {
                     R.Cast(prediction.UnitPosition);
                 }
