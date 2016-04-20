@@ -16,6 +16,8 @@ using Challenger_Series.Utils;
 
 namespace Challenger_Series.Plugins
 {
+    using LeagueSharp.SDK.Core.Wrappers.Damages;
+
     public class Lucian : CSPlugin
     {
         public Lucian()
@@ -227,7 +229,7 @@ namespace Challenger_Series.Plugins
                 {
                     var target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
                     if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
-                        target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange)
+                        target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange && target.IsHPBarRendered)
                     {
                         if (E.IsReady())
                         {
@@ -259,11 +261,16 @@ namespace Challenger_Series.Plugins
                         if (UseWCombo && W.IsReady())
                         {
                             var pred = W.GetPrediction(target);
+                            if (target.Health < ObjectManager.Player.GetAutoAttackDamage(target) * 2)
+                            {
+                                W.Cast(pred.UnitPosition);
+                                return;
+                            }
                             if (pred.Hitchance >= HitChance.High)
                             {
                                 W.Cast(pred.UnitPosition);
+                                return;
                             }
-                            return;
                         }
                     }
                     if (args.Target != null && args.Target is Obj_AI_Minion)
