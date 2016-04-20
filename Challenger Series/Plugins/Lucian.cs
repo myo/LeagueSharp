@@ -324,7 +324,7 @@ namespace Challenger_Series.Plugins
             QExManaPercent =
                 HarassMenu.Add(new MenuSlider("Lucianqexmanapercent", "Only use extended Q if mana > %", 75, 0, 100));
             QExtendedBlacklist = HarassMenu.Add(new Menu("Lucianqexblacklist", "Extended Q Blacklist: "));
-            foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsAlly && !h.IsMe))
+            foreach (var ally in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.IsEnemy))
             {
                 var championName = ally.CharData.BaseSkinName;
                 QExtendedBlacklist.Add(new MenuBool("qexbl" + championName, championName, false));
