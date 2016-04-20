@@ -64,7 +64,7 @@ namespace Challenger_Series
         {
             base.OnUpdate(args);
             var target = Variables.TargetSelector.GetTarget(1000, DamageType.Physical);
-            if (R.IsReady())
+            if (R.IsReady() && target != null && target.IsHPBarRendered)
             {
                 if (UseRComboKeybind.Active)
                 {
@@ -78,7 +78,7 @@ namespace Challenger_Series
                         R.Cast(R.GetPrediction(target).UnitPosition);
                     }
                 }
-                if (ObjectManager.Player.HealthPercent < 15)
+                if (ObjectManager.Player.HealthPercent < 15 || target.Health < R.GetDamage(target))
                 {
                     R.Cast(R.GetPrediction(target).UnitPosition);
                 }
