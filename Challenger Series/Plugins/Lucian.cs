@@ -258,10 +258,15 @@ namespace Challenger_Series.Plugins
                             Q.Cast(target);
                             return;
                         }
-                        if (UseWCombo && W.IsReady())
+                        if (UseWCombo && W.IsReady() && !ObjectManager.Player.IsDashing())
                         {
+                            if (IgnoreWCollision && target.Distance(ObjectManager.Player) < 600)
+                            {
+                                W.Cast(target.ServerPosition);
+                                return;
+                            }
                             var pred = W.GetPrediction(target);
-                            if (target.Health < ObjectManager.Player.GetAutoAttackDamage(target) * 2)
+                            if (target.Health < ObjectManager.Player.GetAutoAttackDamage(target) * 3)
                             {
                                 W.Cast(pred.UnitPosition);
                                 return;
@@ -273,7 +278,7 @@ namespace Challenger_Series.Plugins
                             }
                         }
                     }
-                    if (args.Target != null && args.Target is Obj_AI_Minion)
+                    if (args.Target is Obj_AI_Minion)
                     {
                         var tg = args.Target as Obj_AI_Minion;
                         if (tg.IsHPBarRendered && tg.CharData.BaseSkinName.Contains("SRU") && !tg.CharData.BaseSkinName.Contains("Mini"))
@@ -306,6 +311,8 @@ namespace Challenger_Series.Plugins
         private Menu ComboMenu;
         private MenuBool UseQCombo;
         private MenuBool UseWCombo;
+
+        private MenuBool IgnoreWCollision;
         private MenuList<string> UseEMode;
         private MenuBool UseEGapclose;
         private MenuBool UseEAntiMelee;
@@ -327,6 +334,7 @@ namespace Challenger_Series.Plugins
             ComboMenu = MainMenu.Add(new Menu("Luciancombomenu", "Combo Settings: "));
             UseQCombo = ComboMenu.Add(new MenuBool("Lucianqcombo", "Use Q", true));
             UseWCombo = ComboMenu.Add(new MenuBool("Lucianwcombo", "Use W", true));
+            IgnoreWCollision = ComboMenu.Add(new MenuBool("Lucianignorewcollision", "Ignore W collision (for passive)", false));
             UseEMode =
                 ComboMenu.Add(new MenuList<string>("Lucianecombo", "E Mode", new[] {"Side", "Cursor", "Enemy", "Never"}));
             UseEAntiMelee = ComboMenu.Add(new MenuBool("Lucianecockblocker", "Use E to get away from melees", true));
