@@ -77,30 +77,6 @@ namespace Challenger_Series.Plugins
                         E.Cast();
                     }
                 }
-                if (orbwalkingActionArgs.Target is Obj_AI_Minion && GetJungleCampsOnCurrentMap() != null)
-                {
-                    var minion = orbwalkingActionArgs.Target as Obj_AI_Minion;
-                    var targetName = minion.CharData.BaseSkinName;
-
-                    if (!targetName.Contains("Mini") && targetName.Contains("SRU_") || targetName.Contains("TT_"))
-                    {
-                        if (GetJungleCampsOnCurrentMap().Contains(targetName) &&
-                            RendSmiteMenu[targetName].GetValue<MenuBool>())
-                        {
-                            if (IsRendKillable(minion))
-                            {
-                                E.Cast();
-                            }
-                        }
-                        if (!GetJungleCampsOnCurrentMap().Contains(targetName))
-                        {
-                            if (IsRendKillable(minion))
-                            {
-                                E.Cast();
-                            }
-                        }
-                    }
-                }
                 if (UseQStackTransferBool && orbwalkingActionArgs.Target is Obj_AI_Minion)
                 {
                     var target = orbwalkingActionArgs.Target as Obj_AI_Minion;
@@ -175,6 +151,10 @@ namespace Challenger_Series.Plugins
                 {
                     E.Cast();
                 }
+            }
+            if (GameObjects.JungleLarge.Any(IsRendKillable) || GameObjects.JungleLegendary.Any(this.IsRendKillable))
+            {
+                E.Cast();
             }
             if (AlwaysUseEIf2MinionsKillableBool && GameObjects.EnemyMinions.Count(IsRendKillable) >= 2)
             {
@@ -317,15 +297,6 @@ namespace Challenger_Series.Plugins
             FocusWBuffedMinions = FarmMenu.Add(new MenuBool("focuswbufminions", "Focus minions with W buff", false));
             AlwaysUseEIf2MinionsKillableBool =
                 FarmMenu.Add(new MenuBool("alwaysuseeif2minkillable", "Always use E if resetted with no mana cost", true));
-            RendSmiteMenu = MainMenu.Add(new Menu("kalirendsmitemenu", "Rend (E) Smite: "));
-
-            if (GetJungleCampsOnCurrentMap() != null)
-            {
-                foreach (var mob in GetJungleCampsOnCurrentMap())
-                {
-                    RendSmiteMenu.Add(new MenuBool(mob, mob, true));
-                }
-            }
             RendDamageMenu = MainMenu.Add(new Menu("kalirenddmgmenu", "Adjust Rend (E) DMG Prediction: "));
             ReduceRendDamageBySlider =
                 RendDamageMenu.Add(new MenuSlider("kalirendreducedmg", "Reduce E DMG by: ", 0, 0, 300));
@@ -352,51 +323,6 @@ namespace Challenger_Series.Plugins
             "ChronoShift",
             "lissandrarself",
             "kindredrnodeathbuff"
-        };
-
-        private List<string> GetJungleCampsOnCurrentMap()
-        {
-            switch ((int) Game.MapId)
-            {
-                //Summoner's Rift
-                case 11:
-                {
-                    return SRMobs;
-                }
-                //Twisted Treeline
-                case 10:
-                {
-                    return TTMobs;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Summoner's Rift Jungle "Big" Mobs
-        /// </summary>
-        private List<string> SRMobs = new List<string>
-        {
-            "SRU_Baron",
-            "SRU_Blue",
-            "Sru_Crab",
-            "SRU_Dragon",
-            "SRU_Gromp",
-            "SRU_Krug",
-            "SRU_Murkwolf",
-            "SRU_Razorbeak",
-            "SRU_Red",
-        };
-
-        /// <summary>
-        /// Twisted Treeline Jungle "Big" Mobs
-        /// </summary>
-        private List<string> TTMobs = new List<string>
-        {
-            "TT_NWraith",
-            "TT_NGolem",
-            "TT_NWolf",
-            "TT_Spiderboss"
         };
 
         //#TODO: Check E Damage every patch
