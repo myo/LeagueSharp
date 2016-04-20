@@ -416,6 +416,17 @@ namespace Challenger_Series.Plugins
             if (target.Name.Contains("Dragon") && ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
             {
                 dmg *= (1f - (0.075f*ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
+            } 
+            
+            if (ObjectManager.Player.HasBuff("summonerexhaust"))
+            {
+                dmg *= 0.6f;
+            }
+            
+            //alistar ult
+            if (target.HasBuff("FerociousHowl"))
+            {
+                dmg *= 0.3f;
             }
             return dmg;
         }
