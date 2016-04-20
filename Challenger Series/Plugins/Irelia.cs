@@ -36,7 +36,10 @@ namespace Challenger_Series
             {
                 if (!this.pressedR)
                 {
-                    args.Process = false;
+                    if (!ObjectManager.Player.HasBuff("ireliatranscendentbladesspell"))
+                    {
+                        args.Process = false;
+                    }
                 }
                 else
                 {
@@ -61,17 +64,24 @@ namespace Challenger_Series
         {
             base.OnUpdate(args);
             var target = Variables.TargetSelector.GetTarget(1000, DamageType.Physical);
-            if (target != null)
+            if (R.IsReady())
             {
-                if (ObjectManager.Player.HasBuff("ireliatranscendentbladesspell"))
+                if (UseRComboKeybind.Active)
+                {
+                    this.pressedR = true;
+                    R.Cast(R.GetPrediction(target).UnitPosition);
+                }
+                if (target != null)
+                {
+                    if (ObjectManager.Player.HasBuff("ireliatranscendentbladesspell"))
+                    {
+                        R.Cast(R.GetPrediction(target).UnitPosition);
+                    }
+                }
+                if (ObjectManager.Player.HealthPercent < 15)
                 {
                     R.Cast(R.GetPrediction(target).UnitPosition);
                 }
-            }
-            if (UseRComboKeybind.Active)
-            {
-                this.pressedR = true;
-                R.Cast(R.GetPrediction(target).UnitPosition);
             }
             if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
             {
