@@ -116,7 +116,7 @@ namespace Challenger_Series.Utils.Logic
         }
 
         /// <summary>
-        /// Populates the <see cref="Position"/> list with saved values.
+        /// Populates the <see cref="Positions"/> list with saved values.
         /// </summary>
         public void PopulatePositionList()
         {

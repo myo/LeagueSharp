@@ -93,7 +93,7 @@ namespace Challenger_Series.Plugins
             }
         }
 
-        private void OnDraw(EventArgs args)
+        public override void OnDraw(EventArgs args)
         {
             var drawRange = DrawRange.Value;
             if (drawRange > 0)
@@ -221,7 +221,7 @@ namespace Challenger_Series.Plugins
                         ;
                     }
                 }
-                if (E.IsReady())
+                if (E.IsReady() && this.UseECombo)
                 {
 
                     if (!OnlyUseEOnMelees)

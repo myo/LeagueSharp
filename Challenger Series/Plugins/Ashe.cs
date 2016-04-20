@@ -55,7 +55,7 @@ namespace Challenger_Series.Plugins
         private Vector2 BaronScoutPosition = new Vector2(4400, 9600);
         private Vector2 LastELocation = new Vector2(4400, 9600);
 
-        public void OnDraw(EventArgs args)
+        public override void OnDraw(EventArgs args)
         {
             if (DrawWRange)
             {
