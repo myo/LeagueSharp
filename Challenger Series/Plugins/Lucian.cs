@@ -144,13 +144,13 @@ namespace Challenger_Series.Plugins
                 this.pressedR = true;
                 R.Cast(R.GetPrediction(ultTarget).UnitPosition);
             }
-            if (!HasPassive)
+            if (!this.HasPassive)
 
             {
                 var target = TargetSelector.GetTarget(Q);
-                
-                if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
-                    target.Distance(ObjectManager.Player) < Q.Range)
+
+                if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo
+                    && target.Distance(ObjectManager.Player) < Q.Range)
                 {
                     if (UseQCombo && Q.IsReady())
                     {
@@ -158,80 +158,87 @@ namespace Challenger_Series.Plugins
                         return;
                     }
                 }
-            var q2tg = TargetSelector.GetTarget(Q2.Range);
-            if (q2tg != null && Q.IsReady() && q2tg.IsHPBarRendered)
-            {
-                if (q2tg.Distance(ObjectManager.Player) > 600)
+                if (Q.IsReady())
                 {
-                    if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
+                    var q2tg = TargetSelector.GetTarget(Q2.Range);
+                    if (q2tg != null && q2tg.IsHPBarRendered)
                     {
-                        var menuItem = QExtendedBlacklist["qexbl" + q2tg.CharData.BaseSkinName];
-                        if (UseQExtended &&
-                            ObjectManager.Player.ManaPercent > QExManaPercent && menuItem != null && !menuItem.GetValue<MenuBool>())
+                        if (q2tg.Distance(ObjectManager.Player) > 600)
                         {
-                            var QPred = Q2.GetPrediction(q2tg);
-                            if (QPred.Hitchance >= HitChance.Medium)
+                            if (Orbwalker.ActiveMode != OrbwalkingMode.None
+                                && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
                             {
-                                var minions =
-                                    GameObjects.EnemyMinions.Where(
-                                        m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
-                                var objAiMinions = minions as IList<Obj_AI_Minion> ?? minions.ToList();
-                                if (objAiMinions.Any())
+                                var menuItem = QExtendedBlacklist["qexbl" + q2tg.CharData.BaseSkinName];
+                                if (UseQExtended && ObjectManager.Player.ManaPercent > QExManaPercent
+                                    && menuItem != null && !menuItem.GetValue<MenuBool>())
                                 {
-                                    foreach (var minion in objAiMinions)
+                                    var QPred = Q2.GetPrediction(q2tg);
+                                    if (QPred.Hitchance >= HitChance.Medium)
                                     {
-                                        var QHit = new Utils.Geometry.Rectangle(
-                                            ObjectManager.Player.Position,
-                                            ObjectManager.Player.Position.Extend(minion.Position, Q2.Range),
-                                            Q2.Width);
-                                        if (!QPred.UnitPosition.IsOutside(QHit))
+                                        var minions =
+                                            GameObjects.EnemyMinions.Where(
+                                                m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
+                                        var objAiMinions = minions as IList<Obj_AI_Minion> ?? minions.ToList();
+                                        if (objAiMinions.Any())
                                         {
-                                            Q.Cast(minion);
-                                            return;
+                                            foreach (var minion in objAiMinions)
+                                            {
+                                                var QHit = new Utils.Geometry.Rectangle(
+                                                    ObjectManager.Player.Position,
+                                                    ObjectManager.Player.Position.Extend(minion.Position, Q2.Range),
+                                                    Q2.Width);
+                                                if (!QPred.UnitPosition.IsOutside(QHit))
+                                                {
+                                                    Q.Cast(minion);
+                                                    return;
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                }
-                else if (Q.IsReady() && UseQCombo)
-                {
-                    Q.Cast(q2tg);
-                }
-            }
-            }
-
-            #endregion
-
-            if (QKS && Q.IsReady())
-            {
-                var targets = ValidTargets.Where(x => x.IsHPBarRendered && x.Health < Q.GetDamage(x) && x.IsValidTarget(Q.Range) && !x.IsZombie);
-                var objAiHeroes = targets as IList<Obj_AI_Hero> ?? targets.ToList();
-                if (targets != null && objAiHeroes.Any())
-                {
-                    foreach (var target in objAiHeroes)
-                    {
-                        if (target.Health < Q.GetDamage(target) &&
-                            (!target.HasBuff("kindrednodeathbuff") && !target.HasBuff("Undying Rage") &&
-                             !target.HasBuff("JudicatorIntervention")))
+                        else if (Q.IsReady() && UseQCombo)
                         {
-                            Q.Cast(target);
-                            return;
+                            Q.Cast(q2tg);
                         }
                     }
                 }
-            }
-            if (R.IsReady() && ForceR)
-            {
-                var target = TargetSelector.GetTarget(900);
-                if (target != null && target.IsHPBarRendered && target.Health < R.GetDamage(target)*0.8 &&
-                    target.Distance(ObjectManager.Player) > 300)
+
+                #endregion
+
+                if (QKS && Q.IsReady())
                 {
-                    var pred = R.GetPrediction(target);
-                    if (!pred.CollisionObjects.Any() && pred.Hitchance >= HitChance.High)
+                    var targets =
+                        ValidTargets.Where(
+                            x =>
+                            x.IsHPBarRendered && x.Health < Q.GetDamage(x) && x.IsValidTarget(Q.Range) && !x.IsZombie);
+                    var objAiHeroes = targets as IList<Obj_AI_Hero> ?? targets.ToList();
+                    if (targets != null && objAiHeroes.Any())
                     {
-                        R.Cast(pred.UnitPosition);
+                        foreach (var tar in objAiHeroes)
+                        {
+                            if (tar.Health < Q.GetDamage(tar)
+                                && (!tar.HasBuff("kindrednodeathbuff") && !tar.HasBuff("Undying Rage")
+                                    && !tar.HasBuff("JudicatorIntervention")))
+                            {
+                                Q.Cast(target);
+                                return;
+                            }
+                        }
+                    }
+                }
+                if (R.IsReady() && ForceR)
+                {
+                    var rtarget = TargetSelector.GetTarget(900);
+                    if (rtarget != null && rtarget.IsHPBarRendered && target.Health < R.GetDamage(rtarget) * 0.8
+                        && rtarget.Distance(ObjectManager.Player) > 300)
+                    {
+                        var pred = R.GetPrediction(rtarget);
+                        if (!pred.CollisionObjects.Any() && pred.Hitchance >= HitChance.High)
+                        {
+                            R.Cast(pred.UnitPosition);
+                        }
                     }
                 }
             }
