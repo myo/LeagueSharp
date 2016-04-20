@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Challenger_Series.Utils;
 using LeagueSharp;
 using LeagueSharp.SDK;
-using LeagueSharp.SDK.Core.UI.IMenu;
 using LeagueSharp.SDK.Core.UI.IMenu.Values;
 using LeagueSharp.SDK.Core.Utils;
 using SharpDX;
@@ -16,7 +15,11 @@ using Challenger_Series.Utils;
 
 namespace Challenger_Series.Plugins
 {
+    using System.Windows.Forms;
+
     using LeagueSharp.SDK.Core.Wrappers.Damages;
+
+    using Menu = LeagueSharp.SDK.Core.UI.IMenu.Menu;
 
     public class Lucian : CSPlugin
     {
@@ -39,6 +42,25 @@ namespace Challenger_Series.Plugins
             Events.OnGapCloser += EventsOnOnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
             Orbwalker.OnAction += OnAction;
+            Spellbook.OnCastSpell += OnCastSpell;
+        }
+
+        private bool pressedR = false;
+
+        private void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
+        {
+            if (sender.Owner.IsMe && args.Slot == SpellSlot.R && this.BlockManualR)
+            {
+                if (!pressedR && !ObjectManager.Player.IsCastingInterruptableSpell())
+                {
+                    args.Process = false;
+                }
+                else
+                {
+                    args.Process = true;
+                    this.pressedR = false;
+                }
+            }
         }
 
         private void OnAction(object sender, OrbwalkingActionArgs args)
@@ -118,6 +140,12 @@ namespace Challenger_Series.Plugins
         {
             #region Logic
 
+            var ultTarget = TargetSelector.GetTarget(R);
+            if (this.SemiAutoRKey.Active && ultTarget != null && ultTarget.IsHPBarRendered)
+            {
+                this.pressedR = true;
+                R.Cast(R.GetPrediction(ultTarget).UnitPosition);
+            }
             if (!HasPassive)
 
             {
@@ -316,6 +344,8 @@ namespace Challenger_Series.Plugins
         private MenuList<string> UseEMode;
         private MenuBool UseEGapclose;
         private MenuBool UseEAntiMelee;
+        private MenuKeyBind SemiAutoRKey;
+        private MenuBool BlockManualR;
         private MenuBool ForceR;
         private Menu HarassMenu;
         private MenuBool UseQExtended;
@@ -339,6 +369,9 @@ namespace Challenger_Series.Plugins
                 ComboMenu.Add(new MenuList<string>("Lucianecombo", "E Mode", new[] {"Side", "Cursor", "Enemy", "Never"}));
             UseEAntiMelee = ComboMenu.Add(new MenuBool("Lucianecockblocker", "Use E to get away from melees", true));
             UseEGapclose = ComboMenu.Add(new MenuBool("Lucianegoham", "Use E to go HAM", false));
+            SemiAutoRKey = ComboMenu.Add(
+                new MenuKeyBind("Luciansemiauto", "Semi-Auto R Key", Keys.R, KeyBindType.Press));
+            BlockManualR = this.ComboMenu.Add(new MenuBool("Lucianblockmanualr", "Block manual R", true));
             ForceR = ComboMenu.Add(new MenuBool("Lucianrcombo", "Auto R", true));
             HarassMenu = MainMenu.Add(new Menu("Lucianharassmenu", "Harass Settings: "));
             UseQExtended = HarassMenu.Add(new MenuBool("Lucianqextended", "Use Extended Q", true));
