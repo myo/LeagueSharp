@@ -65,9 +65,10 @@ namespace Challenger_Series.Plugins
 
                 if (!HasPassive)
                 {
-                    if (args.Target is Obj_AI_Minion)
+                    var minion = args.Target as Obj_AI_Minion;
+                    if (minion != null)
                     {
-                        var tg = args.Target as Obj_AI_Minion;
+                        var tg = minion;
                         if (tg.CharData.BaseSkinName.Contains("SRU") && !tg.CharData.BaseSkinName.Contains("Mini"))
                         {
                             if (QJg && Q.IsReady())
@@ -105,7 +106,7 @@ namespace Challenger_Series.Plugins
 
         private void EventsOnOnGapCloser(object sender, Events.GapCloserEventArgs args)
         {
-            if (E.IsReady() && args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
+            if (E.IsReady() && UseEGapclose && args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
             {
                 E.Cast(ObjectManager.Player.Position.Extend(args.Sender.Position, -Misc.GiveRandomInt(300, 600)));
             }
@@ -129,6 +130,48 @@ namespace Challenger_Series.Plugins
                         return;
                     }
                 }
+            var q2tg = TargetSelector.GetTarget(Q2.Range);
+            if (q2tg != null && Q.IsReady() && q2tg.IsHPBarRendered)
+            {
+                if (q2tg.Distance(ObjectManager.Player) > 600)
+                {
+                    if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
+                    {
+                        var menuItem = QExtendedBlacklist["qexbl" + q2tg.CharData.BaseSkinName];
+                        if (UseQExtended &&
+                            ObjectManager.Player.ManaPercent > QExManaPercent && menuItem != null && !menuItem.GetValue<MenuBool>())
+                        {
+                            var QPred = Q2.GetPrediction(q2tg);
+                            if (QPred.Hitchance >= HitChance.Medium)
+                            {
+                                var minions =
+                                    GameObjects.EnemyMinions.Where(
+                                        m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
+                                var objAiMinions = minions as IList<Obj_AI_Minion> ?? minions.ToList();
+                                if (objAiMinions.Any())
+                                {
+                                    foreach (var minion in objAiMinions)
+                                    {
+                                        var QHit = new Utils.Geometry.Rectangle(
+                                            ObjectManager.Player.Position,
+                                            ObjectManager.Player.Position.Extend(minion.Position, Q2.Range),
+                                            Q2.Width);
+                                        if (!QPred.UnitPosition.IsOutside(QHit))
+                                        {
+                                            Q.Cast(minion);
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (Q.IsReady() && UseQCombo)
+                {
+                    Q.Cast(q2tg);
+                }
+            }
             }
 
             #endregion
@@ -136,15 +179,17 @@ namespace Challenger_Series.Plugins
             if (QKS && Q.IsReady())
             {
                 var targets = ValidTargets.Where(x => x.IsHPBarRendered && x.Health < Q.GetDamage(x) && x.IsValidTarget(Q.Range) && !x.IsZombie);
-                if (targets != null && targets.Any())
+                var objAiHeroes = targets as IList<Obj_AI_Hero> ?? targets.ToList();
+                if (targets != null && objAiHeroes.Any())
                 {
-                    foreach (var target in targets)
+                    foreach (var target in objAiHeroes)
                     {
                         if (target.Health < Q.GetDamage(target) &&
                             (!target.HasBuff("kindrednodeathbuff") && !target.HasBuff("Undying Rage") &&
                              !target.HasBuff("JudicatorIntervention")))
                         {
                             Q.Cast(target);
+                            return;
                         }
                     }
                 }
@@ -172,45 +217,6 @@ namespace Challenger_Series.Plugins
                 }
             }
             Orbwalker.ForceTarget = null;
-            var q2tg = TargetSelector.GetTarget(Q2.Range);
-            if (q2tg != null && Q.IsReady() && tg.IsHPBarRendered)
-            {
-                if (q2tg.Distance(ObjectManager.Player) > Q.Range)
-                {
-                    if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
-                    {
-                        var menuItem = QExtendedBlacklist["qexbl" + q2tg.CharData.BaseSkinName];
-                        if (UseQExtended &&
-                            ObjectManager.Player.ManaPercent > QExManaPercent && menuItem != null && !menuItem.GetValue<MenuBool>())
-                        {
-                            var QPred = Q2.GetPrediction(q2tg);
-                            if (QPred.Hitchance >= HitChance.Medium)
-                            {
-                                var minions =
-                                    GameObjects.EnemyMinions.Where(
-                                        m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
-                                if (minions.Any())
-                                {
-                                    foreach (var minion in minions)
-                                    {
-                                        var QHit = new Utils.Geometry.Rectangle(ObjectManager.Player.Position,
-                                            ObjectManager.Player.Position.Extend(minion.Position, Q2.Range), Q2.Width);
-                                        if (!QPred.UnitPosition.IsOutside(QHit))
-                                        {
-                                            Q.Cast(minion);
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (Q.IsReady() && UseQCombo)
-                {
-                    Q.Cast(q2tg);
-                }
-            }
         }
 
         private void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
