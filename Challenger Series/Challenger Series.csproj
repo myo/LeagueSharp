@@ -38,6 +38,9 @@
     <Reference Include="LeagueSharp">
       <HintPath>C:\L3\System\LeagueSharp.dll</HintPath>
     </Reference>
+    <Reference Include="LeagueSharp.Data">
+      <HintPath>C:\L3\System\LeagueSharp.Data.dll</HintPath>
+    </Reference>
     <Reference Include="LeagueSharp.SDK">
       <HintPath>C:\L3\System\LeagueSharp.SDK.dll</HintPath>
     </Reference>

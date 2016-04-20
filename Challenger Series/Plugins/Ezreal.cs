@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Challenger_Series.Utils;
 using LeagueSharp;
 using LeagueSharp.SDK;
-using LeagueSharp.SDK.Core.UI.IMenu;
-using LeagueSharp.SDK.Core.UI.IMenu.Values;
-using LeagueSharp.SDK.Core.Utils;
 using SharpDX;
 using Color = System.Drawing.Color;
 using Challenger_Series.Utils;
-using LeagueSharp.SDK.Core.Wrappers.Damages;
+using System.Windows.Forms;
+using LeagueSharp.Data.Enumerations;
+using LeagueSharp.SDK.Enumerations;
+using LeagueSharp.SDK.UI;
+using LeagueSharp.SDK.Utils;
+using Menu = LeagueSharp.SDK.UI.Menu;
 
 namespace Challenger_Series.Plugins
 {

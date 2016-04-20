@@ -1,31 +1,23 @@
-﻿#region License
-/* Copyright (c) LeagueSharp 2016
- * No reproduction is allowed in any way unless given written consent
- * from the LeagueSharp staff.
- * 
- * Author: imsosharp
- * Date: 2/24/2016
- * File: Kalista.cs
- */
-#endregion License
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Challenger_Series.Utils;
 using LeagueSharp;
 using LeagueSharp.SDK;
-using LeagueSharp.SDK.Core.UI.IMenu.Values;
-using LeagueSharp.SDK.Core.Utils;
-using LeagueSharp.SDK.Core.Wrappers.Damages;
 using SharpDX;
-using SharpDX.Direct3D9;
-using Collision = LeagueSharp.SDK.Collision;
 using Color = System.Drawing.Color;
-using Menu = LeagueSharp.SDK.Core.UI.IMenu.Menu;
+using Challenger_Series.Utils;
+using System.Windows.Forms;
+using LeagueSharp.Data.Enumerations;
+using LeagueSharp.SDK.Enumerations;
+using LeagueSharp.SDK.UI;
+using LeagueSharp.SDK.Utils;
+using Menu = LeagueSharp.SDK.UI.Menu;
 
 namespace Challenger_Series.Plugins
 {
+    using Collision = LeagueSharp.SDK.Collision;
+
     public class Kalista : CSPlugin
     {
         public Kalista()
@@ -199,14 +191,14 @@ namespace Challenger_Series.Plugins
 #endregion Orbwalk On Minions
             if (DrawERangeBool)
             {
-                Drawing.DrawCircle(
+                Render.Circle.DrawCircle(
                     ObjectManager.Player.Position,
                     1000,
                     Color.LightGreen);
             }
             if (DrawRRangeBool)
             {
-                Drawing.DrawCircle(
+                Render.Circle.DrawCircle(
                     ObjectManager.Player.Position,
                     1400,
                     Color.DarkRed);
@@ -349,7 +341,7 @@ namespace Challenger_Series.Plugins
                     }
                 }
                 //get the rend damage
-                var dmg = E.GetDamage(target, Damage.DamageStage.Default) + E.GetDamage(target, Damage.DamageStage.Buff) +
+                var dmg = E.GetDamage(target, DamageStage.Default) + E.GetDamage(target, DamageStage.Buff) +
                           Q.GetDamage(target) + E.GetDamage(target)/2;
                 //exhaust reduces target damage by 40%
                 if (ObjectManager.Player.HasBuff("SummonerExhaustSlow") || ObjectManager.Player.HasBuff("summonerexhaust"))
@@ -406,7 +398,7 @@ namespace Challenger_Series.Plugins
         {
             if (E.Level == 0 || !target.HasBuff("kalistaexpungemarker") || target.Distance(ObjectManager.Player.ServerPosition) > 985) return 0;
             //get the rend damage
-            var dmg = E.GetDamage(target) + E.GetDamage(target, Damage.DamageStage.Buff);
+            var dmg = E.GetDamage(target) + E.GetDamage(target, DamageStage.Buff);
             //the barontarget buff reduces the damage to baron by 50%
             if (target.Name.Contains("Baron") && ObjectManager.Player.HasBuff("barontarget"))
             {

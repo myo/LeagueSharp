@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Challenger_Series.Utils;
 using LeagueSharp;
 using LeagueSharp.SDK;
-using LeagueSharp.SDK.Core.UI.IMenu.Values;
-using LeagueSharp.SDK.Core.Utils;
 using SharpDX;
 using Color = System.Drawing.Color;
-using Menu = LeagueSharp.SDK.Core.UI.IMenu.Menu;
+using Challenger_Series.Utils;
+using System.Windows.Forms;
+using LeagueSharp.Data.Enumerations;
+using LeagueSharp.SDK.Enumerations;
+using LeagueSharp.SDK.UI;
+using LeagueSharp.SDK.Utils;
+using Menu = LeagueSharp.SDK.UI.Menu;
 
 namespace Challenger_Series.Plugins
 {
@@ -98,7 +99,7 @@ namespace Challenger_Series.Plugins
             var drawRange = DrawRange.Value;
             if (drawRange > 0)
             {
-                Drawing.DrawCircle(ObjectManager.Player.Position, drawRange, Color.Gold);
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, drawRange, Color.Gold);
             }
             if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
             {

@@ -12,20 +12,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
+using Challenger_Series.Utils;
 using LeagueSharp;
 using LeagueSharp.SDK;
-using LeagueSharp.SDK.Core.UI.IMenu.Values;
-using LeagueSharp.SDK.Core.Wrappers.Damages;
 using SharpDX;
-using Challenger_Series.Utils;
-using LeagueSharp.SDK.Core.Utils;
-using Geometry = Challenger_Series.Utils.Geometry;
-using Menu = LeagueSharp.SDK.Core.UI.IMenu.Menu;
 using Color = System.Drawing.Color;
+using Challenger_Series.Utils;
+using System.Windows.Forms;
+using LeagueSharp.Data.Enumerations;
+using LeagueSharp.SDK.Enumerations;
+using LeagueSharp.SDK.UI;
+using LeagueSharp.SDK.Utils;
+using Menu = LeagueSharp.SDK.UI.Menu;
+using LeagueSharp.Data.DataTypes;
+
+using SpellDatabase = LeagueSharp.SDK.SpellDatabase;
 
 namespace Challenger_Series
 {
+    using Geometry = Challenger_Series.Utils.Geometry;
+
     public class Vayne : CSPlugin
     {
 

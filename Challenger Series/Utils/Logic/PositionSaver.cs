@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
+using Challenger_Series.Utils;
 using LeagueSharp;
 using LeagueSharp.SDK;
-using LeagueSharp.SDK.Core.UI.IMenu.Values;
-using LeagueSharp.SDK.Core.Wrappers.Damages;
 using SharpDX;
-using Challenger_Series.Utils;
-using LeagueSharp.SDK.Core.Utils;
-using Geometry = Challenger_Series.Utils.Geometry;
-using Menu = LeagueSharp.SDK.Core.UI.IMenu.Menu;
 using Color = System.Drawing.Color;
+using Challenger_Series.Utils;
+using System.Windows.Forms;
+using LeagueSharp.Data.Enumerations;
+using LeagueSharp.SDK.Enumerations;
+using LeagueSharp.SDK.UI;
+using LeagueSharp.SDK.Utils;
+using Menu = LeagueSharp.SDK.UI.Menu;
 
 namespace Challenger_Series.Utils.Logic
 {
@@ -58,7 +59,7 @@ namespace Challenger_Series.Utils.Logic
                 {
                     foreach (var savedLocation in _core.Positions.Where(pos => pos.Distance(ObjectManager.Player.Position) < 4000))
                     {
-                        Drawing.DrawCircle(savedLocation, 60, savedLocation.Distance(ObjectManager.Player.Position) < _spellToUse.Range ? Color.Gold : Color.White);
+                        Render.Circle.DrawCircle(savedLocation, 60, savedLocation.Distance(ObjectManager.Player.Position) < _spellToUse.Range ? Color.Gold : Color.White);
                     }
                     if (_spellToUse.IsReady())
                     {
