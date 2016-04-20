@@ -10,6 +10,8 @@ using LeagueSharp.SDK.Core.Utils;
 
 namespace Challenger_Series
 {
+    using System.Windows.Forms;
+
     public class Irelia : CSPlugin
     {
         public Irelia()
@@ -23,6 +25,25 @@ namespace Challenger_Series
             InitMenu();
             Game.OnUpdate += OnUpdate;
             Orbwalker.OnAction += OnOrbwalkerAction;
+            Spellbook.OnCastSpell += OnCastSpell;
+        }
+
+        private bool pressedR = false;
+
+        private void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
+        {
+            if (sender.Owner.IsMe && args.Slot == SpellSlot.R)
+            {
+                if (!this.pressedR)
+                {
+                    args.Process = false;
+                }
+                else
+                {
+                    args.Process = true;
+                    this.pressedR = false;
+                }
+            }
         }
 
         private void OnOrbwalkerAction(object sender, OrbwalkingActionArgs args)
@@ -42,10 +63,15 @@ namespace Challenger_Series
             var target = Variables.TargetSelector.GetTarget(1000, DamageType.Physical);
             if (target != null)
             {
-                if (ObjectManager.Player.HasBuff("ireliatranscendentbladesspell") && UseRComboBool)
+                if (ObjectManager.Player.HasBuff("ireliatranscendentbladesspell"))
                 {
                     R.Cast(R.GetPrediction(target).UnitPosition);
                 }
+            }
+            if (UseRComboKeybind.Active)
+            {
+                this.pressedR = true;
+                R.Cast(R.GetPrediction(target).UnitPosition);
             }
             if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
             {
@@ -225,7 +251,7 @@ namespace Challenger_Series
         private MenuBool UseWComboBool;
         private MenuList<string> UseEComboStringList;
         private MenuBool UseEKSBool;
-        private MenuBool UseRComboBool;
+        private MenuKeyBind UseRComboKeybind;
         private MenuList<string> QGapcloseModeStringList;
         private MenuSlider MinDistForQGapcloser;
         private MenuList<string> QFarmModeStringList;
@@ -235,7 +261,7 @@ namespace Challenger_Series
             UseWComboBool = MainMenu.Add(new MenuBool("usewcombo", "Use W Combo", true));
             UseEComboStringList = MainMenu.Add(new MenuList<string>("useecombo", "Use E Combo", new [] {"CHALLENGER", "BRONZE", "NEVER"}));
             UseEKSBool = MainMenu.Add(new MenuBool("useeks", "Use E KS if Q on CD", true));
-            UseRComboBool = MainMenu.Add(new MenuBool("usercombo", "Use R Combo", true));
+            UseRComboKeybind = MainMenu.Add(new MenuKeyBind("usercombo", "Use R Combo", Keys.R, KeyBindType.Press));
             QGapcloseModeStringList =
                 MainMenu.Add(new MenuList<string>("qgc", "Q Gapcloser Mode",
                     new[] {"ONLY-CLOSEST-TO-TARGET", "ALL-KILLABLE-MINIONS"}));
