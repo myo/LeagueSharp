@@ -35,6 +35,7 @@ namespace Challenger_Series.Plugins
             Obj_AI_Base.OnPlayAnimation += OnPlayAnimation;
             Events.OnGapCloser += OnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
+            //OnLoadingFinished();
         }
 
         private void OnPlayAnimation(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
@@ -217,9 +218,11 @@ namespace Challenger_Series.Plugins
                     var target = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     if (!target.CharData.BaseSkinName.Contains("MinionSiege") && target.Health > 60)
                     {
-                        orbwalkingActionArgs.Process = false;
-                        Orbwalker.ForceTarget = TargetSelector.GetTarget(715, DamageType.Physical);
-                        ;
+                        var tg = Orbwalker.ForceTarget = TargetSelector.GetTarget(715, DamageType.Physical);
+                        if (tg != null)
+                        {
+                            orbwalkingActionArgs.Process = false;
+                        }
                     }
                 }
                 if (E.IsReady() && this.UseECombo)
@@ -233,7 +236,6 @@ namespace Challenger_Series.Plugins
                             var pred = E.GetPrediction(eTarget);
                             if (pred.CollisionObjects.Count == 0 && (int) pred.Hitchance >= (int) HitChance.Medium)
                             {
-                                orbwalkingActionArgs.Process = false;
                                 E.Cast(pred.UnitPosition);
                             }
                         }
@@ -248,7 +250,6 @@ namespace Challenger_Series.Plugins
                         var pred = E.GetPrediction(eTarget);
                         if (pred.CollisionObjects.Count == 0 && (int) pred.Hitchance >= (int) HitChance.Medium)
                         {
-                            orbwalkingActionArgs.Process = false;
                             E.Cast(pred.UnitPosition);
                         }
                     }
