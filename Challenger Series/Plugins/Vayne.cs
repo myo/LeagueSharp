@@ -79,7 +79,7 @@ namespace Challenger_Series
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += OnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
-            OnLoadingFinished();
+            //OnLoadingFinished();
         }
 
         #endregion
