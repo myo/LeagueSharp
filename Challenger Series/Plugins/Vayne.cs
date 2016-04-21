@@ -79,6 +79,7 @@ namespace Challenger_Series
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += OnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
+            OnLoadingFinished();
         }
 
         #endregion
@@ -778,7 +779,7 @@ namespace Challenger_Series
 
         private bool IsMinionCondemnable(Obj_AI_Minion minion)
         {
-                return minion.CharData.BaseSkinName.Contains("SRU_") && !minion.CharData.BaseSkinName.Contains("Mini") && !minion.CharData.BaseSkinName.Contains("Baron") && !minion.CharData.BaseSkinName.Contains("Dragon") &&
+                return GameObjects.JungleLarge.Any(m => minion.NetworkId == m.NetworkId) &&
                     NavMesh.GetCollisionFlags(
             minion.Position.ToVector2()
                         .Extend(
