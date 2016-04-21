@@ -148,7 +148,7 @@ namespace Challenger_Series.Plugins
                     E.Cast();
                 }
             }
-            if (GameObjects.JungleLarge.Any(IsRendKillable) || GameObjects.JungleLegendary.Any(this.IsRendKillable))
+            if (GameObjects.JungleLarge.Any(IsRendKillable) || GameObjects.EnemyMinions.Any(m=> m.CharData.BaseSkinName.Contains("Baron") || m.CharData.BaseSkinName.Contains("Dragon") && this.IsRendKillable(m)))
             {
                 E.Cast();
             }
@@ -497,7 +497,10 @@ namespace Challenger_Series.Plugins
             // Validate unit
             if (target == null) { return false; }
             if (!HasRendBuff(target)) { return false; }
-            if (ShouldntRend((Obj_AI_Hero)target)) return false;
+            if (target is Obj_AI_Hero && target.Health > 1)
+            {
+                if (ShouldntRend((Obj_AI_Hero)target)) return false;
+            }
 
             // Take into account all kinds of shields
             var totalHealth = GetTotalHealthWithShieldsApplied(target);
