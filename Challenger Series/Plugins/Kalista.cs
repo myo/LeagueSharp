@@ -34,30 +34,15 @@ namespace Challenger_Series.Plugins
             Orbwalker.OnAction += OnOrbwalkerAction;
             Obj_AI_Base.OnProcessSpellCast += UltLogic_OnSpellcast;
             Game.OnUpdate += UltLogic_OnUpdate;
+            //OnLoadingFinished();
         }
 
         private void OnOrbwalkerAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
         {
+                if (orbwalkingActionArgs.Target == null) return;
             if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
             {
-                if (orbwalkingActionArgs.Target == null) return;
                 Orbwalker.ForceTarget = null;
-                if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && orbwalkingActionArgs.Target is Obj_AI_Hero)
-                {
-                    var target = orbwalkingActionArgs.Target as Obj_AI_Hero;
-                    if (ObjectManager.Player.ManaPercent > UseQManaSlider.Value)
-                    {
-                        if (UseQIfECanKillBool && IsPierceRendComboKillable(target))
-                        {
-                            var prediction = Q.GetPrediction(target);
-                            var predictedPos = prediction.UnitPosition;
-                            if (predictedPos.Distance(ObjectManager.Player.ServerPosition) < 1100 && prediction.CollisionObjects.Count == 0 && (int)prediction.Hitchance > (int)HitChance.Medium && predictedPos.CountEnemyHeroesInRange(100) >= 1)
-                            {
-                                Q.Cast(predictedPos);
-                            }
-                        }
-                    }
-                }
                 if (UseEIfResettedByAMinionBool && ObjectManager.Player.ManaPercent > EResetByAMinionMinManaSlider.Value)
                 {
                     if (
@@ -69,29 +54,48 @@ namespace Challenger_Series.Plugins
                         E.Cast();
                     }
                 }
+                if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && Q.IsReady())
+                {
+                    var hero = orbwalkingActionArgs.Target as Obj_AI_Hero;
+                    if (hero != null)
+                    {
+                        if (hero.IsHPBarRendered)
+                        {
+                            var pred = Q.GetPrediction(hero);
+                            if (pred.Hitchance >= HitChance.High)
+                            {
+                                Q.Cast(pred.UnitPosition);
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var target in ValidTargets.Where(t => t.Distance(ObjectManager.Player) < 900))
+                        {
+                            if (ObjectManager.Player.ManaPercent > UseQManaSlider.Value)
+                            {
+                                var pred = Q.GetPrediction(target);
+                                if (pred.Hitchance >= HitChance.High)
+                                {
+                                    Q.Cast(pred.UnitPosition);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
                 if (UseQStackTransferBool && orbwalkingActionArgs.Target is Obj_AI_Minion)
                 {
                     var target = orbwalkingActionArgs.Target as Obj_AI_Minion;
-                    if (GetRendBuff(target).Count >= UseQStackTransferMinStacksSlider && IsRendKillable(target))
+                    if (GetRendBuff(target).Count >= UseQStackTransferMinStacksSlider && target.Health < Q.GetDamage(target))
                     {
-                        var pi = new PredictionInput();
-                        pi.Delay = 0.25f;
-                        pi.Radius = 40f;
-                        pi.Range = 1100;
-                        pi.Speed = 1400;
-                        pi.From = target.Position;
-                        pi.Type = SkillshotType.SkillshotLine;
-                        foreach (var enemy in ValidTargets.Where(en => en.Distance(ObjectManager.Player) > 1050 && en.Health > 1))
+                        foreach (var enemy in ValidTargets.Where(en => en.Distance(ObjectManager.Player) < 900))
                         {
-                            var prediction = Movement.GetPrediction(enemy, 0.25f, 40, 1400);
-                            if (prediction.UnitPosition.CountEnemyHeroesInRange(100) == 0) return;
-                            var posLists = new List<Vector3>();
-                            posLists.Add(ObjectManager.Player.ServerPosition);
-                            posLists.Add(prediction.UnitPosition);
-                            var collision = Collision.GetCollision(posLists, pi);
-                            if (collision.Where(colobject => colobject is Obj_AI_Minion).All(m => IsRendKillable(m)))
+                            var pred = Q.GetPrediction(enemy, false);
+                            if (pred.CollisionObjects.All(co => co is Obj_AI_Minion && co.Health < Q.GetDamage(co)) && pred.CollisionObjects.Any(m => m.NetworkId == target.NetworkId))
                             {
-                                Q.Cast(prediction.UnitPosition);
+                                Q.Cast(pred.UnitPosition);
                             }
                         }
                     }
@@ -139,7 +143,7 @@ namespace Challenger_Series.Plugins
             base.OnUpdate(args);
             if (UseEBool)
             {
-                if (ValidTargets.Any(IsRendKillable))
+                if (ValidTargets.Any(this.IsRendKillable))
                 {
                     E.Cast();
                 }
@@ -154,8 +158,8 @@ namespace Challenger_Series.Plugins
             }
             if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
             {
-                var target = TargetSelector.GetTarget(800);
-                if (target == null) return;
+                var target = TargetSelector.GetTarget(900);
+                if (target == null || !target.IsHPBarRendered) return;
                 if (ObjectManager.Player.ManaPercent > UseQManaSlider.Value)
                 {
                     if (target.Distance(ObjectManager.Player) > 585 && target.Distance(ObjectManager.Player) < 1100 &&
@@ -163,9 +167,8 @@ namespace Challenger_Series.Plugins
                     {
                         var prediction = Q.GetPrediction(target);
                         var predictedPos = prediction.UnitPosition;
-                        if (predictedPos.Distance(ObjectManager.Player.ServerPosition) < 1100 &&
-                            prediction.CollisionObjects.Count == 0 &&
-                            (int)prediction.Hitchance > (int)HitChance.Medium && predictedPos.CountEnemyHeroesInRange(100) >= 1)
+                        if (prediction.CollisionObjects.Count == 0 &&
+                            (int)prediction.Hitchance >= (int)HitChance.High)
                         {
                             Q.Cast(predictedPos);
                         }
@@ -206,7 +209,7 @@ namespace Challenger_Series.Plugins
 
             if (DrawEDamage)
             {
-                HpBarDamageIndicator.DamageToUnit = GetRendDmg;
+                HpBarDamageIndicator.DamageToUnit = GetFloatRendDamage;
             }
             HpBarDamageIndicator.Enabled = DrawEDamage;
             //this is intended.
@@ -302,126 +305,6 @@ namespace Challenger_Series.Plugins
         }
 
         #region Champion Logic
-
-        /// <summary>
-        /// Those buffs make the target either unkillable or a pain in the ass to kill, just wait until they end
-        /// </summary>
-        private List<string> UndyingBuffs = new List<string>
-        {
-            "JudicatorIntervention",
-            "UndyingRage",
-            "FerociousHowl",
-            "ChronoRevive",
-            "ChronoShift",
-            "lissandrarself",
-            "kindredrnodeathbuff"
-        };
-
-        //#TODO: Check E Damage every patch
-        public bool IsPierceRendComboKillable(Obj_AI_Base target)
-        {
-            //If target doesn't have rend buff or is too far away, rend will most likely not kill him.
-            if (E.Level == 0 || !target.HasBuff("kalistaexpungemarker") || target.Distance(ObjectManager.Player.ServerPosition) > 985)
-                return false;
-
-            //take shields into account
-            var actualTargetHealth = target.Health + target.AllShield;
-
-            //check if target isn't dead
-            if (actualTargetHealth > 1)
-            {
-                //if the target is a champion check for spellshields
-                if (target is Obj_AI_Hero)
-                {
-                    var objaihero_target = target as Obj_AI_Hero;
-                    if (objaihero_target.Buffs.Any(buff => UndyingBuffs.Contains(buff.Name)) ||
-                        objaihero_target.HasBuffOfType(BuffType.SpellShield))
-                    {
-                        return false;
-                    }
-                }
-                //get the rend damage
-                var dmg = E.GetDamage(target, DamageStage.Default) + E.GetDamage(target, DamageStage.Buff) +
-                          Q.GetDamage(target) + E.GetDamage(target)/2;
-                //exhaust reduces target damage by 40%
-                if (ObjectManager.Player.HasBuff("SummonerExhaustSlow") || ObjectManager.Player.HasBuff("summonerexhaust"))
-                {
-                    dmg *= 0.6f;
-                }
-                //the barontarget buff reduces the damage to baron by 50%
-                if (target.Name.Contains("Baron") && ObjectManager.Player.HasBuff("barontarget"))
-                {
-                    dmg *= 0.5f;
-                }
-                //you deal -7% dmg to dragon for each killed dragon
-                if (target.Name.Contains("Dragon") && ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
-                {
-                    dmg *= (1f - (0.07f*ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
-                }
-                //check if damage > target hp + all shields affecting target
-                return dmg > actualTargetHealth;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Checks if the target is killable by Rend(E)
-        /// </summary>
-        public bool IsRendKillable(Obj_AI_Base target)
-        {
-            //take shields into account
-            var actualTargetHealth = target.Health + target.AllShield;
-
-            //check if target isn't dead
-            if (actualTargetHealth > 1)
-            {
-                //if the target is a champion check for spellshields
-                if (target is Obj_AI_Hero)
-                {
-                    var objaihero_target = target as Obj_AI_Hero;
-                    if (objaihero_target.Buffs.Any(buff => UndyingBuffs.Contains(buff.Name)) ||
-                        objaihero_target.HasBuffOfType(BuffType.SpellShield))
-                    {
-                        return false;
-                    }
-                }
-                var dmg = GetRendDmg(target);
-                //check if damage > target hp + all shields affecting target
-                dmg -= ReduceRendDamageBySlider.Value;
-                dmg += IncreaseRendDamageBySlider.Value;
-                return dmg > actualTargetHealth;
-            }
-            return false;
-        }
-
-        public float GetRendDmg(Obj_AI_Base target)
-        {
-            if (E.Level == 0 || !target.HasBuff("kalistaexpungemarker") || target.Distance(ObjectManager.Player.ServerPosition) > 985) return 0;
-            //get the rend damage
-            var dmg = E.GetDamage(target) + E.GetDamage(target, DamageStage.Buff);
-            //the barontarget buff reduces the damage to baron by 50%
-            if (target.Name.Contains("Baron") && ObjectManager.Player.HasBuff("barontarget"))
-            {
-                dmg *= 0.5f;
-            }
-            //you deal -7% dmg to dragon for each killed dragon
-            if (target.Name.Contains("Dragon") && ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
-            {
-                dmg *= (1f - (0.075f*ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
-            }
-            
-            //alistar ult
-            if (target.HasBuff("FerociousHowl"))
-            {
-                dmg *= 0.3f;
-            }
-            return dmg;
-        }
-
-        public static BuffInstance GetRendBuff(Obj_AI_Base target)
-        {
-            return target.Buffs.Find(b => b.Caster.IsMe && b.DisplayName.ToLower() == "kalistaexpungemarker");
-        }
 
         #region Ult Logic
 
@@ -553,5 +436,115 @@ namespace Challenger_Series.Plugins
         #endregion Ult Logic
 
         #endregion Champion Logic
+        #region Damages
+
+
+        private static readonly float[] RawRendDamage = { 20, 30, 40, 50, 60 };
+        private static readonly float[] RawRendDamageMultiplier = { 0.6f, 0.6f, 0.6f, 0.6f, 0.6f };
+        private static readonly float[] RawRendDamagePerSpear = { 10, 14, 19, 25, 32 };
+        private static readonly float[] RawRendDamagePerSpearMultiplier = { 0.2f, 0.225f, 0.25f, 0.275f, 0.3f };
+        
+        /// <summary>
+        /// Those buffs make the target either unkillable or a pain in the ass to kill, just wait until they end
+        /// </summary>
+        private List<string> UndyingBuffs = new List<string>
+        {
+            "JudicatorIntervention",
+            "UndyingRage",
+            "FerociousHowl",
+            "ChronoRevive",
+            "ChronoShift",
+            "lissandrarself",
+            "kindredrnodeathbuff"
+        };
+
+        private bool ShouldntRend(Obj_AI_Hero target)
+        {
+            //Dead or not a hero
+            if (target == null || !target.IsHPBarRendered) return false;
+            //Undying
+            if (target.Buffs.Any(b => this.UndyingBuffs.Contains(b.Name)))
+            {
+                return false;
+            }
+            //Blitzcrank
+            if (target.CharData.BaseSkinName == "Blitzcrank" && !target.HasBuff("BlitzcrankManaBarrierCD")
+                && !target.HasBuff("ManaBarrier"))
+            {
+                return false;
+            }
+            //SpellShield
+            return !target.HasBuffOfType(BuffType.SpellShield) && !target.HasBuffOfType(BuffType.SpellImmunity);
+        }
+
+        private BuffInstance GetRendBuff(Obj_AI_Base target)
+        {
+            return target.Buffs.FirstOrDefault(b => b.Name == "kalistaexpungemarker");
+        }
+
+        private bool HasRendBuff(Obj_AI_Base target)
+        {
+            return this.GetRendBuff(target) != null;
+        }
+
+        private double GetTotalHealthWithShieldsApplied(Obj_AI_Base target)
+        {
+            return target.Health + target.AllShield;
+        }
+
+        public bool IsRendKillable(Obj_AI_Base target)
+        {
+            // Validate unit
+            if (target == null) { return false; }
+            if (!HasRendBuff(target)) { return false; }
+            if (ShouldntRend((Obj_AI_Hero)target)) return false;
+
+            // Take into account all kinds of shields
+            var totalHealth = GetTotalHealthWithShieldsApplied(target);
+
+            var dmg = GetRendDamage(target);
+
+            if (target.Name.Contains("Baron") && ObjectManager.Player.HasBuff("barontarget"))
+            {
+                dmg *= 0.5f;
+            }
+            //you deal -7% dmg to dragon for each killed dragon
+            if (target.Name.Contains("Dragon") && ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
+            {
+                dmg *= (1f - (0.075f * ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
+            }
+
+            return dmg > totalHealth;
+        }
+
+        public float GetFloatRendDamage(Obj_AI_Base target)
+        {
+            return (float)GetRendDamage(target, -1);
+        }
+        public double GetRendDamage(Obj_AI_Base target)
+        {
+            return GetRendDamage(target, -1);
+        }
+
+        public double GetRendDamage(Obj_AI_Base target, int customStacks = -1, BuffInstance rendBuff = null)
+        {
+            // Calculate the damage and return
+            return ObjectManager.Player.CalculateDamage(target, DamageType.Physical, GetRawRendDamage(target, customStacks, rendBuff) - this.ReduceRendDamageBySlider.Value); 
+        }
+
+        public float GetRawRendDamage(Obj_AI_Base target, int customStacks = -1, BuffInstance rendBuff = null)
+        {
+            rendBuff = rendBuff ?? GetRendBuff(target);
+            var stacks = (customStacks > -1 ? customStacks : rendBuff != null ? rendBuff.Count : 0) - 1;
+            if (stacks > -1)
+            {
+                var index = E.Level - 1;
+                return RawRendDamage[index] + stacks * RawRendDamagePerSpear[index] +
+                       ObjectManager.Player.TotalAttackDamage * (RawRendDamageMultiplier[index] + stacks * RawRendDamagePerSpearMultiplier[index]);
+            }
+
+            return 0;
+        }
+#endregion
     }
 }
