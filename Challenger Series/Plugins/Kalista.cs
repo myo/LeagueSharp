@@ -141,14 +141,15 @@ namespace Challenger_Series.Plugins
         public override void OnUpdate(EventArgs args)
         {
             base.OnUpdate(args);
-            if (UseEBool)
+            if (ValidTargets.Any(t=> IsRendKillable(t)))
             {
-                if (ValidTargets.Any(this.IsRendKillable))
-                {
-                    E.Cast();
-                }
+                E.Cast();
             }
-            if (GameObjects.JungleLarge.Any(IsRendKillable) || GameObjects.EnemyMinions.Any(m=> m.CharData.BaseSkinName.Contains("Baron") || m.CharData.BaseSkinName.Contains("Dragon") && this.IsRendKillable(m)))
+            if (GameObjects.JungleLarge.Any(IsRendKillable)
+                || GameObjects.EnemyMinions.Any(
+                    m =>
+                    m.CharData.BaseSkinName.Contains("Baron")
+                    || m.CharData.BaseSkinName.Contains("Dragon") && this.IsRendKillable(m)))
             {
                 E.Cast();
             }
@@ -162,13 +163,12 @@ namespace Challenger_Series.Plugins
                 if (target == null || !target.IsHPBarRendered) return;
                 if (ObjectManager.Player.ManaPercent > UseQManaSlider.Value)
                 {
-                    if (target.Distance(ObjectManager.Player) > 585 && target.Distance(ObjectManager.Player) < 1100 &&
-                        UseQCantAABool)
+                    if (target.Distance(ObjectManager.Player) > 585 && target.Distance(ObjectManager.Player) < 1100
+                        && UseQCantAABool)
                     {
                         var prediction = Q.GetPrediction(target);
                         var predictedPos = prediction.UnitPosition;
-                        if (prediction.CollisionObjects.Count == 0 &&
-                            (int)prediction.Hitchance >= (int)HitChance.High)
+                        if (prediction.CollisionObjects.Count == 0 && (int)prediction.Hitchance >= (int)HitChance.High)
                         {
                             Q.Cast(predictedPos);
                         }
@@ -465,16 +465,16 @@ namespace Challenger_Series.Plugins
             //Undying
             if (target.Buffs.Any(b => this.UndyingBuffs.Contains(b.Name)))
             {
-                return false;
+                return true;
             }
             //Blitzcrank
             if (target.CharData.BaseSkinName == "Blitzcrank" && !target.HasBuff("BlitzcrankManaBarrierCD")
                 && !target.HasBuff("ManaBarrier"))
             {
-                return false;
+                return true;
             }
             //SpellShield
-            return !target.HasBuffOfType(BuffType.SpellShield) && !target.HasBuffOfType(BuffType.SpellImmunity);
+            return target.HasBuffOfType(BuffType.SpellShield) && target.HasBuffOfType(BuffType.SpellImmunity);
         }
 
         private BuffInstance GetRendBuff(Obj_AI_Base target)
