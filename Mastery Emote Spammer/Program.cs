@@ -119,6 +119,7 @@ namespace Mastery_Badge_Spammer
 
         private static void OnUpdate(EventArgs args)
         {
+            if (MenuGUI.IsChatOpen) return;
             if (ObjectManager.Player.ChampionsKilled > MyKills && Menu.Item("onkill").GetValue<bool>())
             {
                 MyKills = ObjectManager.Player.ChampionsKilled;
