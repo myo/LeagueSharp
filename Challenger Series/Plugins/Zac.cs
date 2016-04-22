@@ -35,7 +35,6 @@ namespace Challenger_Series.Plugins
             Events.OnInterruptableTarget += OnInterruptableTarget;
             GameObject.OnCreate += GameObject_OnCreate;
             GameObject.OnDelete += GameObject_OnDelete;
-            this.OnLoadingFinished();
         }
 
         private int DelayOnUpdate;
