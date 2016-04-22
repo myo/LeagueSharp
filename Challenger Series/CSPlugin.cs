@@ -28,19 +28,20 @@ using Menu = LeagueSharp.SDK.UI.Menu;
 namespace Challenger_Series
 {
 
+    using Challenger_Series.Properties;
+
     public abstract class CSPlugin
     {
-        public MenuSlider DecreaseDamageToMinionsBy;
         public MenuBool DrawEnemyWaypoints;
         public Menu CrossAssemblySettings;
+        public MenuBool PlayUrfThemeNextGame;
         public CSPlugin()
         {
             MainMenu = new Menu("challengerseries", ObjectManager.Player.ChampionName + " To The Challenger", true, ObjectManager.Player.ChampionName);
             CrossAssemblySettings = MainMenu.Add(new Menu("crossassemblysettings", "Challenger Utils: "));
             DrawEnemyWaypoints =
                 CrossAssemblySettings.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints", true));
-            DecreaseDamageToMinionsBy = CrossAssemblySettings.Add(new MenuSlider("decreasedamagetominionsby", "Decrease Damage To Minions By: ", 0, 0, 20));
-
+            PlayUrfThemeNextGame = CrossAssemblySettings.Add(new MenuBool("playsoundatstart", "Play URF Theme Next Game", true));
             DelayAction.Add(15000, () => Orbwalker.Enabled = true);
             Drawing.OnDraw += args =>
             {
@@ -64,22 +65,6 @@ namespace Challenger_Series
                     }
                 }
             };
-
-            Orbwalker.OnAction+=(sender, orbwalkingArgs) =>
-                {
-                    if (orbwalkingArgs.Type == OrbwalkingType.BeforeAttack && orbwalkingArgs.Target is Obj_AI_Minion)
-                    {
-                        var value = DecreaseDamageToMinionsBy.Value;
-                        var target = orbwalkingArgs.Target as Obj_AI_Minion;
-                        if (value > 0)
-                        {
-                        if (target.Health < 150 && target.Health > ObjectManager.Player.GetAutoAttackDamage(target) - value)
-                        {
-                            orbwalkingArgs.Process = false;
-                        }
-                        }
-                    }
-                };
         }
 
         #region Spells
