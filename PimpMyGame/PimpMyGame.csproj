@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BEE875F8-336B-4188-8BCE-04F1B10A0C46}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PimpMyGame</RootNamespace>
+    <AssemblyName>PimpMyGame</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="LeagueSharp">
+      <HintPath>C:\L3\System\LeagueSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LeagueSharp.SDK">
+      <HintPath>C:\L3\System\LeagueSharp.SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FileOperations.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SoundPlayer.cs" />
+    <Compile Include="Trashcan.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\beforespawn\beforespawn_0.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dead\dead_0.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dead\dead_1.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dead\dead_2.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dead\dead_3.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dead\dead_4.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dead\dead_5.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_0.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_1.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_2.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_3.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_4.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_5.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_6.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_7.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_8.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\kill\kill_9.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\triple\triple_0.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\triple\triple_1.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\triple\triple_2.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\triple\triple_3.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\triple\triple_4.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\triple\triple_5.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\triple\triple_6.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\penta\penta_0.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\penta\penta_1.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\penta\penta_2.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\penta\penta_3.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\penta\penta_4.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\penta\penta_5.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\penta\penta_6.mp3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cs.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\darudeloadingstorm.mp3" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
