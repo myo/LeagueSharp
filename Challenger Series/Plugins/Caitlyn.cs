@@ -35,7 +35,6 @@ namespace Challenger_Series.Plugins
             Obj_AI_Base.OnPlayAnimation += OnPlayAnimation;
             Events.OnGapCloser += OnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
-            //OnLoadingFinished();
         }
 
         private void OnPlayAnimation(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)

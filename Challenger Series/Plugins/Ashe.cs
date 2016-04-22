@@ -33,7 +33,6 @@ namespace Challenger_Series.Plugins
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += EventsOnOnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
-            //OnLoadingFinished();
         }
 
         private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)

@@ -79,7 +79,6 @@ namespace Challenger_Series
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += OnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
-            //OnLoadingFinished();
         }
 
         #endregion
@@ -313,7 +312,7 @@ namespace Challenger_Series
                             DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
                             return;
                         }
-                        E.Cast(possible2WTarget);
+                        E.CastOnUnit(possible2WTarget);
                     }
                 }
                 if (orbwalkingActionArgs.Target is Obj_AI_Hero && UseQBool)
@@ -344,7 +343,7 @@ namespace Challenger_Series
                     var tg = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     if (E.IsReady())
                     {
-                        if (IsMinionCondemnable(tg) && tg.IsValidTarget() && UseEJungleFarm)
+                        if (IsMinionCondemnable(tg) && GameObjects.Jungle.Any(m => m.NetworkId == tg.NetworkId) && tg.IsValidTarget() && UseEJungleFarm)
                         {
                             if (EDelaySlider.Value > 0)
                             {

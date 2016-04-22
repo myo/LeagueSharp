@@ -34,7 +34,6 @@ namespace Challenger_Series.Plugins
             Orbwalker.OnAction += OnOrbwalkerAction;
             Obj_AI_Base.OnProcessSpellCast += UltLogic_OnSpellcast;
             Game.OnUpdate += UltLogic_OnUpdate;
-            //OnLoadingFinished();
         }
 
         private void OnOrbwalkerAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
