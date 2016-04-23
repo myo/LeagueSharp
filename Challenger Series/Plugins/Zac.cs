@@ -58,13 +58,6 @@ namespace Challenger_Series.Plugins
                     this.DelayOnUpdate = Variables.TickCount;
                 }
             }
-            else
-            {
-                if (sender.Name.Contains("Zac"))
-                {
-                    Game.PrintChat(sender.Name);
-                }
-            }
         }
 
         private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
@@ -96,7 +89,6 @@ namespace Challenger_Series.Plugins
             }
             if (Variables.TickCount - this.DelayOnUpdate < 250)
             {
-                Game.PrintChat("Delayed");
                 return;
             }
             if (this.Blobs.Any())
