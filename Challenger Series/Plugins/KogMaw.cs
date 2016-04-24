@@ -302,6 +302,16 @@ namespace Challenger_Series.Plugins
 
         private void RLogic()
         {
+            if (ObjectManager.Player.ManaPercent > 98)
+            {
+                foreach(var enemy in ValidTargets.Where(e => e.IsVisible && e.Distance(ObjectManager.Player) < 1200))
+                {
+                    var ePred = E.GetPrediction(enemy);
+                    var rPred = R.GetPrediction(enemy);
+                    E.Cast(ePred.UnitPosition);
+                    R.Cast(rPred.UnitPosition);
+                }
+            }
             if (!UseRBool || !R.IsReady() || ObjectManager.Player.IsRecalling() || Orbwalker.ActiveMode == OrbwalkingMode.None) return;
             if (AlwaysSaveManaForWBool && ObjectManager.Player.Mana < GetRMana() + GetWMana()) return;
             var myPos = ObjectManager.Player.ServerPosition;
