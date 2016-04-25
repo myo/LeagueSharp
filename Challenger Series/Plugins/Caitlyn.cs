@@ -218,11 +218,11 @@ namespace Challenger_Series.Plugins
         {
             if (orbwalkingActionArgs.Type == OrbwalkingType.BeforeAttack)
             {
-                if (orbwalkingActionArgs.Target is Obj_AI_Minion && HasPassive && FocusOnHeadShotting &&
-                    Orbwalker.ActiveMode != OrbwalkingMode.LaneClear)
+                /*if (orbwalkingActionArgs.Target is Obj_AI_Minion && HasPassive && FocusOnHeadShotting &&
+                    Orbwalker.ActiveMode == OrbwalkingMode.LaneClear)
                 {
                     var target = orbwalkingActionArgs.Target as Obj_AI_Minion;
-                    if (!target.CharData.BaseSkinName.Contains("MinionSiege") && target.Health > 60)
+                    if (target != null && !target.CharData.BaseSkinName.Contains("MinionSiege") && target.Health > 60)
                     {
                         var tg = (Obj_AI_Hero)TargetSelector.GetTarget(715, DamageType.Physical);
                         if (tg != null && tg.IsHPBarRendered)
@@ -231,7 +231,7 @@ namespace Challenger_Series.Plugins
                             orbwalkingActionArgs.Process = false;
                         }
                     }
-                }
+                }*/
                 if (E.IsReady() && this.UseECombo)
                 {
 
