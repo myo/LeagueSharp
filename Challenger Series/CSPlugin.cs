@@ -27,9 +27,6 @@ using Menu = LeagueSharp.SDK.UI.Menu;
 
 namespace Challenger_Series
 {
-
-    using Challenger_Series.Properties;
-
     public abstract class CSPlugin
     {
         public Menu CrossAssemblySettings;
