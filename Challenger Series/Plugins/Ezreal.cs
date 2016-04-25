@@ -42,20 +42,9 @@ namespace Challenger_Series.Plugins
 
         private Obj_AI_Minion _lastTurretTarget;
 
-        public override void OnUpdate(EventArgs args)
+        void QLogic()
         {
-            base.OnUpdate(args);
-                        if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseSheenCombo && HasSheenBuff && ObjectManager.Player.CountEnemyHeroesInRange(550) > 0)
-            {
-                return;
-            }
-            if (_lastTurretTarget == null || !_lastTurretTarget.IsHPBarRendered)
-            {
-                _lastTurretTarget = null;
-            }
-            if (Q.IsReady())
-            {
-                var targets = ValidTargets.Where(x => x.IsHPBarRendered && x.Health < Q.GetDamage(x) && x.IsValidTarget(Q.Range) && !x.IsZombie);
+            var targets = ValidTargets.Where(x => x.IsHPBarRendered && x.Health < Q.GetDamage(x) && x.IsValidTarget(Q.Range) && !x.IsZombie);
                 if (targets != null && targets.Any())
                 {
                     foreach (var target in targets)
@@ -72,7 +61,6 @@ namespace Challenger_Series.Plugins
                         }
                     }
                 }
-            }
             if (Orbwalker.ActiveMode != OrbwalkingMode.None)
             {
                 if (Q.IsReady())
@@ -88,96 +76,95 @@ namespace Challenger_Series.Plugins
                         }
                     }
                 }
-                if (W.IsReady())
-                {
-                    var wMode = UseWMode.SelectedValue;
-                    if (wMode == "ALWAYS" || (wMode == "COMBO" && Orbwalker.ActiveMode == OrbwalkingMode.Combo))
-                    {
-                        var wtarget = TargetSelector.GetTarget(W);
-                        if (wMode == "COMBO" && wtarget.Distance(ObjectManager.Player) < 500)
-                        {
-                            if (wtarget.IsHPBarRendered)
-                            {
-                                var pred = W.GetPrediction(wtarget);
-                                if (pred.Hitchance >= HitChance.High)
-                                {
-                                    W.Cast(pred.UnitPosition);
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (wtarget.IsHPBarRendered)
-                            {
-                                var pred = W.GetPrediction(wtarget);
-                                if (pred.Hitchance >= HitChance.High)
-                                {
-                                    W.Cast(pred.UnitPosition);
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
             }
-            if (R.IsReady())
-            {
-                var rtarget = TargetSelector.GetTarget(R);
-                if (UseRKey.Active)
-                {
-                    var pred = R.GetPrediction(rtarget);
-                    if (pred.Hitchance >= HitChance.High)
-                    {
-                        castedR = true;
-                        R.Cast(pred.UnitPosition);
-                        return;
-                    }
-                }
-                if (ObjectManager.Player.CountEnemyHeroesInRange(800) < 1)
-                {
-                    R.CastIfWillHit(rtarget, 3);
-                    return;
-                }
-            }
+            
             if (Orbwalker.CanMove() && QFarm && ObjectManager.Player.ManaPercent > QMana &&
                 (Orbwalker.ActiveMode == OrbwalkingMode.LaneClear || Orbwalker.ActiveMode == OrbwalkingMode.LastHit))
             {
-                var minions =
-                    GameObjects.EnemyMinions.Where(
+                var minion =
+                    GameObjects.EnemyMinions.FirstOrDefault(
                         m =>
-                            m.Distance(ObjectManager.Player) < 1000 && m.IsHPBarRendered && Q.GetDamage(m) > m.Health);
-                var lowhp = minions.FirstOrDefault(m => m.Health < ObjectManager.Player.GetAutoAttackDamage(m)/2 + 10);
-                if (lowhp != null)
+                        m.Position.Distance(ObjectManager.Player.Position) < 550
+                        && m.Health < ObjectManager.Player.GetAutoAttackDamage(m)
+                        && Health.GetPrediction(m, (int)((Game.Ping / 2) + ObjectManager.Player.AttackCastDelay * 1000))
+                        == 0 && Health.GetPrediction(m, (int)((Game.Ping / 2) + 250)) > 1);
+                if (minion != null)
                 {
-                    var pred = Q.GetPrediction(lowhp);
-                    if (!pred.CollisionObjects.Any())
+                    var pred = Q.GetPrediction(minion);
+                    if (!pred.CollisionObjects.Any(o => o is Obj_AI_Minion))
                     {
                         Q.Cast(pred.UnitPosition);
-                        return;
-                    }
-                }
-                    var cannon = minions.FirstOrDefault(m => m.CharData.BaseSkinName.Contains("Siege"));
-                if (cannon != null)
-                {
-                    var pred = Q.GetPrediction(cannon);
-                    if (!pred.CollisionObjects.Any())
-                    {
-                        Q.Cast(pred.UnitPosition);
-                        return;
-                    }
-                }
-                if (minions.Count() > 1)
-                {
-                    var lowesthp = minions.OrderBy(m => m.Health).FirstOrDefault();
-                    var pred = Q.GetPrediction(lowesthp);
-                    if (!pred.CollisionObjects.Any())
-                    {
-                        Q.Cast(pred.UnitPosition);
-                        return;
                     }
                 }
             }
+        }
+
+        void WLogic()
+        {
+            var wMode = UseWMode.SelectedValue;
+            if (wMode == "ALWAYS" || (wMode == "COMBO" && Orbwalker.ActiveMode == OrbwalkingMode.Combo))
+            {
+                var wtarget = TargetSelector.GetTarget(W);
+                if (wMode == "COMBO" && wtarget.Distance(ObjectManager.Player) < 500)
+                {
+                    if (wtarget.IsHPBarRendered)
+                    {
+                        var pred = W.GetPrediction(wtarget);
+                        if (pred.Hitchance >= HitChance.High)
+                        {
+                            W.Cast(pred.UnitPosition);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    if (wtarget.IsHPBarRendered)
+                    {
+                        var pred = W.GetPrediction(wtarget);
+                        if (pred.Hitchance >= HitChance.High)
+                        {
+                            W.Cast(pred.UnitPosition);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        void RLogic()
+        {
+            var rtarget = TargetSelector.GetTarget(R);
+            if (UseRKey.Active)
+            {
+                var pred = R.GetPrediction(rtarget);
+                if (pred.Hitchance >= HitChance.High)
+                {
+                    castedR = true;
+                    R.Cast(pred.UnitPosition);
+                    return;
+                }
+            }
+            if (ObjectManager.Player.CountEnemyHeroesInRange(800) < 1)
+            {
+                R.CastIfWillHit(rtarget, 3);
+            }
+        }
+
+        public override void OnUpdate(EventArgs args)
+        {
+            base.OnUpdate(args);
+                        if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseSheenCombo && HasSheenBuff && ObjectManager.Player.CountEnemyHeroesInRange(550) > 0)
+            {
+                return;
+            }
+            if (_lastTurretTarget == null || !_lastTurretTarget.IsHPBarRendered)
+            {
+                _lastTurretTarget = null;
+            }
+            if (Q.IsReady()) this.QLogic();
+            if (W.IsReady()) this.WLogic();
+            if (R.IsReady()) this.RLogic();
         }
 
         private void ObjAiBaseOnOnTarget(Obj_AI_Base sender, Obj_AI_BaseTargetEventArgs args)
