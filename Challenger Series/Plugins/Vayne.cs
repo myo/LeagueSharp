@@ -343,9 +343,9 @@ namespace Challenger_Series
                     var tg = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     if (E.IsReady())
                     {
-                        if (IsMinionCondemnable(tg) && GameObjects.Jungle.Any(m => m.NetworkId == tg.NetworkId) && tg.IsValidTarget() && UseEJungleFarm)
+                        if (this.IsMinionCondemnable(tg) && GameObjects.Jungle.Any(m => m.NetworkId == tg.NetworkId) && tg.IsValidTarget() && this.UseEJungleFarm)
                         {
-                            if (EDelaySlider.Value > 0)
+                            if (this.EDelaySlider.Value > 0)
                             {
                                 var thisEnemy = tg;
                                 DelayAction.Add(EDelaySlider.Value, () => E.CastOnUnit(thisEnemy));
@@ -354,17 +354,16 @@ namespace Challenger_Series
                             E.CastOnUnit(tg);
                         }
                     }
-                    if (UseQFarm && Q.IsReady())
+                    if (this.UseQFarm && this.Q.IsReady())
                     {
-                        if (tg.CharData.BaseSkinName.Contains("SRU_") && !tg.CharData.BaseSkinName.Contains("Mini") && tg.IsValidTarget() && !IsDangerousPosition(Game.CursorPos))
+                        if (tg.CharData.BaseSkinName.Contains("SRU_") && !tg.CharData.BaseSkinName.Contains("Mini") && tg.IsValidTarget() && !this.IsDangerousPosition(Game.CursorPos))
                         {
                             Q.Cast(Game.CursorPos);
                         }
-                        if (GameObjects.EnemyMinions.Count(
+                        if (ObjectManager.Player.UnderAllyTurret() && GameObjects.EnemyMinions.Count(
                                 m =>
-                                    m.Position.Distance(ObjectManager.Player.Position) < 550 &&
-                                    m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + Q.GetDamage(m)) > 1 &&
-                            !IsDangerousPosition(Game.CursorPos))
+                                    m.Position.Distance(ObjectManager.Player.Position) < 550 && m.Health < ObjectManager.Player.GetAutoAttackDamage(m) && Health.GetPrediction(m, (int)(100+(Game.Ping/2)+ObjectManager.Player.AttackCastDelay*1000)) > 3) > 1 &&
+                            !this.IsDangerousPosition(Game.CursorPos))
                         {
                             Q.Cast(Game.CursorPos);
                         }
@@ -373,7 +372,7 @@ namespace Challenger_Series
                             if (GameObjects.EnemyMinions.Count(
                                 m =>
                                     m.Position.Distance(ObjectManager.Player.Position) < 550 &&
-                                    m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + Q.GetDamage(m)) > 0 && !IsDangerousPosition(Game.CursorPos))
+                                    m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + Q.GetDamage(m)) > 0 && !this.IsDangerousPosition(Game.CursorPos))
                             {
                                 Q.Cast(Game.CursorPos);
                             }
