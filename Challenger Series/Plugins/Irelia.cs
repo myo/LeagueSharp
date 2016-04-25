@@ -29,7 +29,7 @@ namespace Challenger_Series
             base.R.SetSkillshot(100, 50, 1600, false, SkillshotType.SkillshotLine);
 
             InitMenu();
-            Game.OnUpdate += OnUpdate;
+            DelayedOnUpdate += OnUpdate;
             Orbwalker.OnAction += OnOrbwalkerAction;
             Spellbook.OnCastSpell += OnCastSpell;
         }

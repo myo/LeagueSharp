@@ -56,7 +56,7 @@ namespace Challenger_Series.Plugins
             base.R = new Spell(SpellSlot.R, 1200);
             base.R.SetSkillshot(1.2f, 75f, 12000f, false, SkillshotType.SkillshotCircle);
             InitializeMenu();
-            Game.OnUpdate += OnUpdate;
+            DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Orbwalker.OnAction += OnAction;
             Obj_AI_Hero.OnDoCast += OnDoCast;
@@ -121,21 +121,6 @@ namespace Challenger_Series.Plugins
             {
                 RLogic();
             }
-        }
-
-        public override void OnDraw(EventArgs args)
-        {
-            base.OnDraw(args);
-            base.W.Range = GetAttackRangeAfterWIsApplied();
-            base.R.Range = GetRRange();
-            if (DrawWRangeBool)
-            {
-                Render.Circle.DrawCircle(ObjectManager.Player.Position, GetAttackRangeAfterWIsApplied(), W.IsReady() || IsWActive() ? Color.LimeGreen : Color.Red);
-            }
-            if (DrawRRangeBool)
-            {
-                Render.Circle.DrawCircle(ObjectManager.Player.Position, GetRRange() + 25, R.IsReady() ? Color.LimeGreen : Color.Red);
-            }
             if (Q.IsReady() && UseQBool && Orbwalker.ActiveMode == OrbwalkingMode.Combo && ObjectManager.Player.Mana > GetQMana() + GetWMana())
             {
                 foreach (
@@ -178,6 +163,21 @@ namespace Challenger_Series.Plugins
             Orbwalker.SetMovementState(CanMove());
             Orbwalker.SetAttackState(CanAttack());
             #endregion Humanizer
+        }
+
+        public override void OnDraw(EventArgs args)
+        {
+            base.OnDraw(args);
+            base.W.Range = GetAttackRangeAfterWIsApplied();
+            base.R.Range = GetRRange();
+            if (DrawWRangeBool)
+            {
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, GetAttackRangeAfterWIsApplied(), W.IsReady() || IsWActive() ? Color.LimeGreen : Color.Red);
+            }
+            if (DrawRRangeBool)
+            {
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, GetRRange() + 25, R.IsReady() ? Color.LimeGreen : Color.Red);
+            }
         }
 
         private bool CanAttack()

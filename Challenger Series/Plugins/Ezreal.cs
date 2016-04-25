@@ -31,7 +31,7 @@ namespace Challenger_Series.Plugins
             R = new Spell(SpellSlot.R, 2500);
             R.SetSkillshot(1f, 160f, 2000f, false, SkillshotType.SkillshotLine);
             InitMenu();
-            Game.OnUpdate += OnUpdate;
+            DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += EventsOnOnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
@@ -42,71 +42,10 @@ namespace Challenger_Series.Plugins
 
         private Obj_AI_Minion _lastTurretTarget;
 
-        private void ObjAiBaseOnOnTarget(Obj_AI_Base sender, Obj_AI_BaseTargetEventArgs args)
+        public override void OnUpdate(EventArgs args)
         {
-            if (sender is Obj_AI_Turret && sender.Distance(ObjectManager.Player) < 850 && args.Target is Obj_AI_Minion && args.Target.IsEnemy)
-            {
-                _lastTurretTarget = args.Target as Obj_AI_Minion;
-            }
-        }
-
-        private void OnAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
-        {
-            if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
-            {
-                if (QFarm && Orbwalker.ActiveMode != OrbwalkingMode.Combo && Orbwalker.ActiveMode != OrbwalkingMode.None)
-                {
-                    if (_lastTurretTarget != null && _lastTurretTarget.IsHPBarRendered &&
-                        Q.GetDamage(_lastTurretTarget) > _lastTurretTarget.Health &&
-                        _lastTurretTarget.Health > ObjectManager.Player.GetAutoAttackDamage(_lastTurretTarget))
-                    {
-                        var pred = Q.GetPrediction(_lastTurretTarget);
-                        if (!pred.CollisionObjects.Any())
-                        {
-                            Q.Cast(pred.UnitPosition);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
-        {
-            if (sender.Owner.IsMe && args.Slot == SpellSlot.R)
-            {
-                if (!castedR && ObjectManager.Player.CountEnemyHeroesInRange(2500) > 0)
-                {
-                    args.Process = false;
-                }
-                else
-                {
-                    args.Process = true;
-                    castedR = false;
-                }
-            }
-        }
-
-        private bool castedR = false;
-
-        private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
-        {
-            if (E.IsReady() && args.DangerLevel == DangerLevel.High && args.Sender.Distance(ObjectManager.Player) < 400)
-            {
-                E.Cast(ObjectManager.Player.Position.Extend(args.Sender.Position, -Misc.GiveRandomInt(300, 600)));
-            }
-        }
-
-        private void EventsOnOnGapCloser(object sender, Events.GapCloserEventArgs args)
-        {
-            if (E.IsReady() && args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
-            {
-                E.Cast(ObjectManager.Player.Position.Extend(args.Sender.Position, -Misc.GiveRandomInt(300, 600)));
-            }
-        }
-
-        public override void OnDraw(EventArgs args)
-        {
-            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseSheenCombo && HasSheenBuff && ObjectManager.Player.CountEnemyHeroesInRange(550) > 0)
+            base.OnUpdate(args);
+                        if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseSheenCombo && HasSheenBuff && ObjectManager.Player.CountEnemyHeroesInRange(550) > 0)
             {
                 return;
             }
@@ -239,6 +178,73 @@ namespace Challenger_Series.Plugins
                     }
                 }
             }
+        }
+
+        private void ObjAiBaseOnOnTarget(Obj_AI_Base sender, Obj_AI_BaseTargetEventArgs args)
+        {
+            if (sender is Obj_AI_Turret && sender.Distance(ObjectManager.Player) < 850 && args.Target is Obj_AI_Minion && args.Target.IsEnemy)
+            {
+                _lastTurretTarget = args.Target as Obj_AI_Minion;
+            }
+        }
+
+        private void OnAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
+        {
+            if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
+            {
+                if (QFarm && Orbwalker.ActiveMode != OrbwalkingMode.Combo && Orbwalker.ActiveMode != OrbwalkingMode.None)
+                {
+                    if (_lastTurretTarget != null && _lastTurretTarget.IsHPBarRendered &&
+                        Q.GetDamage(_lastTurretTarget) > _lastTurretTarget.Health &&
+                        _lastTurretTarget.Health > ObjectManager.Player.GetAutoAttackDamage(_lastTurretTarget))
+                    {
+                        var pred = Q.GetPrediction(_lastTurretTarget);
+                        if (!pred.CollisionObjects.Any())
+                        {
+                            Q.Cast(pred.UnitPosition);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
+        {
+            if (sender.Owner.IsMe && args.Slot == SpellSlot.R)
+            {
+                if (!castedR && ObjectManager.Player.CountEnemyHeroesInRange(2500) > 0)
+                {
+                    args.Process = false;
+                }
+                else
+                {
+                    args.Process = true;
+                    castedR = false;
+                }
+            }
+        }
+
+        private bool castedR = false;
+
+        private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
+        {
+            if (E.IsReady() && args.DangerLevel == DangerLevel.High && args.Sender.Distance(ObjectManager.Player) < 400)
+            {
+                E.Cast(ObjectManager.Player.Position.Extend(args.Sender.Position, -Misc.GiveRandomInt(300, 600)));
+            }
+        }
+
+        private void EventsOnOnGapCloser(object sender, Events.GapCloserEventArgs args)
+        {
+            if (E.IsReady() && args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
+            {
+                E.Cast(ObjectManager.Player.Position.Extend(args.Sender.Position, -Misc.GiveRandomInt(300, 600)));
+            }
+        }
+
+        public override void OnDraw(EventArgs args)
+        {
+
         }
 
         private MenuBool UseQ;

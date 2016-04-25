@@ -30,6 +30,7 @@ namespace Challenger_Series.Plugins
             R.SetSkillshot(3000f, 50f, 1000f, false, SkillshotType.SkillshotLine);
             InitMenu();
             Orbwalker.OnAction += OnAction;
+            DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Obj_AI_Base.OnPlayAnimation += OnPlayAnimation;
@@ -37,70 +38,9 @@ namespace Challenger_Series.Plugins
             Events.OnInterruptableTarget += OnInterruptableTarget;
         }
 
-        private void OnPlayAnimation(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
+        public override void OnUpdate(EventArgs args)
         {
-            if (sender.IsMe && args.Animation == "Spell3")
-            {
-                var target = TargetSelector.GetTarget(1000, DamageType.Physical);
-                var pred = Q.GetPrediction(target);
-                if (AlwaysQAfterE)
-                {
-                    if ((int) pred.Hitchance >= (int) HitChance.Medium &&
-                        pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < 1100)
-                        Q.Cast(pred.UnitPosition);
-                }
-                else
-                {
-                    if ((int) pred.Hitchance > (int) HitChance.Medium &&
-                        pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < 1100)
-                        Q.Cast(pred.UnitPosition);
-                }
-            }
-        }
-
-        private void OnGapCloser(object oSender, Events.GapCloserEventArgs args)
-        {
-            var sender = args.Sender;
-            if (UseEAntiGapclose)
-            {
-                if (args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
-                {
-                    if (E.IsReady())
-                    {
-                        E.Cast(sender.ServerPosition);
-                    }
-                }
-            }
-        }
-
-        private void OnInterruptableTarget(object oSender, Events.InterruptableTargetEventArgs args)
-        {
-            var sender = args.Sender;
-            if (!GameObjects.AllyMinions.Any(m => m.Position.Distance(sender.ServerPosition) < 100) && args.DangerLevel >= DangerLevel.Medium && ObjectManager.Player.Distance(sender) < 550)
-            {
-                W.Cast(sender.ServerPosition);
-            }
-        }
-
-        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            base.OnProcessSpellCast(sender, args);
-            if (sender is Obj_AI_Hero && sender.IsEnemy)
-            {
-                if (args.SData.Name == "summonerflash" && args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
-                {
-                    E.Cast(args.End);
-                }
-            }
-        }
-
-        public override void OnDraw(EventArgs args)
-        {
-            var drawRange = DrawRange.Value;
-            if (drawRange > 0)
-            {
-                Render.Circle.DrawCircle(ObjectManager.Player.Position, drawRange, Color.Gold);
-            }
+            base.OnUpdate(args);
             if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
             {
                 if (UseQCombo && Q.IsReady() && ObjectManager.Player.CountEnemyHeroesInRange(800) == 0 &&
@@ -205,6 +145,73 @@ namespace Challenger_Series.Plugins
             }
 
             #endregion RLogic
+
+        }
+
+        private void OnPlayAnimation(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
+        {
+            if (sender.IsMe && args.Animation == "Spell3")
+            {
+                var target = TargetSelector.GetTarget(1000, DamageType.Physical);
+                var pred = Q.GetPrediction(target);
+                if (AlwaysQAfterE)
+                {
+                    if ((int) pred.Hitchance >= (int) HitChance.Medium &&
+                        pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < 1100)
+                        Q.Cast(pred.UnitPosition);
+                }
+                else
+                {
+                    if ((int) pred.Hitchance > (int) HitChance.Medium &&
+                        pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < 1100)
+                        Q.Cast(pred.UnitPosition);
+                }
+            }
+        }
+
+        private void OnGapCloser(object oSender, Events.GapCloserEventArgs args)
+        {
+            var sender = args.Sender;
+            if (UseEAntiGapclose)
+            {
+                if (args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
+                {
+                    if (E.IsReady())
+                    {
+                        E.Cast(sender.ServerPosition);
+                    }
+                }
+            }
+        }
+
+        private void OnInterruptableTarget(object oSender, Events.InterruptableTargetEventArgs args)
+        {
+            var sender = args.Sender;
+            if (!GameObjects.AllyMinions.Any(m => m.Position.Distance(sender.ServerPosition) < 100) && args.DangerLevel >= DangerLevel.Medium && ObjectManager.Player.Distance(sender) < 550)
+            {
+                W.Cast(sender.ServerPosition);
+            }
+        }
+
+        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            base.OnProcessSpellCast(sender, args);
+            if (sender is Obj_AI_Hero && sender.IsEnemy)
+            {
+                if (args.SData.Name == "summonerflash" && args.End.Distance(ObjectManager.Player.ServerPosition) < 350)
+                {
+                    E.Cast(args.End);
+                }
+            }
+        }
+
+        public override void OnDraw(EventArgs args)
+        {
+            var drawRange = DrawRange.Value;
+            if (drawRange > 0)
+            {
+                Render.Circle.DrawCircle(ObjectManager.Player.Position, drawRange, Color.Gold);
+            }
         }
 
         private void OnAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)

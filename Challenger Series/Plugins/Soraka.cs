@@ -27,6 +27,8 @@ using Menu = LeagueSharp.SDK.UI.Menu;
 
 namespace Challenger_Series
 {
+    using System.Security.Cryptography.X509Certificates;
+
     public class Soraka : CSPlugin
     {
 
@@ -43,14 +45,32 @@ namespace Challenger_Series
             InitializeMenu();
 
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
-            Game.OnUpdate += OnUpdate;
+            DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             GameObject.OnCreate += OnCreateObj;
-            Events.OnGapCloser += OnGapCloser;
-            Events.OnInterruptableTarget += EventsOnOnInterruptableTarget;
+            //Events.OnGapCloser += OnGapCloser;
+            Events.OnInterruptableTarget += this.OnInterruptableTarget;
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+            this._rand = new Random();
         }
 
-        private void EventsOnOnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
+        private Random _rand;
+
+        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (sender is Obj_AI_Hero && sender.IsEnemy)
+            {
+                var sdata = SpellDatabase.GetByName(args.SData.Name);
+                if (sdata != null && args.End.Distance(ObjectManager.Player.ServerPosition) < 900 &&
+                    sdata.SpellTags != null &&
+                    sdata.SpellTags.Any(st => st == SpellTags.Dash || st == SpellTags.Blink || st == SpellTags.Interruptable))
+                {
+                    E.Cast(args.Start.Extend(args.End, sdata.Range - this._rand.Next(5, 50)));
+                }
+            }
+        }
+
+        private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
         {
             if (args.Sender.Distance(ObjectManager.Player) < 800)
             {
@@ -58,40 +78,44 @@ namespace Challenger_Series
             }
         }
 
-        private void OnGapCloser(object sender, Events.GapCloserEventArgs args)
+        /*private void OnGapCloser(object sender, Events.GapCloserEventArgs args)
         {
             var ally = GameObjects.AllyHeroes.FirstOrDefault(a => a.Distance(args.End) < 300 || args.Sender.Distance(a) < 300);
             if (ally.IsHPBarRendered && ally.Distance(ObjectManager.Player) < 800)
             {
                 E.Cast(ally.ServerPosition.Randomize(-25, 25));
             }
-        }
+        }*/
 
         private void OnCreateObj(GameObject obj, EventArgs args)
         {
             if (obj.Name != "missile" && obj.IsEnemy && obj.Distance(ObjectManager.Player.ServerPosition) < 900)
             {
                 //J4 wall E
-                if (obj != null && obj.Name.ToLower() == "jarvanivwall")
+                if (obj.Name.ToLower() == "jarvanivwall")
                 {
                     var enemyJ4 = ValidTargets.First(h => h.CharData.BaseSkinName.Contains("Jarvan"));
                     if (enemyJ4 != null && enemyJ4.IsValidTarget())
-                    E.Cast(enemyJ4.ServerPosition);
+                    this.E.Cast(enemyJ4.ServerPosition);
                 }
                 if (obj.Name.ToLower().Contains("soraka_base_e_rune.troy") &&
                     GameObjects.EnemyHeroes.Count(e => e.IsHPBarRendered && e.Distance(obj.Position) < 300) > 0)
                 {
-                    Q.Cast(obj.Position);
+                    this.Q.Cast(obj.Position);
                 }
-                if (GameObjects.AllyHeroes.All(h => h.CharData.BaseSkinName != "Rengar"))
+                var rengo = GameObjects.EnemyHeroes.FirstOrDefault(e => e.CharData.BaseSkinName == "Rengar");
+                if (rengo != null)
                 {
+                    //rengar ult
                     if (obj.Name == "Rengar_LeapSound.troy")
                     {
-                        E.Cast(obj.Position);
+                        this.E.Cast(obj.Position);
                     }
-                    if (obj.Name == "Rengar_Base_P_Buf_Max.troy" || obj.Name == "Rengar_Base_P_Leap_Grass.troy")
+                    //rengar passive brush jump (atm the object pos is the brush where it came from so
+                    //                                  we're just gonna assume he's gonna jump on us)
+                    if (obj.Position.Distance(ObjectManager.Player.Position) < 725 && (obj.Name == "Rengar_Base_P_Buf_Max.troy" || obj.Name == "Rengar_Base_P_Leap_Grass.troy"))
                     {
-                        E.Cast(ObjectManager.Player.ServerPosition);
+                        this.E.Cast(ObjectManager.Player.ServerPosition);
                     }
                 }
             }
@@ -109,12 +133,8 @@ namespace Challenger_Series
                 Orbwalker.ActiveMode != OrbwalkingMode.Hybrid) return;
             QLogic();
             ELogic();
+            EAntiMelee();
             Orbwalker.SetAttackState(!BlockAutoAttacksBool);
-        }
-
-        public override void OnProcessSpellCast(GameObject sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            base.OnProcessSpellCast(sender, args);
         }
 
         public override void OnDraw(EventArgs args)
@@ -138,13 +158,6 @@ namespace Challenger_Series
                             "1W Heals " + Math.Round(GetWHealingAmount()) + "HP");
                     }
                 }
-            }
-            var victim =
-                GameObjects.AllyHeroes.FirstOrDefault(
-                    a => GameObjects.EnemyHeroes.Any(e => e.IsMelee && e.IsHPBarRendered && e.Distance(a) < 200));
-            if (victim.Distance(ObjectManager.Player) < 800)
-            {
-                E.Cast(victim.ServerPosition);
             }
         }
 
@@ -334,12 +347,13 @@ namespace Challenger_Series
         public void ELogic()
         {
             if (!E.IsReady()) return;
+            //TODO: check all enemies, include zhonya, zilean buff, check buff time;
             var goodTarget =
                 ValidTargets.OrderByDescending(GetPriority).FirstOrDefault(
                     e =>
-                        e.IsValidTarget(900) && e.HasBuffOfType(BuffType.Knockup) || e.HasBuffOfType(BuffType.Snare) ||
+                        e.IsValidTarget(900) && (e.HasBuffOfType(BuffType.Knockup) || e.HasBuffOfType(BuffType.Snare) ||
                         e.HasBuffOfType(BuffType.Stun) || e.HasBuffOfType(BuffType.Suppression) || e.IsCharmed ||
-                        e.IsCastingInterruptableSpell() || e.HasBuff("ChronoRevive") || e.HasBuff("ChronoShift"));
+                        e.IsCastingInterruptableSpell()));// || e.HasBuff("ChronoRevive") || e.HasBuff("ChronoShift")));
             if (goodTarget != null)
             {
                 var pos = goodTarget.ServerPosition;
@@ -366,6 +380,17 @@ namespace Challenger_Series
             }
         }
 
+        public void EAntiMelee()
+        {
+            var victim =
+                GameObjects.AllyHeroes.Where(a => a.Distance(ObjectManager.Player) < 900).FirstOrDefault(
+                    a => GameObjects.EnemyHeroes.Any(e => e.IsMelee && e.IsHPBarRendered && e.Distance(a) < 200));
+            if (victim != null)
+            {
+                this.E.Cast(victim.ServerPosition);
+            }
+        }
+
         public void RLogic()
         {
             if (!R.IsReady()) return;
@@ -374,18 +399,17 @@ namespace Challenger_Series
             {
                 R.Cast();
             }
-            var minAllyHealth = UltIfAnAllyHpIsLessThanSlider.Value;
+            var minAllyHealth = this.UltIfAnAllyHpIsLessThanSlider.Value;
             if (minAllyHealth <= 1) return;
             foreach (var ally in GameObjects.AllyHeroes.Where(h => !h.IsMe && h.Health > 50))
             {
-                if (HealBlacklistMenu["dontheal" + ally.CharData.BaseSkinName].GetValue<MenuBool>()) break;
-                if (TryToUltAfterIgniteBool && ally.HasBuff("summonerdot") && ally.Health > 400) break;
-                if (CheckIfAllyCanSurviveBool && ally.CountAllyHeroesInRange(800) == 0 &&
-                    ally.CountEnemyHeroesInRange(800) > 2) break;
+                var shouldntHealAlly = this.HealBlacklistMenu["dontheal" + ally.CharData.BaseSkinName].GetValue<MenuBool>();
+                if (shouldntHealAlly == null || shouldntHealAlly) break;
+                if (this.TryToUltAfterIgniteBool && ally.HasBuff("summonerdot") && ally.Health > 400) break;
                 if (ally.CountEnemyHeroesInRange(800) >= 1 && ally.HealthPercent > 2 &&
                     ally.HealthPercent <= minAllyHealth && !ally.IsZombie && !ally.IsDead)
                 {
-                    R.Cast();
+                    this.R.Cast();
                 }
             }
         }

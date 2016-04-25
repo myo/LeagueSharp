@@ -35,7 +35,7 @@ namespace Challenger_Series.Plugins
             R.SetSkillshot(0.2f, 110f, 2500, true, SkillshotType.SkillshotLine);
             InitMenu();
             Obj_AI_Hero.OnDoCast += OnDoCast;
-            Game.OnUpdate += OnUpdate;
+            DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += EventsOnOnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;

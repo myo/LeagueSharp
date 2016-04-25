@@ -73,7 +73,7 @@ namespace Challenger_Series
                 }
             }
             InitMenu();
-            Game.OnUpdate += OnUpdate;
+            DelayedOnUpdate += OnUpdate;
             Orbwalker.OnAction += OnOrbwalkingAction;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Drawing.OnDraw += OnDraw;

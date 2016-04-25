@@ -29,7 +29,7 @@ namespace Challenger_Series.Plugins
             InitMenu();
             Obj_AI_Hero.OnDoCast += OnDoCast;
             Orbwalker.OnAction += OnAction;
-            Game.OnUpdate += OnUpdate;
+            DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += EventsOnOnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;

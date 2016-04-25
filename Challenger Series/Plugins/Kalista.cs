@@ -28,7 +28,7 @@ namespace Challenger_Series.Plugins
             base.R = new Spell(SpellSlot.R, 1400f);
             base.Q.SetSkillshot(0.25f, 40f, 1200f, true, SkillshotType.SkillshotLine);
             InitMenu();
-            Game.OnUpdate += OnUpdate;
+            DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += HpBarDamageIndicator.Drawing_OnDraw;
             Drawing.OnDraw += OnDraw;
             Orbwalker.OnAction += OnOrbwalkerAction;
@@ -174,14 +174,9 @@ namespace Challenger_Series.Plugins
                     }
                 }
             }
-        }
-
-        public override void OnDraw(EventArgs args)
-        {
-            base.OnDraw(args);
             #region Orbwalk On Minions
 
-            if (OrbwalkOnMinions && Orbwalker.ActiveMode == OrbwalkingMode.Combo && ValidTargets.Count(e=>e.InAutoAttackRange()) == 0 && ObjectManager.Player.InventoryItems.Any(i => (int)i.IData.Id == 3085))
+            if (OrbwalkOnMinions && Orbwalker.ActiveMode == OrbwalkingMode.Combo && ValidTargets.Count(e => e.InAutoAttackRange()) == 0 && ObjectManager.Player.InventoryItems.Any(i => (int)i.IData.Id == 3085))
             {
                 var minion =
                     GameObjects.EnemyMinions.Where(m => m.InAutoAttackRange()).OrderBy(m => m.Health).FirstOrDefault();
@@ -190,7 +185,17 @@ namespace Challenger_Series.Plugins
                     ObjectManager.Player.IssueOrder(GameObjectOrder.AttackUnit, minion);
                 }
             }
-#endregion Orbwalk On Minions
+            #endregion Orbwalk On Minions
+            //this is intended.
+            if (GameObjects.EnemyMinions.Any(m => m.CharData.BaseSkinName.Contains("MinionSiege") && IsRendKillable(m)))
+            {
+                E.Cast();
+            }
+        }
+
+        public override void OnDraw(EventArgs args)
+        {
+            base.OnDraw(args);
             if (DrawERangeBool)
             {
                 Render.Circle.DrawCircle(
@@ -211,11 +216,6 @@ namespace Challenger_Series.Plugins
                 HpBarDamageIndicator.DamageToUnit = GetFloatRendDamage;
             }
             HpBarDamageIndicator.Enabled = DrawEDamage;
-            //this is intended.
-            if (GameObjects.EnemyMinions.Any(m => m.CharData.BaseSkinName.Contains("MinionSiege") && IsRendKillable(m)))
-            {
-                E.Cast();
-            }
         }
 
         private Menu ComboMenu;

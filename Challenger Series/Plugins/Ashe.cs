@@ -29,7 +29,7 @@ namespace Challenger_Series.Plugins
             InitMenu();
             Obj_AI_Hero.OnDoCast += OnDoCast;
             Orbwalker.OnAction += OnAction;
-            Game.OnUpdate += OnUpdate;
+            DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += EventsOnOnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
@@ -62,6 +62,28 @@ namespace Challenger_Series.Plugins
             if (DrawWRange)
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, 1100, Color.Turquoise);
+            }
+        }
+
+        public override void OnUpdate(EventArgs args)
+        {
+            var wTarget = TargetSelector.GetTarget(1100);
+            var rTarget = TargetSelector.GetTarget(1400, DamageType.Physical, false);
+            if (W.IsReady() && Orbwalker.ActiveMode != OrbwalkingMode.None && UseWHarass && !ValidTargets.Any(e=>e.InAutoAttackRange()))
+            {
+                var pred = W.GetPrediction(wTarget);
+                if (!pred.CollisionObjects.Any() &&
+                    pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < 1100)
+                {
+                    if (pred.UnitPosition.CountEnemyHeroesInRange(400) >= 1)
+                    W.Cast(pred.UnitPosition);
+                }
+            }
+            if (R.IsReady() && Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseRCombo)
+            {
+                var pred = R.GetPrediction(rTarget);
+                if (pred.Hitchance >= HitChance.High)
+                R.Cast(pred.UnitPosition);
             }
             if (E.IsReady() && Orbwalker.ActiveMode != OrbwalkingMode.Combo && Orbwalker.ActiveMode != OrbwalkingMode.None && ValidTargets.Count(e=>e.InAutoAttackRange()) == 0)
             {
@@ -128,28 +150,6 @@ namespace Challenger_Series.Plugins
                     default:
                         break;
                 }
-            }
-        }
-
-        public override void OnUpdate(EventArgs args)
-        {
-            var wTarget = TargetSelector.GetTarget(1100);
-            var rTarget = TargetSelector.GetTarget(1400, DamageType.Physical, false);
-            if (W.IsReady() && Orbwalker.ActiveMode != OrbwalkingMode.None && UseWHarass && !ValidTargets.Any(e=>e.InAutoAttackRange()))
-            {
-                var pred = W.GetPrediction(wTarget);
-                if (!pred.CollisionObjects.Any() &&
-                    pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < 1100)
-                {
-                    if (pred.UnitPosition.CountEnemyHeroesInRange(400) >= 1)
-                    W.Cast(pred.UnitPosition);
-                }
-            }
-            if (R.IsReady() && Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseRCombo)
-            {
-                var pred = R.GetPrediction(rTarget);
-                if (pred.Hitchance >= HitChance.High)
-                R.Cast(pred.UnitPosition);
             }
         }
 

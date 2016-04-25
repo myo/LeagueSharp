@@ -32,17 +32,31 @@ namespace Challenger_Series
 
     public abstract class CSPlugin
     {
-        public MenuBool DrawEnemyWaypoints;
         public Menu CrossAssemblySettings;
-        public MenuBool PlayUrfThemeNextGame;
+        public MenuBool DrawEnemyWaypoints;
+
+        public MenuBool IsPerformanceChallengerEnabled;
+        public MenuSlider TriggerOnUpdate;
+
+        private int _lastOnUpdateTriggerT = 0;
+
         public CSPlugin()
         {
             MainMenu = new Menu("challengerseries", ObjectManager.Player.ChampionName + " To The Challenger", true, ObjectManager.Player.ChampionName);
             CrossAssemblySettings = MainMenu.Add(new Menu("crossassemblysettings", "Challenger Utils: "));
             DrawEnemyWaypoints =
                 CrossAssemblySettings.Add(new MenuBool("drawenemywaypoints", "Draw Enemy Waypoints", true));
-            PlayUrfThemeNextGame = CrossAssemblySettings.Add(new MenuBool("playsoundatstart", "Play URF Theme Next Game", true));
+            this.IsPerformanceChallengerEnabled =
+                this.CrossAssemblySettings.Add(
+                    new MenuBool("performancechallengerx", "Use Performance Challenger", false));
+            this.TriggerOnUpdate =
+                this.CrossAssemblySettings.Add(
+                    new MenuSlider("triggeronupdate", "Trigger OnUpdate X times a second", 26, 20, 33));
+
             DelayAction.Add(15000, () => Orbwalker.Enabled = true);
+
+            Game.OnUpdate += this.DelayOnUpdate;
+
             Drawing.OnDraw += args =>
             {
                 if (DrawEnemyWaypoints)
@@ -83,6 +97,26 @@ namespace Challenger_Series
         public Orbwalker Orbwalker { get; } = Variables.Orbwalker;
         public TargetSelector TargetSelector { get; } = Variables.TargetSelector;
         public Menu MainMenu { get; set; }
+
+        public delegate void DelayedOnUpdateEH(EventArgs args);
+
+        public event DelayedOnUpdateEH DelayedOnUpdate;
+
+        public void DelayOnUpdate(EventArgs args)
+        {
+            if (this.DelayedOnUpdate != null)
+            {
+                if (this.IsPerformanceChallengerEnabled
+                    && Variables.TickCount - this._lastOnUpdateTriggerT > 1000 / this.TriggerOnUpdate.Value)
+                {
+                    this._lastOnUpdateTriggerT = Variables.TickCount;
+                    this.DelayedOnUpdate(args);
+                    return;
+                }
+                this.DelayedOnUpdate(args);
+            }
+        }
+
         public virtual void OnUpdate(EventArgs args) { }
         public virtual void OnProcessSpellCast(GameObject sender, GameObjectProcessSpellCastEventArgs args) { }
         public virtual void OnDraw(EventArgs args) { }
