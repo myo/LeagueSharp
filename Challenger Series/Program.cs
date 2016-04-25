@@ -50,9 +50,6 @@ namespace Challenger_Series
                     case "Ezreal":
                         new Ezreal();
                         break;
-                    case "Zac":
-                        new Zac();
-                        break;
                     default:
                         Variables.Orbwalker.Enabled = false;
                         break;

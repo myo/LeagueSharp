@@ -89,7 +89,6 @@
     <Compile Include="Plugins\Soraka.cs" />
     <Compile Include="Plugins\Vayne.cs" />
     <Compile Include="Plugins\Xerath.cs" />
-    <Compile Include="Plugins\Zac.cs" />
     <Compile Include="Plugins\_bone.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

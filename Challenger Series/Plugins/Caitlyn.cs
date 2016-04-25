@@ -217,9 +217,10 @@ namespace Challenger_Series.Plugins
                     var target = orbwalkingActionArgs.Target as Obj_AI_Minion;
                     if (!target.CharData.BaseSkinName.Contains("MinionSiege") && target.Health > 60)
                     {
-                        var tg = Orbwalker.ForceTarget = TargetSelector.GetTarget(715, DamageType.Physical);
-                        if (tg != null)
+                        var tg = (Obj_AI_Hero)TargetSelector.GetTarget(715, DamageType.Physical);
+                        if (tg != null && tg.IsHPBarRendered)
                         {
+                            Orbwalker.ForceTarget = tg;
                             orbwalkingActionArgs.Process = false;
                         }
                     }
