@@ -446,10 +446,7 @@ namespace Challenger_Series.Plugins
             //Dead or not a hero
             if (target == null || !target.IsHPBarRendered) return false;
             //Undying
-            if (target.Buffs.Any(b => this.UndyingBuffs.Contains(b.Name)))
-            {
-                return true;
-            }
+            if (this.UndyingBuffs.Any(buff => target.HasBuff(buff))) return true;
             //Blitzcrank
             if (target.CharData.BaseSkinName == "Blitzcrank" && !target.HasBuff("BlitzcrankManaBarrierCD")
                 && !target.HasBuff("ManaBarrier"))
