@@ -145,7 +145,7 @@ namespace Challenger_Series.Plugins
                 E.Cast();
             }
             if (GameObjects.JungleLarge.Any(IsRendKillable)
-                || GameObjects.EnemyMinions.Any(
+                || GameObjects.Jungle.Any(
                     m =>
                     m.CharData.BaseSkinName.Contains("Baron")
                     || m.CharData.BaseSkinName.Contains("Dragon") && this.IsRendKillable(m)))
