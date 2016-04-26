@@ -147,8 +147,8 @@ namespace Challenger_Series.Plugins
             if (GameObjects.JungleLarge.Any(IsRendKillable)
                 || ObjectManager.Get<Obj_AI_Minion>().Any(
                     m =>
-                    m.CharData.BaseSkinName.Contains("Baron")
-                    || m.CharData.BaseSkinName.Contains("Dragon") && this.IsRendKillable(m)))
+                    (m.CharData.BaseSkinName.Contains("Baron")
+                    || m.CharData.BaseSkinName.Contains("Dragon")) && this.IsRendKillable(m)))
             {
                 E.Cast();
             }
