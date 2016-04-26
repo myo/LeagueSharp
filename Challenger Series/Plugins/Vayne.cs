@@ -97,6 +97,10 @@ namespace Challenger_Series
             {
                 foreach (var enemy in ValidTargets.Where(e => e.IsValidTarget(550)))
                 {
+                    if (enemy.IsCastingInterruptableSpell())
+                    {
+                        E.CastOnUnit(enemy);
+                    }
                     if (IsCondemnable(enemy))
                     {
                         if (EDelaySlider.Value > 0)
