@@ -128,16 +128,19 @@ namespace Challenger_Series.Plugins
                         }
                     }
                 }*/
+            }
+            if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
+            {
+                Orbwalker.ForceTarget = null;
                 if (E.IsReady() && this.UseECombo)
                 {
-
                     if (!OnlyUseEOnMelees)
                     {
                         var eTarget = TargetSelector.GetTarget(UseEOnEnemiesCloserThanSlider.Value, DamageType.Physical);
                         if (eTarget != null)
                         {
                             var pred = E.GetPrediction(eTarget);
-                            if (pred.CollisionObjects.Count == 0 && (int)pred.Hitchance >= (int)HitChance.Medium)
+                            if (pred.CollisionObjects.Count == 0 && (int)pred.Hitchance >= (int)HitChance.High)
                             {
                                 E.Cast(pred.UnitPosition);
                             }
@@ -157,10 +160,6 @@ namespace Challenger_Series.Plugins
                         }
                     }
                 }
-            }
-            if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
-            {
-                Orbwalker.ForceTarget = null;
             }
         }
 

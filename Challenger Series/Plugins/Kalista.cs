@@ -38,101 +38,27 @@ namespace Challenger_Series.Plugins
 
         private void OnOrbwalkerAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)
         {
-                if (orbwalkingActionArgs.Target == null) return;
             if (orbwalkingActionArgs.Type == OrbwalkingType.AfterAttack)
             {
                 Orbwalker.ForceTarget = null;
-                if (UseEIfResettedByAMinionBool && ObjectManager.Player.ManaPercent > EResetByAMinionMinManaSlider.Value)
+                if (Q.IsReady())
                 {
-                    if (
-                        ValidTargets.Any(e=>
-                                e.Distance(ObjectManager.Player.ServerPosition) > 615 &&
-                                GetRendBuff(e).Count >= MinEnemyStacksForEMinionResetSlider.Value) &&
-                        GameObjects.EnemyMinions.Any(m => IsRendKillable(m)))
+                    this.QLogic(orbwalkingActionArgs.Target);
+                    if (UseQStackTransferBool)
                     {
-                        E.Cast();
-                    }
-                }
-                if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && Q.IsReady())
-                {
-                    var hero = orbwalkingActionArgs.Target as Obj_AI_Hero;
-                    if (hero != null)
-                    {
-                        if (hero.IsHPBarRendered)
-                        {
-                            var pred = Q.GetPrediction(hero);
-                            if (pred.Hitchance >= HitChance.High)
-                            {
-                                Q.Cast(pred.UnitPosition);
-                                return;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        foreach (var target in ValidTargets.Where(t => t.Distance(ObjectManager.Player) < 900))
-                        {
-                            if (ObjectManager.Player.ManaPercent > UseQManaSlider.Value)
-                            {
-                                var pred = Q.GetPrediction(target);
-                                if (pred.Hitchance >= HitChance.High)
-                                {
-                                    Q.Cast(pred.UnitPosition);
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-                if (UseQStackTransferBool && orbwalkingActionArgs.Target is Obj_AI_Minion)
-                {
-                    var target = orbwalkingActionArgs.Target as Obj_AI_Minion;
-                    if (GetRendBuff(target).Count >= UseQStackTransferMinStacksSlider && target.Health < Q.GetDamage(target))
-                    {
-                        foreach (var enemy in ValidTargets.Where(en => en.Distance(ObjectManager.Player) < 900))
-                        {
-                            var pred = Q.GetPrediction(enemy, false);
-                            if (pred.CollisionObjects.All(co => co is Obj_AI_Minion && co.Health < Q.GetDamage(co)) && pred.CollisionObjects.Any(m => m.NetworkId == target.NetworkId))
-                            {
-                                Q.Cast(pred.UnitPosition);
-                            }
-                        }
+                        this.QLogic(orbwalkingActionArgs.Target);
                     }
                 }
             }
             if (orbwalkingActionArgs.Type == OrbwalkingType.BeforeAttack)
             {
-                if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && FocusWBuffedEnemyBool)
+                if (FocusWBuffedEnemyBool)
                 {
-                    var wMarkedEnemy =
+                    Orbwalker.ForceTarget =
                         ValidTargets.FirstOrDefault(
-                            h => h.Distance(ObjectManager.Player.ServerPosition) < 600 && h.HasBuff("kalistacoopstrikemarkally"));
-                    if (wMarkedEnemy != null && wMarkedEnemy.IsValidTarget())
-                    {
-                        Orbwalker.ForceTarget = wMarkedEnemy;
-                    }
-                }
-                if (Orbwalker.ActiveMode != OrbwalkingMode.Combo && FocusWBuffedEnemyInHarassBool)
-                {
-                    var wMarkedEnemy =
-                        ValidTargets.FirstOrDefault(
-                            h => h.Distance(ObjectManager.Player.ServerPosition) < 600 && h.HasBuff("kalistacoopstrikemarkally"));
-                    if (wMarkedEnemy != null && wMarkedEnemy.IsValidTarget())
-                    {
-                        Orbwalker.ForceTarget = wMarkedEnemy;
-                    }
-                }
-                if (Orbwalker.ActiveMode == OrbwalkingMode.LaneClear &&
-                    orbwalkingActionArgs.Target.Type != GameObjectType.obj_AI_Hero)
-                {
-                    if (FocusWBuffedMinions)
-                    {
-                        Orbwalker.ForceTarget =
-                            GameObjects.EnemyMinions.FirstOrDefault(
-                                m =>
-                                    m.Distance(ObjectManager.Player.ServerPosition) < 615 && m.HasBuff("kalistacoopstrikemarkally") &&
-                                    m.Health < ObjectManager.Player.GetAutoAttackDamage(m) + W.GetDamage(m));
-                    }
+                            h =>
+                            h.Distance(ObjectManager.Player.ServerPosition) < 600
+                            && h.HasBuff("kalistacoopstrikemarkally"));
                 }
             }
         }
@@ -140,42 +66,21 @@ namespace Challenger_Series.Plugins
         public override void OnUpdate(EventArgs args)
         {
             base.OnUpdate(args);
-            if (ValidTargets.Any(t=> IsRendKillable(t)))
+
+            if (E.IsReady()) this.ELogic();
+            if (Q.IsReady() && Orbwalker.CanMove())
             {
-                E.Cast();
-            }
-            if (GameObjects.JungleLarge.Any(IsRendKillable)
-                || ObjectManager.Get<Obj_AI_Minion>().Any(
-                    m =>
-                    (m.CharData.BaseSkinName.Contains("Baron")
-                    || m.CharData.BaseSkinName.Contains("Dragon")) && this.IsRendKillable(m)))
-            {
-                E.Cast();
-            }
-            if (AlwaysUseEIf2MinionsKillableBool && GameObjects.EnemyMinions.Count(IsRendKillable) >= 2)
-            {
-                E.Cast();
-            }
-            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
-            {
-                var target = TargetSelector.GetTarget(900);
-                if (target == null || !target.IsHPBarRendered) return;
-                if (ObjectManager.Player.ManaPercent > UseQManaSlider.Value)
+                foreach (var enemy in ValidTargets.Where(e => e.Distance(ObjectManager.Player) < 900))
                 {
-                    if (target.Distance(ObjectManager.Player) > 585 && target.Distance(ObjectManager.Player) < 1100
-                        && UseQCantAABool)
+                    var pred = Q.GetPrediction(enemy);
+                    if (pred.Hitchance >= HitChance.High && !pred.CollisionObjects.Any())
                     {
-                        var prediction = Q.GetPrediction(target);
-                        var predictedPos = prediction.UnitPosition;
-                        if (prediction.CollisionObjects.Count == 0 && (int)prediction.Hitchance >= (int)HitChance.High)
-                        {
-                            Q.Cast(predictedPos);
-                        }
+                        Q.Cast(pred.UnitPosition);
                     }
                 }
             }
-            #region Orbwalk On Minions
 
+            #region Orbwalk On Minions
             if (OrbwalkOnMinions && Orbwalker.ActiveMode == OrbwalkingMode.Combo && ValidTargets.Count(e => e.InAutoAttackRange()) == 0 && ObjectManager.Player.InventoryItems.Any(i => (int)i.IData.Id == 3085))
             {
                 var minion =
@@ -186,11 +91,6 @@ namespace Challenger_Series.Plugins
                 }
             }
             #endregion Orbwalk On Minions
-            //this is intended.
-            if (GameObjects.EnemyMinions.Any(m => m.CharData.BaseSkinName.Contains("MinionSiege") && IsRendKillable(m)))
-            {
-                E.Cast();
-            }
         }
 
         public override void OnDraw(EventArgs args)
@@ -224,11 +124,8 @@ namespace Challenger_Series.Plugins
         private MenuBool TalistaBool;
         private MenuBool SalistaBool;
         //private MenuKeyBind UseQWalljumpKey;
-        private MenuBool UseQCantAABool;
-        private MenuBool UseQIfECanKillBool;
         private MenuSlider UseQManaSlider;
         private MenuBool FocusWBuffedEnemyBool;
-        private MenuBool UseEBool;
         //private MenuBool UseEBeforeYouDieBool;
         private MenuBool UseRAllySaverBool;
         private MenuBool UseREngageBool;
@@ -238,17 +135,14 @@ namespace Challenger_Series.Plugins
         private Menu HarassMenu;
         private MenuBool UseQStackTransferBool;
         private MenuSlider UseQStackTransferMinStacksSlider;
-        private MenuBool FocusWBuffedEnemyInHarassBool;
         private MenuBool UseEIfResettedByAMinionBool;
         private MenuSlider EResetByAMinionMinManaSlider;
         private MenuSlider MinEnemyStacksForEMinionResetSlider;
         private Menu FarmMenu;
-        private MenuBool FocusWBuffedMinions;
         private MenuBool AlwaysUseEIf2MinionsKillableBool;
         private Menu RendSmiteMenu;
         private Menu RendDamageMenu;
         private MenuSlider ReduceRendDamageBySlider;
-        private MenuSlider IncreaseRendDamageBySlider;
         private Menu DrawMenu;
         private MenuBool DrawERangeBool;
         private MenuBool DrawRRangeBool;
@@ -263,12 +157,9 @@ namespace Challenger_Series.Plugins
             TalistaBool = WomboComboMenu.Add(new MenuBool("kalitalista", "Talista", true));
             SalistaBool = WomboComboMenu.Add(new MenuBool("kalisalista", "Salista", true));
             OrbwalkOnMinions = ComboMenu.Add(new MenuBool("kaliorbwalkonminions", "Orbwalk On Minions", false));
-            UseQCantAABool = ComboMenu.Add(new MenuBool("kaliuseqcombo", "Use Q if cant AA", false));
-            UseQIfECanKillBool = ComboMenu.Add(new MenuBool("kaliuseqecombo", "Use Q > E combo", true));
             UseQManaSlider = ComboMenu.Add(new MenuSlider("kaliuseqmanaslider", "Use Q if Mana% > ", 20));
             //UseQWalljumpKey = ComboMenu.Add(new MenuKeyBind("useqwalljump", "Q Walljump Key", Keys.N, KeyBindType.Press));
             FocusWBuffedEnemyBool = ComboMenu.Add(new MenuBool("kalifocuswbuffedenemy", "Focus Enemy with W Buff", true));
-            UseEBool = ComboMenu.Add(new MenuBool("kaliuseecombo", "Use E if can kill enemy", true));
             //UseEBeforeYouDieBool = ComboMenu.Add(new MenuBool("kaliuseebeforedeath", "Use E Before You Die", false));
             UseRAllySaverBool = ComboMenu.Add(new MenuBool("kaliusersaveally", "Use R to save Soulbound", true));
             UseREngageBool = ComboMenu.Add(new MenuBool("userengage", "Use R to engage", false));
@@ -279,23 +170,18 @@ namespace Challenger_Series.Plugins
             UseQStackTransferMinStacksSlider =
                 HarassMenu.Add(new MenuSlider("kaliuseqstacktransferminstacks", "Min stacks for Stack Transfer", 3, 0,
                     15));
-            FocusWBuffedEnemyInHarassBool =
-                HarassMenu.Add(new MenuBool("kalifocuswharass", "Focus W Buffed Enemy", true));
             UseEIfResettedByAMinionBool =
                 HarassMenu.Add(new MenuBool("useeresetharass", "Use E if resetted by a minion"));
             EResetByAMinionMinManaSlider =
-                HarassMenu.Add(new MenuSlider("useeresetmana", "Use E Reset by Minion if Mana% > ", 50));
+                HarassMenu.Add(new MenuSlider("useeresetmana", "Use E Reset by Minion if Mana% > ", 90));
             MinEnemyStacksForEMinionResetSlider =
                 HarassMenu.Add(new MenuSlider("useeresetminenstacks", "Use E Reset if Enemy stacks > ", 3, 0, 25));
             FarmMenu = MainMenu.Add(new Menu("kalifarmmenu", "Farm Settings"));
-            FocusWBuffedMinions = FarmMenu.Add(new MenuBool("focuswbufminions", "Focus minions with W buff", false));
             AlwaysUseEIf2MinionsKillableBool =
                 FarmMenu.Add(new MenuBool("alwaysuseeif2minkillable", "Always use E if resetted with no mana cost", true));
             RendDamageMenu = MainMenu.Add(new Menu("kalirenddmgmenu", "Adjust Rend (E) DMG Prediction: "));
             ReduceRendDamageBySlider =
                 RendDamageMenu.Add(new MenuSlider("kalirendreducedmg", "Reduce E DMG by: ", 0, 0, 300));
-            IncreaseRendDamageBySlider =
-                RendDamageMenu.Add(new MenuSlider("kalirendincreasedmg", "Increse E DMG by: ", 0, 0, 300));
             DrawMenu = MainMenu.Add(new Menu("kalidrawmenu", "Drawing Settings: "));
             DrawERangeBool = DrawMenu.Add(new MenuBool("drawerangekali", "Draw E Range", true));
             DrawRRangeBool = DrawMenu.Add(new MenuBool("kalidrawrrange", "Draw R Range", true));
@@ -304,7 +190,104 @@ namespace Challenger_Series.Plugins
         }
 
         #region Champion Logic
+        void QLogic(AttackableUnit target = null)
+        {
+            if (target != null)
+            {
+                if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
+                {
+                    var hero = target as Obj_AI_Hero;
+                    if (hero != null)
+                    {
+                        if (hero.IsHPBarRendered)
+                        {
+                            var pred = Q.GetPrediction(hero);
+                            if (pred.Hitchance >= HitChance.High)
+                            {
+                                Q.Cast(pred.UnitPosition);
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var tar in ValidTargets.Where(t => t.Distance(ObjectManager.Player) < 900))
+                        {
+                            if (ObjectManager.Player.ManaPercent > UseQManaSlider.Value)
+                            {
+                                var pred = Q.GetPrediction(tar);
+                                if (pred.Hitchance >= HitChance.High)
+                                {
+                                    Q.Cast(pred.UnitPosition);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (Orbwalker.ActiveMode == OrbwalkingMode.LaneClear || Orbwalker.ActiveMode == OrbwalkingMode.Hybrid)
+                {
+                    var minion = target as Obj_AI_Minion;
+                    if (minion != null && GetRendBuff(minion).Count >= UseQStackTransferMinStacksSlider
+                        && target.Health < Q.GetDamage(minion))
+                    {
+                        foreach (var enemy in ValidTargets.Where(en => en.Distance(ObjectManager.Player) < 900))
+                        {
+                            var pred = Q.GetPrediction(enemy, false);
+                            if (pred.Hitchance >= HitChance.High
+                                && pred.CollisionObjects.All(co => co is Obj_AI_Minion && co.Health < Q.GetDamage(co))
+                                && pred.CollisionObjects.Any(m => m.NetworkId == target.NetworkId))
+                            {
+                                Q.Cast(pred.UnitPosition);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
+        void ELogic()
+        {
+            if (ValidTargets.Any(t => IsRendKillable(t)))
+            {
+                E.Cast();
+            }
+            if (GameObjects.JungleLarge.Any(IsRendKillable)
+                || ObjectManager.Get<Obj_AI_Minion>().Any(
+                    m =>
+                    (m.CharData.BaseSkinName.Contains("Baron")
+                    || m.CharData.BaseSkinName.Contains("Dragon") || m.CharData.Name.Contains("Crab") || m.CharData.Name.Contains("Herald")) && this.IsRendKillable(m)))
+            {
+                E.Cast();
+            }
+            if (AlwaysUseEIf2MinionsKillableBool && GameObjects.EnemyMinions.Count(IsRendKillable) >= 2)
+            {
+                E.Cast();
+            }
+            if (UseEIfResettedByAMinionBool && ObjectManager.Player.ManaPercent > EResetByAMinionMinManaSlider.Value)
+            {
+                if (
+                    ValidTargets.Any(e =>
+                            e.Distance(ObjectManager.Player.ServerPosition) > 615 &&
+                            GetRendBuff(e).Count >= MinEnemyStacksForEMinionResetSlider.Value) &&
+                    GameObjects.EnemyMinions.Any(m => IsRendKillable(m)))
+                {
+                    E.Cast();
+                }
+            }
+            if (GameObjects.EnemyMinions.Any(m => m.CharData.BaseSkinName.Contains("MinionSiege") && IsRendKillable(m)))
+            {
+                E.Cast();
+            }
+            if ((Orbwalker.ActiveMode == OrbwalkingMode.LaneClear || Orbwalker.ActiveMode == OrbwalkingMode.LastHit) &&
+                GameObjects.EnemyMinions.Any(
+                    m => IsRendKillable(m) &&
+                    Health.GetPrediction(m, (int)((Game.Ping / 2) + ObjectManager.Player.AttackCastDelay * 1000)) < 1
+                    && Health.GetPrediction(m, (int)((Game.Ping / 2) + 100)) > 1))
+            {
+                E.Cast();
+            }
+        }
         #region Ult Logic
 
         private static Obj_AI_Hero SoulboundAlly;
@@ -435,6 +418,7 @@ namespace Challenger_Series.Plugins
         #endregion Ult Logic
 
         #endregion Champion Logic
+
         #region Damages
 
 

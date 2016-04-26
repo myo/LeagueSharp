@@ -44,48 +44,35 @@ namespace Challenger_Series
 
             InitializeMenu();
 
-            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             GameObject.OnCreate += OnCreateObj;
-            //Events.OnGapCloser += OnGapCloser;
-            Events.OnInterruptableTarget += this.OnInterruptableTarget;
-            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+            Events.OnGapCloser += OnGapCloser;
             this._rand = new Random();
         }
 
         private Random _rand;
 
-        private void OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        void CastE(Vector3 position)
         {
-            if (sender is Obj_AI_Hero && sender.IsEnemy)
+            if (this.EDelay > 0)
             {
-                var sdata = SpellDatabase.GetByName(args.SData.Name);
-                if (sdata != null && args.End.Distance(ObjectManager.Player.ServerPosition) < 900 &&
-                    sdata.SpellTags != null &&
-                    sdata.SpellTags.Any(st => st == SpellTags.Dash || st == SpellTags.Blink || st == SpellTags.Interruptable))
-                {
-                    E.Cast(args.Start.Extend(args.End, sdata.Range - this._rand.Next(5, 50)));
-                }
+                E.Cast(position.Randomize(-35, 35));
+                return;
             }
+            E.Cast(position.Randomize(-35, 35));
         }
 
-        private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
+        private void OnGapCloser(object sender, Events.GapCloserEventArgs args)
         {
-            if (args.Sender.Distance(ObjectManager.Player) < 800)
+            if (args.Sender.Distance(ObjectManager.Player) < 900 && args.IsDirectedToPlayer)
             {
-                E.Cast(args.Sender);
+                this.CastE(
+                    args.End.Distance(ObjectManager.Player.ServerPosition) < 850
+                        ? args.End
+                        : ObjectManager.Player.ServerPosition);
             }
         }
-
-        /*private void OnGapCloser(object sender, Events.GapCloserEventArgs args)
-        {
-            var ally = GameObjects.AllyHeroes.FirstOrDefault(a => a.Distance(args.End) < 300 || args.Sender.Distance(a) < 300);
-            if (ally.IsHPBarRendered && ally.Distance(ObjectManager.Player) < 800)
-            {
-                E.Cast(ally.ServerPosition.Randomize(-25, 25));
-            }
-        }*/
 
         private void OnCreateObj(GameObject obj, EventArgs args)
         {
@@ -96,7 +83,7 @@ namespace Challenger_Series
                 {
                     var enemyJ4 = ValidTargets.First(h => h.CharData.BaseSkinName.Contains("Jarvan"));
                     if (enemyJ4 != null && enemyJ4.IsValidTarget())
-                    this.E.Cast(enemyJ4.ServerPosition);
+                    this.CastE(enemyJ4.ServerPosition);
                 }
                 if (obj.Name.ToLower().Contains("soraka_base_e_rune.troy") &&
                     GameObjects.EnemyHeroes.Count(e => e.IsHPBarRendered && e.Distance(obj.Position) < 300) > 0)
@@ -109,13 +96,13 @@ namespace Challenger_Series
                     //rengar ult
                     if (obj.Name == "Rengar_LeapSound.troy")
                     {
-                        this.E.Cast(obj.Position);
+                        CastE(obj.Position);
                     }
                     //rengar passive brush jump (atm the object pos is the brush where it came from so
                     //                                  we're just gonna assume he's gonna jump on us)
                     if (obj.Position.Distance(ObjectManager.Player.Position) < 725 && (obj.Name == "Rengar_Base_P_Buf_Max.troy" || obj.Name == "Rengar_Base_P_Leap_Grass.troy"))
                     {
-                        this.E.Cast(ObjectManager.Player.ServerPosition);
+                        CastE(ObjectManager.Player.ServerPosition);
                     }
                 }
             }
@@ -132,8 +119,12 @@ namespace Challenger_Series
             if (!NoNeedForSpacebarBool && Orbwalker.ActiveMode != OrbwalkingMode.Combo &&
                 Orbwalker.ActiveMode != OrbwalkingMode.Hybrid) return;
             QLogic();
-            ELogic();
-            EAntiMelee();
+            if (E.IsReady())
+            {
+                ELogic();
+                EAntiMelee();
+                EInterruptable();
+            }
             Orbwalker.SetAttackState(!BlockAutoAttacksBool);
         }
 
@@ -172,6 +163,7 @@ namespace Challenger_Series
         private MenuBool NoNeedForSpacebarBool;
         private MenuBool DontWTanksBool;
         private MenuSlider ATankTakesXHealsToHealSlider;
+        private MenuSlider EDelay;
         private MenuSlider UseUltForMeIfMyHpIsLessThanSlider;
         private MenuSlider UltIfAnAllyHpIsLessThanSlider;
         private MenuBool CheckIfAllyCanSurviveBool;
@@ -219,6 +211,8 @@ namespace Challenger_Series
 
             ATankTakesXHealsToHealSlider =
                 MainMenu.Add(new MenuSlider("atanktakesxheals", "A TANK takes X Heals (W) to  FULLHP", 15, 5, 30));
+
+            EDelay = MainMenu.Add(new MenuSlider("rakaedelay", "E Delay (milliseconds)", 0, 0, 250));
 
             UseUltForMeIfMyHpIsLessThanSlider = MainMenu.Add(new MenuSlider("ultmyhp", "Ult if MY HP% < ", 15, 1, 25));
 
@@ -359,7 +353,7 @@ namespace Challenger_Series
                 var pos = goodTarget.ServerPosition;
                 if (pos.Distance(ObjectManager.Player.ServerPosition) < 900)
                 {
-                    E.Cast(goodTarget.ServerPosition);
+                    this.CastE(goodTarget.ServerPosition);
                 }
             }
             foreach (
@@ -374,7 +368,7 @@ namespace Challenger_Series
                 {
                     if (enemyMinion != null && enemyMinion.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 900)
                     {
-                        E.Cast(enemyMinion.ServerPosition);
+                        this.CastE(enemyMinion.ServerPosition);
                     }
                 });
             }
@@ -387,7 +381,18 @@ namespace Challenger_Series
                     a => GameObjects.EnemyHeroes.Any(e => e.IsMelee && e.IsHPBarRendered && e.Distance(a) < 200));
             if (victim != null)
             {
-                this.E.Cast(victim.ServerPosition);
+                CastE(victim.ServerPosition);
+            }
+        }
+
+        public void EInterruptable()
+        {
+            var victim =
+                ValidTargets.FirstOrDefault(
+                    e => e.Distance(ObjectManager.Player) < 900 && e.IsCastingInterruptableSpell());
+            if (victim != null)
+            {
+                this.CastE(victim.ServerPosition);
             }
         }
 

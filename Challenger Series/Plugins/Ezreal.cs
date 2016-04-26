@@ -87,7 +87,7 @@ namespace Challenger_Series.Plugins
                         m.Position.Distance(ObjectManager.Player.Position) < 550
                         && m.Health < ObjectManager.Player.GetAutoAttackDamage(m)
                         && Health.GetPrediction(m, (int)((Game.Ping / 2) + ObjectManager.Player.AttackCastDelay * 1000))
-                        == 0 && Health.GetPrediction(m, (int)((Game.Ping / 2) + 250)) > 1);
+                        < 1 && Health.GetPrediction(m, (int)((Game.Ping / 2) + 250)) > 1);
                 if (minion != null)
                 {
                     var pred = Q.GetPrediction(minion);
