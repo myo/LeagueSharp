@@ -241,9 +241,9 @@ namespace Challenger_Series.Plugins
 
         private void EventsOnOnGapCloser(object sender, Events.GapCloserEventArgs args)
         {
-            if (E.IsReady() && UseEGapclose && args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
+            if (E.IsReady() && UseEGapclose && args.Sender.IsMelee && args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
             {
-                E.Cast(ObjectManager.Player.Position.Extend(args.Sender.Position, -Misc.GiveRandomInt(300, 600)));
+                E.Cast(ObjectManager.Player.Position.Extend(args.Sender.Position, -Misc.GiveRandomInt(250, 600)));
             }
         }
 
@@ -254,6 +254,7 @@ namespace Challenger_Series.Plugins
             {
                 this.pressedR = true;
                 R.Cast(R.GetPrediction(ultTarget).UnitPosition);
+                return;
             }
             if (!HasPassive && Orbwalker.CanMove())
             {
