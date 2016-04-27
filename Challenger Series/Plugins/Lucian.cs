@@ -41,6 +41,27 @@ namespace Challenger_Series.Plugins
             Spellbook.OnCastSpell += OnCastSpell;
         }
 
+        int GetGapclosingAngle()
+        {
+            var randI = Misc.GiveRandomInt(0, 100);
+            if (randI > 50)
+            {
+                return Misc.GiveRandomInt(15, 30);
+            }
+            return Misc.GiveRandomInt(330, 345);
+        }
+
+        int GetHugAngle()
+        {
+            var randI = Misc.GiveRandomInt(0, 100);
+            if (randI > 50)
+            {
+                return Misc.GiveRandomInt(60, 75);
+            }
+            return Misc.GiveRandomInt(285, 300);
+            
+        }
+
         private bool pressedR = false;
 
         private int ECastTime = 0;
@@ -63,7 +84,7 @@ namespace Challenger_Series.Plugins
                 case "Side":
                     {
                         E.Cast(
-                            Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), 65)
+                            Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), this.GetHugAngle())
                                 .ToVector3());
                         return true;
                     }
@@ -277,14 +298,14 @@ namespace Challenger_Series.Plugins
                             if (target != null && target.IsHPBarRendered)
                             {
                                 var dist = target.Distance(ObjectManager.Player);
-                                if (dist > 500)
+                                if (dist > 500 && Game.CursorPos.Distance(target.Position) < ObjectManager.Player.Position.Distance(target.Position))
                                 {
                                     var pos = ObjectManager.Player.ServerPosition.Extend(
-                                        target.ServerPosition,
-                                        Math.Abs(dist - 500));
+                                        target.ServerPosition, Math.Abs(dist - 500));
                                     if (!IsDangerousPosition(pos))
                                     {
-                                        E.Cast(pos);
+                                        Game.PrintChat("e");
+                                        E.Cast(Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), this.GetGapclosingAngle()));
                                         return;
                                     }
                                 }
