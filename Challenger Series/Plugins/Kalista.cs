@@ -68,7 +68,7 @@ namespace Challenger_Series.Plugins
             base.OnUpdate(args);
 
             if (E.IsReady()) this.ELogic();
-            if (Q.IsReady() && Orbwalker.CanMove())
+            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && Q.IsReady() && Orbwalker.CanMove())
             {
                 foreach (var enemy in ValidTargets.Where(e => e.Distance(ObjectManager.Player) < 900))
                 {
@@ -275,10 +275,10 @@ namespace Challenger_Series.Plugins
                     E.Cast();
                 }
             }
-            if (GameObjects.EnemyMinions.Any(m => m.CharData.BaseSkinName.Contains("MinionSiege") && IsRendKillable(m)))
+            /*if (GameObjects.EnemyMinions.Any(m => m.CharData.BaseSkinName.Contains("MinionSiege") && IsRendKillable(m)))
             {
                 E.Cast();
-            }
+            }*/
             if ((Orbwalker.ActiveMode == OrbwalkingMode.LaneClear || Orbwalker.ActiveMode == OrbwalkingMode.LastHit) &&
                 GameObjects.EnemyMinions.Any(
                     m => IsRendKillable(m) &&
