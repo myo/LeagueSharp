@@ -141,7 +141,7 @@ namespace Challenger_Series.Plugins
                     {
 
                         E.Cast(
-                            Deviate(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(), 60)
+                            Deviate(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(), this.GetHugAngle())
                                 .ToVector3());
                         return;
                     }
