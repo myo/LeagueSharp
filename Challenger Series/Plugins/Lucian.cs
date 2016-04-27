@@ -43,6 +43,8 @@ namespace Challenger_Series.Plugins
 
         private bool pressedR = false;
 
+        private int ECastTime = 0;
+
         bool QLogic(AttackableUnit target)
         {
             var hero = (Obj_AI_Hero)target;
@@ -185,16 +187,23 @@ namespace Challenger_Series.Plugins
 
         private void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
-            if (sender.Owner.IsMe && args.Slot == SpellSlot.R && this.BlockManualR)
+            if (sender.Owner.IsMe)
             {
-                if (!pressedR && !ObjectManager.Player.IsCastingInterruptableSpell())
+                if (args.Slot == SpellSlot.R && this.BlockManualR)
                 {
-                    args.Process = false;
+                    if (!pressedR && !ObjectManager.Player.IsCastingInterruptableSpell())
+                    {
+                        args.Process = false;
+                    }
+                    else
+                    {
+                        args.Process = true;
+                        this.pressedR = false;
+                    }
                 }
-                else
+                if (args.Slot == SpellSlot.E)
                 {
-                    args.Process = true;
-                    this.pressedR = false;
+                    this.ECastTime = Variables.TickCount;
                 }
             }
         }
@@ -256,56 +265,59 @@ namespace Challenger_Series.Plugins
                 R.Cast(R.GetPrediction(ultTarget).UnitPosition);
                 return;
             }
-            if (!HasPassive && Orbwalker.CanMove())
+            if (Variables.TickCount - this.ECastTime > 250)
             {
-                if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
+                if (!HasPassive && Orbwalker.CanMove())
                 {
-                    if (E.IsReady())
+                    if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
                     {
-                        var target = TargetSelector.GetTarget(875, DamageType.Physical);
-                        if (target != null && target.IsHPBarRendered)
+                        if (E.IsReady())
                         {
-                            var dist = target.Distance(ObjectManager.Player);
-                            if (dist > 500)
+                            var target = TargetSelector.GetTarget(875, DamageType.Physical);
+                            if (target != null && target.IsHPBarRendered)
                             {
-                                var pos = ObjectManager.Player.ServerPosition.Extend(
-                                    target.ServerPosition,
-                                    Math.Abs(dist - 500));
-                                if (!IsDangerousPosition(pos))
+                                var dist = target.Distance(ObjectManager.Player);
+                                if (dist > 500)
                                 {
-                                    E.Cast(pos);
-                                    return;
+                                    var pos = ObjectManager.Player.ServerPosition.Extend(
+                                        target.ServerPosition,
+                                        Math.Abs(dist - 500));
+                                    if (!IsDangerousPosition(pos))
+                                    {
+                                        E.Cast(pos);
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    if (ELogic(target))
+                                    {
+                                        return;
+                                    }
                                 }
                             }
-                            else
+                        }
+                        var qtar = TargetSelector.GetTarget(Q);
+                        if (qtar != null && qtar.IsHPBarRendered)
+                        {
+                            if (Q.IsReady())
                             {
-                                if (ELogic(target))
-                                {
-                                    return;
-                                }
+                                if (QLogic(qtar)) return;
+                            }
+                            if (W.IsReady())
+                            {
+                                if (WLogic(qtar)) return;
                             }
                         }
-                    }
-                    var qtar = TargetSelector.GetTarget(Q);
-                    if (qtar != null && qtar.IsHPBarRendered)
-                    {
-                        if (Q.IsReady())
+                        else
                         {
-                            if (QLogic(qtar)) return;
-                        }
-                        if (W.IsReady())
-                        {
-                            if (WLogic(qtar)) return;
+                            this.QExHarass();
                         }
                     }
-                    else
+                    if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
                     {
                         this.QExHarass();
                     }
-                }
-                if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
-                {
-                    this.QExHarass();
                 }
             }
             if (UsePassiveOnEnemy && HasPassive)
