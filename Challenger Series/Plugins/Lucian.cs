@@ -206,7 +206,7 @@ namespace Challenger_Series.Plugins
                 //Anti Melee
                 var possibleNearbyMeleeChampion =
                     ValidTargets.FirstOrDefault(
-                        e => e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 350);
+                        e => e.IsMelee && e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 350);
 
                 if (possibleNearbyMeleeChampion.IsValidTarget())
                 {
