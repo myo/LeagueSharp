@@ -34,9 +34,7 @@ namespace Challenger_Series.Plugins
             W.SetSkillshot(0.30f, 70f, 1600f, true, SkillshotType.SkillshotLine);
             R.SetSkillshot(0.2f, 110f, 2500, true, SkillshotType.SkillshotLine);
             InitMenu();
-            Obj_AI_Hero.OnDoCast += OnDoCast;
             DelayedOnUpdate += OnUpdate;
-            Drawing.OnDraw += OnDraw;
             Events.OnGapCloser += EventsOnOnGapCloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
             Orbwalker.OnAction += OnAction;
@@ -44,6 +42,146 @@ namespace Challenger_Series.Plugins
         }
 
         private bool pressedR = false;
+
+        bool QLogic(AttackableUnit target)
+        {
+            var hero = (Obj_AI_Hero)target;
+            if (hero != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseQCombo)
+            {
+                Q.Cast(hero);
+                return true;
+            }
+            return false;
+        }
+
+        bool ELogic(Obj_AI_Base target)
+        {
+            switch (UseEMode.SelectedValue)
+            {
+                case "Side":
+                    {
+                        E.Cast(
+                            Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), 65)
+                                .ToVector3());
+                        return true;
+                    }
+                case "Cursor":
+                    {
+                        if (!IsDangerousPosition(Game.CursorPos))
+                        {
+                            E.Cast(ObjectManager.Player.Position.Extend(Game.CursorPos, Misc.GiveRandomInt(50, 100)));
+                        }
+                        return true;
+                    }
+                case "Enemy":
+                    {
+                        E.Cast(ObjectManager.Player.Position.Extend(target.Position, Misc.GiveRandomInt(50, 100)));
+                        return true;
+                    }
+            }
+            return false;
+        }
+
+        bool WLogic(Obj_AI_Base target)
+        {
+            if (this.UseWCombo)
+            {
+                if (IgnoreWCollision && target.Distance(ObjectManager.Player) < 600)
+                {
+                    W.Cast(target.ServerPosition);
+                    return true;
+                }
+                var pred = W.GetPrediction(target);
+                if (target.Health < ObjectManager.Player.GetAutoAttackDamage(target) * 3)
+                {
+                    W.Cast(pred.UnitPosition);
+                    return true;
+                }
+                if (pred.Hitchance >= HitChance.High)
+                {
+                    W.Cast(pred.UnitPosition);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        void JungleClear(AttackableUnit target)
+        {
+            var tg = target as Obj_AI_Minion;
+            if (tg != null && !HasPassive && Orbwalker.CanMove())
+            {
+                if (tg.IsHPBarRendered && tg.CharData.BaseSkinName.Contains("SRU")
+                    && !tg.CharData.BaseSkinName.Contains("Mini"))
+                {
+                    if (EJg && E.IsReady())
+                    {
+
+                        E.Cast(
+                            Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(), 60)
+                                .ToVector3());
+                        return;
+                    }
+                    if (QJg && Q.IsReady())
+                    {
+                        Q.Cast(tg);
+                        return;
+                    }
+                    if (WJg && W.IsReady())
+                    {
+                        var pred = W.GetPrediction(tg);
+                        W.Cast(pred.UnitPosition);
+                        return;
+                    }
+                }
+            }
+        }
+
+        void QExHarass()
+        {
+            var q2tg = TargetSelector.GetTarget(Q2.Range);
+            if (q2tg != null && q2tg.IsHPBarRendered)
+            {
+                if (q2tg.Distance(ObjectManager.Player) > 600)
+                {
+                    if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
+                    {
+                        var menuItem = QExtendedBlacklist["qexbl" + q2tg.CharData.BaseSkinName];
+                        if (UseQExtended && ObjectManager.Player.ManaPercent > QExManaPercent && menuItem != null
+                            && !menuItem.GetValue<MenuBool>())
+                        {
+                            var QPred = Q2.GetPrediction(q2tg);
+                            if (QPred.Hitchance >= HitChance.Medium)
+                            {
+                                var minions =
+                                    GameObjects.EnemyMinions.Where(
+                                        m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
+                                var objAiMinions = minions as IList<Obj_AI_Minion> ?? minions.ToList();
+                                if (objAiMinions.Any())
+                                {
+                                    foreach (var minion in objAiMinions)
+                                    {
+                                        var QHit = new Utils.Geometry.Rectangle(
+                                            ObjectManager.Player.Position,
+                                            ObjectManager.Player.Position.Extend(minion.Position, Q2.Range),
+                                            Q2.Width);
+                                        if (!QPred.UnitPosition.IsOutside(QHit))
+                                        {
+                                            Q.Cast(minion);
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (!HasPassive)
+                {
+                    Q.Cast(q2tg);
+                }
+            }
+        }
 
         private void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
@@ -65,6 +203,7 @@ namespace Challenger_Series.Plugins
         {
             if (args.Type == OrbwalkingType.BeforeAttack)
             {
+                //Anti Melee
                 var possibleNearbyMeleeChampion =
                     ValidTargets.FirstOrDefault(
                         e => e.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 350);
@@ -74,7 +213,7 @@ namespace Challenger_Series.Plugins
                     if (E.IsReady() && UseEAntiMelee)
                     {
                         var pos = ObjectManager.Player.ServerPosition.Extend(possibleNearbyMeleeChampion.ServerPosition,
-                            -Misc.GiveRandomInt(300, 475));
+                            -Misc.GiveRandomInt(250, 475));
                         if (!IsDangerousPosition(pos))
                         {
                             E.Cast(pos);
@@ -84,36 +223,10 @@ namespace Challenger_Series.Plugins
             }
             if (args.Type == OrbwalkingType.AfterAttack)
             {
-
-                if (!HasPassive)
+                //JungleClear
+                if (args.Target is Obj_AI_Minion)
                 {
-                    var minion = args.Target as Obj_AI_Minion;
-                    if (minion != null)
-                    {
-                        var tg = minion;
-                        if (tg.CharData.BaseSkinName.Contains("SRU") && !tg.CharData.BaseSkinName.Contains("Mini"))
-                        {
-                            if (QJg && Q.IsReady())
-                            {
-                                Q.Cast(tg);
-                                return;
-                            }
-                            if (WJg && W.IsReady())
-                            {
-                                var pred = W.GetPrediction(tg);
-                                W.Cast(pred.UnitPosition);
-                                return;
-                            }
-                            if (EJg && E.IsReady())
-                            {
-
-                                E.Cast(
-                                    Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(),
-                                        60).ToVector3());
-                                return;
-                            }
-                        }
-                    }
+                    JungleClear(args.Target);
                 }
             }
         }
@@ -134,210 +247,78 @@ namespace Challenger_Series.Plugins
             }
         }
 
-        public override void OnDraw(EventArgs args)
+        public override void OnUpdate(EventArgs args)
         {
-            #region Logic
-
             var ultTarget = TargetSelector.GetTarget(R);
             if (this.SemiAutoRKey.Active && ultTarget != null && ultTarget.IsHPBarRendered)
             {
                 this.pressedR = true;
                 R.Cast(R.GetPrediction(ultTarget).UnitPosition);
             }
-            if (!this.HasPassive)
-
+            if (!HasPassive && Orbwalker.CanMove())
             {
-                var target = TargetSelector.GetTarget(Q);
-
-                if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo
-                    && target.Distance(ObjectManager.Player) < Q.Range)
+                if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
                 {
-                    if (UseQCombo && Q.IsReady())
+                    if (E.IsReady())
                     {
-                        Q.Cast(target);
-                        return;
-                    }
-                }
-                if (Q.IsReady())
-                {
-                    var q2tg = TargetSelector.GetTarget(Q2.Range);
-                    if (q2tg != null && q2tg.IsHPBarRendered)
-                    {
-                        if (q2tg.Distance(ObjectManager.Player) > 600)
+                        var target = TargetSelector.GetTarget(825, DamageType.Physical);
+                        if (target != null && target.IsHPBarRendered)
                         {
-                            if (Orbwalker.ActiveMode != OrbwalkingMode.None
-                                && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
+                            var dist = target.Distance(ObjectManager.Player);
+                            if (dist > 500)
                             {
-                                var menuItem = QExtendedBlacklist["qexbl" + q2tg.CharData.BaseSkinName];
-                                if (UseQExtended && ObjectManager.Player.ManaPercent > QExManaPercent
-                                    && menuItem != null && !menuItem.GetValue<MenuBool>())
+                                var pos = ObjectManager.Player.ServerPosition.Extend(
+                                    target.ServerPosition,
+                                    Math.Abs(dist - 500));
+                                if (!IsDangerousPosition(pos))
                                 {
-                                    var QPred = Q2.GetPrediction(q2tg);
-                                    if (QPred.Hitchance >= HitChance.Medium)
-                                    {
-                                        var minions =
-                                            GameObjects.EnemyMinions.Where(
-                                                m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < Q.Range);
-                                        var objAiMinions = minions as IList<Obj_AI_Minion> ?? minions.ToList();
-                                        if (objAiMinions.Any())
-                                        {
-                                            foreach (var minion in objAiMinions)
-                                            {
-                                                var QHit = new Utils.Geometry.Rectangle(
-                                                    ObjectManager.Player.Position,
-                                                    ObjectManager.Player.Position.Extend(minion.Position, Q2.Range),
-                                                    Q2.Width);
-                                                if (!QPred.UnitPosition.IsOutside(QHit))
-                                                {
-                                                    Q.Cast(minion);
-                                                    return;
-                                                }
-                                            }
-                                        }
-                                    }
+                                    E.Cast(pos);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                if (ELogic(target))
+                                {
+                                    return;
                                 }
                             }
                         }
-                        else if (Q.IsReady() && UseQCombo)
+                    }
+                    var qtar = TargetSelector.GetTarget(Q);
+                    if (qtar != null && qtar.IsHPBarRendered)
+                    {
+                        if (Q.IsReady())
                         {
-                            Q.Cast(q2tg);
+                            if (QLogic(qtar)) return;
                         }
+                        if (W.IsReady())
+                        {
+                            if (WLogic(qtar)) return;
+                        }
+                    }
+                    else
+                    {
+                        this.QExHarass();
                     }
                 }
-
-                #endregion
-
-                if (QKS && Q.IsReady())
+                if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
                 {
-                    var targets =
-                        ValidTargets.Where(
-                            x =>
-                            x.IsHPBarRendered && x.Health < Q.GetDamage(x) && x.IsValidTarget(Q.Range) && !x.IsZombie);
-                    var objAiHeroes = targets as IList<Obj_AI_Hero> ?? targets.ToList();
-                    if (targets != null && objAiHeroes.Any())
-                    {
-                        foreach (var tar in objAiHeroes)
-                        {
-                            if (tar.Health < Q.GetDamage(tar)
-                                && (!tar.HasBuff("kindrednodeathbuff") && !tar.HasBuff("Undying Rage")
-                                    && !tar.HasBuff("JudicatorIntervention")))
-                            {
-                                Q.Cast(target);
-                                return;
-                            }
-                        }
-                    }
-                }
-                if (R.IsReady() && ForceR)
-                {
-                    var rtarget = TargetSelector.GetTarget(900);
-                    if (rtarget != null && rtarget.IsHPBarRendered && target.Health < R.GetDamage(rtarget) * 0.8
-                        && rtarget.Distance(ObjectManager.Player) > 300)
-                    {
-                        var pred = R.GetPrediction(rtarget);
-                        if (!pred.CollisionObjects.Any() && pred.Hitchance >= HitChance.High)
-                        {
-                            R.Cast(pred.UnitPosition);
-                        }
-                    }
+                    this.QExHarass();
                 }
             }
-            var tg = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
-            if (tg != null && HasPassive)
+            if (UsePassiveOnEnemy && HasPassive)
             {
-                if (UsePassiveOnEnemy && tg.IsValidTarget())
+                var tg = TargetSelector.GetTarget(ObjectManager.Player.AttackRange, DamageType.Physical);
+                if (tg != null && tg.IsHPBarRendered)
                 {
                     Orbwalker.ForceTarget = tg;
                     return;
                 }
             }
-            Orbwalker.ForceTarget = null;
-        }
-
-        private void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            if (args.SData.Name == "LucianPassiveShot" || args.SData.Name.Contains("LucianBasicAttack"))
+            else
             {
-                if (!HasPassive)
-                {
-                    var target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
-                    if (target != null && Orbwalker.ActiveMode == OrbwalkingMode.Combo &&
-                        target.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange && target.IsHPBarRendered)
-                    {
-                        if (E.IsReady())
-                        {
-                            switch (UseEMode.SelectedValue)
-                            {
-                                case "Side":
-                                    E.Cast(
-                                        Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(),
-                                            65).ToVector3());
-                                    break;
-                                case "Cursor":
-                                {
-                                    if (!IsDangerousPosition(Game.CursorPos))
-                                    E.Cast(ObjectManager.Player.Position.Extend(Game.CursorPos,
-                                        Misc.GiveRandomInt(50, 100)));
-                                    break;
-                                }
-                                case "Enemy":
-                                    E.Cast(ObjectManager.Player.Position.Extend(target.Position,
-                                        Misc.GiveRandomInt(50, 100)));
-                                    break;
-                            }
-                        }
-                        if (UseQCombo && Q.IsReady())
-                        {
-                            Q.Cast(target);
-                            return;
-                        }
-                        if (UseWCombo && W.IsReady() && !ObjectManager.Player.IsDashing())
-                        {
-                            if (IgnoreWCollision && target.Distance(ObjectManager.Player) < 600)
-                            {
-                                W.Cast(target.ServerPosition);
-                                return;
-                            }
-                            var pred = W.GetPrediction(target);
-                            if (target.Health < ObjectManager.Player.GetAutoAttackDamage(target) * 3)
-                            {
-                                W.Cast(pred.UnitPosition);
-                                return;
-                            }
-                            if (pred.Hitchance >= HitChance.High)
-                            {
-                                W.Cast(pred.UnitPosition);
-                                return;
-                            }
-                        }
-                    }
-                    if (args.Target is Obj_AI_Minion)
-                    {
-                        var tg = args.Target as Obj_AI_Minion;
-                        if (tg.IsHPBarRendered && tg.CharData.BaseSkinName.Contains("SRU") && !tg.CharData.BaseSkinName.Contains("Mini"))
-                        {
-                            if (QJg && Q.IsReady())
-                            {
-                                Q.Cast(tg);
-                                return;
-                            }
-                            if (WJg && W.IsReady())
-                            {
-                                var pred = W.GetPrediction(tg);
-                                W.Cast(pred.UnitPosition);
-                                return;
-                            }
-                            if (EJg && E.IsReady())
-                            {
-
-                                E.Cast(
-                                    Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(),
-                                        60).ToVector3());
-                                return;
-                            }
-                        }
-                    }
-                }
+                Orbwalker.ForceTarget = null;
             }
         }
 
