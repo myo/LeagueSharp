@@ -94,11 +94,11 @@ namespace Challenger_Series
         public override void OnUpdate(EventArgs args)
         {
             base.OnUpdate(args);
-            if (UseEBool)
+            if (UseEBool && E.IsReady())
             {
                 foreach (var enemy in ValidTargets.Where(e => e.IsValidTarget(550)))
                 {
-                    if (E.IsReady() && ZZrot.IsReady && enemy.IsValidTarget(ZZrot.Range))
+                    if (ZZrot.IsReady && enemy.IsValidTarget(ZZrot.Range))
                     {
                         if (E.CastOnUnit(enemy))
                         {
