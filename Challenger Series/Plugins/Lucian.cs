@@ -84,7 +84,7 @@ namespace Challenger_Series.Plugins
                 case "Side":
                     {
                         E.Cast(
-                            Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), this.GetHugAngle())
+                            Deviate(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), this.GetHugAngle())
                                 .ToVector3());
                         return true;
                     }
@@ -141,7 +141,7 @@ namespace Challenger_Series.Plugins
                     {
 
                         E.Cast(
-                            Deviation(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(), 60)
+                            Deviate(ObjectManager.Player.Position.ToVector2(), tg.Position.ToVector2(), 60)
                                 .ToVector3());
                         return;
                     }
@@ -305,7 +305,7 @@ namespace Challenger_Series.Plugins
                                     if (!IsDangerousPosition(pos))
                                     {
                                         Game.PrintChat("e");
-                                        E.Cast(Deviation(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), this.GetGapclosingAngle()));
+                                        E.Cast(Deviate(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), this.GetGapclosingAngle()));
                                         return;
                                     }
                                 }
@@ -413,7 +413,7 @@ namespace Challenger_Series.Plugins
             MainMenu.Attach();
         }
 
-        public static Vector2 Deviation(Vector2 point1, Vector2 point2, double angle)
+        public static Vector2 Deviate(Vector2 point1, Vector2 point2, double angle)
         {
             angle *= Math.PI/180.0;
             Vector2 temp = Vector2.Subtract(point2, point1);
