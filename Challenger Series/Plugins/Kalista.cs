@@ -496,11 +496,6 @@ namespace Challenger_Series.Plugins
             {
                 dmg *= (1f - (0.075f * ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
             }
-            //sdk has it all wrong :fappa:
-            if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
-            {
-                dmg *= 0.6f;
-            }
             return dmg > totalHealth;
         }
 
