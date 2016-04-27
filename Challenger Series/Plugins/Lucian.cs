@@ -267,7 +267,7 @@ namespace Challenger_Series.Plugins
             }
             if (Variables.TickCount - this.ECastTime > 250)
             {
-                if (!HasPassive && Orbwalker.CanMove())
+                if (!HasPassive && Orbwalker.CanMove() && !ObjectManager.Player.IsCastingInterruptableSpell())
                 {
                     if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
                     {

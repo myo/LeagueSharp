@@ -86,6 +86,7 @@ namespace Challenger_Series
         #region Cache bik
         public List<Tuple<string, SpellDatabaseEntry>> CachedGapclosers;
         public List<Tuple<string, SpellDatabaseEntry>> CachedCrowdControl;
+        private Items.Item ZZrot = new Items.Item(3512, 400);
         #endregion
 
         #region Events
@@ -97,6 +98,20 @@ namespace Challenger_Series
             {
                 foreach (var enemy in ValidTargets.Where(e => e.IsValidTarget(550)))
                 {
+                    if (E.IsReady() && ZZrot.IsReady && enemy.IsValidTarget(ZZrot.Range))
+                    {
+                        if (E.CastOnUnit(enemy))
+                        {
+                            DelayAction.Add(100+Game.Ping/2,
+                                () =>
+                                    {
+                                        this.ZZrot.Cast(
+                                            enemy.Position.ToVector2()
+                                                .Extend(ObjectManager.Player.ServerPosition.ToVector2(), -100));
+                                    });
+                            return;
+                        }
+                    }
                     if (enemy.IsCastingInterruptableSpell())
                     {
                         E.CastOnUnit(enemy);
@@ -525,7 +540,7 @@ namespace Challenger_Series
                     }));
             UseEInterruptBool = CondemnMenu.Add(new MenuBool("useeinterrupt", "Use E To Interrupt", true));
             UseEAntiGapcloserBool = CondemnMenu.Add(new MenuBool("useeantigapcloser", "Use E AntiGapcloser", true));
-            UseEWhenMeleesNearBool = CondemnMenu.Add(new MenuBool("useewhenmeleesnear", "Use E when Melee near", true));
+            UseEWhenMeleesNearBool = CondemnMenu.Add(new MenuBool("ewhenmeleesnear", "Use E when Melee near", false));
             EPushDistanceSlider = CondemnMenu.Add(new MenuSlider("epushdist", "E Push Distance: ", 425, 300, 475));
             EHitchanceSlider = CondemnMenu.Add(new MenuSlider("ehitchance", "Condemn Hitchance", 50, 0, 100));
             SemiAutomaticCondemnKey =
