@@ -261,7 +261,7 @@ namespace Challenger_Series.Plugins
                 {
                     if (E.IsReady())
                     {
-                        var target = TargetSelector.GetTarget(825, DamageType.Physical);
+                        var target = TargetSelector.GetTarget(875, DamageType.Physical);
                         if (target != null && target.IsHPBarRendered)
                         {
                             var dist = target.Distance(ObjectManager.Player);
