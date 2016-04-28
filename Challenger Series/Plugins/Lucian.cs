@@ -273,7 +273,7 @@ namespace Challenger_Series.Plugins
 
         private void EventsOnOnGapCloser(object sender, Events.GapCloserEventArgs args)
         {
-            if (E.IsReady() && UseEGapclose && args.Sender.IsMelee && args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 800)
+            if (E.IsReady() && UseEGapclose && args.Sender.IsMelee && args.End.Distance(ObjectManager.Player.ServerPosition) > args.Sender.AttackRange)
             {
                 E.Cast(ObjectManager.Player.Position.Extend(args.Sender.Position, -Misc.GiveRandomInt(250, 600)));
             }
