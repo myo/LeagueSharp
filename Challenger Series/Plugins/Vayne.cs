@@ -86,7 +86,7 @@ namespace Challenger_Series
         #region Cache bik
         public List<Tuple<string, SpellDatabaseEntry>> CachedGapclosers;
         public List<Tuple<string, SpellDatabaseEntry>> CachedCrowdControl;
-        private Items.Item ZZrot = new Items.Item(3512, 400);
+        //private Items.Item ZZrot = new Items.Item(3512, 400);
         #endregion
 
         #region Events
@@ -98,7 +98,7 @@ namespace Challenger_Series
             {
                 foreach (var enemy in ValidTargets.Where(e => e.IsValidTarget(550)))
                 {
-                    if (ZZrot.IsReady && enemy.IsValidTarget(ZZrot.Range))
+                    /*if (ZZrot.IsReady && enemy.IsValidTarget(ZZrot.Range))
                     {
                         if (E.CastOnUnit(enemy))
                         {
@@ -111,7 +111,7 @@ namespace Challenger_Series
                                     });
                             return;
                         }
-                    }
+                    }*/
                     if (enemy.IsCastingInterruptableSpell())
                     {
                         E.CastOnUnit(enemy);
