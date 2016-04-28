@@ -281,6 +281,7 @@ namespace Challenger_Series.Plugins
 
         public override void OnUpdate(EventArgs args)
         {
+            if (ObjectManager.Player.IsCastingInterruptableSpell()) return;
             var ultTarget = TargetSelector.GetTarget(R);
             if (this.SemiAutoRKey.Active && ultTarget != null && ultTarget.IsHPBarRendered)
             {
@@ -290,7 +291,7 @@ namespace Challenger_Series.Plugins
             }
             if (Variables.TickCount - this.ECastTime > 250)
             {
-                if (!HasPassive && Orbwalker.CanMove() && !ObjectManager.Player.IsCastingInterruptableSpell())
+                if (!HasPassive && Orbwalker.CanMove())
                 {
                     if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
                     {
