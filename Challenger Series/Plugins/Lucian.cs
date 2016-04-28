@@ -265,7 +265,7 @@ namespace Challenger_Series.Plugins
 
         private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
         {
-            if (E.IsReady() && args.DangerLevel == DangerLevel.High && args.Sender.Distance(ObjectManager.Player) < 400)
+            if (E.IsReady() && this.UseEGapclose && args.DangerLevel == DangerLevel.High && args.Sender.Distance(ObjectManager.Player) < 400)
             {
                 E.Cast(ObjectManager.Player.Position.Extend(args.Sender.Position, -Misc.GiveRandomInt(300, 600)));
             }
@@ -295,7 +295,7 @@ namespace Challenger_Series.Plugins
                 {
                     if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
                     {
-                        if (E.IsReady())
+                        if (E.IsReady() && this.UseEMode.SelectedValue != "Never")
                         {
                             var target = TargetSelector.GetTarget(875, DamageType.Physical);
                             if (target != null && target.IsHPBarRendered)
