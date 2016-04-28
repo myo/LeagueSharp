@@ -894,7 +894,7 @@ namespace Challenger_Series
         {
             return GameObjects.EnemyHeroes.Any(
                 e => e.IsValidTarget() &&
-                     (e.Distance(pos) < 375) && (Q.GetPrediction(e).UnitPosition.Distance(pos) > 550)) ||
+                     ((e.Distance(pos) < 375) || (Q.GetPrediction(e).UnitPosition.Distance(pos) > 550))) ||
                      (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true));
         }
 

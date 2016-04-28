@@ -306,7 +306,6 @@ namespace Challenger_Series.Plugins
                                         target.ServerPosition, Math.Abs(dist - 500));
                                     if (!IsDangerousPosition(pos))
                                     {
-                                        Game.PrintChat("e");
                                         E.Cast(Deviate(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), this.GetGapclosingAngle()));
                                         return;
                                     }
@@ -429,8 +428,8 @@ namespace Challenger_Series.Plugins
         private bool IsDangerousPosition(Vector3 pos)
         {
             return GameObjects.EnemyHeroes.Any(
-                e => e.IsValidTarget() &&
-                     (e.Distance(pos) < 375) && (E.GetPrediction(e).UnitPosition.Distance(pos) > 500)) ||
+                e => e.IsHPBarRendered && e.IsMelee &&
+                     (e.Distance(pos) < 375)) ||
                    (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true));
         }
 
