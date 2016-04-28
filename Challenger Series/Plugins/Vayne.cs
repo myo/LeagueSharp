@@ -893,7 +893,7 @@ namespace Challenger_Series
         private bool IsDangerousPosition(Vector3 pos)
         {
             return GameObjects.EnemyHeroes.Any(
-                e => e.IsValidTarget() &&
+                e => e.IsValidTarget(615) &&
                      ((e.Distance(pos) < 375) || (Q.GetPrediction(e).UnitPosition.Distance(pos) > 550))) ||
                      (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true));
         }
