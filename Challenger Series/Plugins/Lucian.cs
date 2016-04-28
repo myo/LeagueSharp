@@ -162,6 +162,8 @@ namespace Challenger_Series.Plugins
 
         void QExHarass()
         {
+            // no drawing turret aggro for no reason
+            if (ObjectManager.Player.UnderTurret(true)) return;
             var q2tg = TargetSelector.GetTarget(Q2.Range);
             if (q2tg != null && q2tg.IsHPBarRendered)
             {
