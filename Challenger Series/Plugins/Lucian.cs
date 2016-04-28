@@ -169,7 +169,7 @@ namespace Challenger_Series.Plugins
             {
                 if (q2tg.Distance(ObjectManager.Player) > 600)
                 {
-                    if (Orbwalker.ActiveMode != OrbwalkingMode.None && Orbwalker.ActiveMode != OrbwalkingMode.Combo)
+                    if (Orbwalker.ActiveMode != OrbwalkingMode.None && (Orbwalker.ActiveMode != OrbwalkingMode.Combo || q2tg.Health < Q.GetDamage(q2tg)))
                     {
                         var menuItem = QExtendedBlacklist["qexbl" + q2tg.CharData.BaseSkinName];
                         if (UseQExtended && ObjectManager.Player.ManaPercent > QExManaPercent && menuItem != null
