@@ -102,7 +102,7 @@ namespace Challenger_Series
                     {
                         if (E.CastOnUnit(enemy))
                         {
-                            DelayAction.Add(100+Game.Ping/2,
+                            DelayAction.Add(100,
                                 () =>
                                     {
                                         this.ZZrot.Cast(
