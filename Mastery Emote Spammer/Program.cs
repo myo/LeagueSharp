@@ -136,7 +136,7 @@ namespace Mastery_Badge_Spammer
                 MyDeaths = ObjectManager.Player.Deaths;
                 if (Menu.Item("Classic").GetValue<bool>())
                 {
-                    Game.Say("classic");
+                    Game.Say("/all classic");
                 }
                 if (Menu.Item("ondeath").GetValue<bool>())
                 {
