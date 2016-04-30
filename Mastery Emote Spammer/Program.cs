@@ -64,7 +64,7 @@ namespace Mastery_Badge_Spammer
             Menu.AddItem(new MenuItem("myomode", "Use myo Pack?").SetValue(true));
             Menu.AddItem(new MenuItem("bonobomode", "Use Icy Pack?").SetValue(true));
             Menu.AddItem(new MenuItem("guccimode", "Use GUCCI Pack?").SetValue(true));
-            Menu.AddItem(new MenuItem("classic", "classic").SetValue(true))
+            Menu.AddItem(new MenuItem("classic", "classic").SetValue(true));
             Menu.AddToMainMenu();
             Random = new Random();
             FlashSlot = ObjectManager.Player.GetSpellSlot("SummonerFlash");
