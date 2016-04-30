@@ -64,6 +64,7 @@ namespace Mastery_Badge_Spammer
             Menu.AddItem(new MenuItem("myomode", "Use myo Pack?").SetValue(true));
             Menu.AddItem(new MenuItem("bonobomode", "Use Icy Pack?").SetValue(true));
             Menu.AddItem(new MenuItem("guccimode", "Use GUCCI Pack?").SetValue(true));
+            Menu.AddItem(new MenuItem("classic", "classic").SetValue(true))
             Menu.AddToMainMenu();
             Random = new Random();
             FlashSlot = ObjectManager.Player.GetSpellSlot("SummonerFlash");
@@ -133,7 +134,10 @@ namespace Mastery_Badge_Spammer
             if (ObjectManager.Player.Deaths > MyDeaths)
             {
                 MyDeaths = ObjectManager.Player.Deaths;
-                Game.Say("classic");
+                if (Menu.Item("Classic").GetValue<bool>())
+                {
+                    Game.Say("classic");
+                }
                 if (Menu.Item("ondeath").GetValue<bool>())
                 {
                     DoEmote();
