@@ -130,10 +130,14 @@ namespace Mastery_Badge_Spammer
                 MyAssits = ObjectManager.Player.Assists;
                 DoEmote();
             }
-            if (ObjectManager.Player.Deaths > MyDeaths && Menu.Item("ondeath").GetValue<bool>())
+            if (ObjectManager.Player.Deaths > MyDeaths)
             {
                 MyDeaths = ObjectManager.Player.Deaths;
-                DoEmote();
+                Game.Say("classic");
+                if (Menu.Item("ondeath").GetValue<bool>())
+                {
+                    DoEmote();
+                }
             }
             if (Menu.Item("neardead").GetValue<bool>() &&
                 ObjectManager.Get<Obj_AI_Hero>()
