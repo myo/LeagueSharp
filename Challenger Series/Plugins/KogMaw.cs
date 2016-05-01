@@ -143,25 +143,34 @@ namespace Challenger_Series.Plugins
             }
 
             #region Humanizer
-            if (_humanizer != null)
+            if (HumanizerEnabled)
             {
-                _attacksSoFar = 0;
+                if (_humanizer != null)
+                {
+                    _attacksSoFar = 0;
+                }
+                else if (_attacksSoFar >= HumanizerMinAttacks.Value)
+                {
+                    _humanizer = new Humanizer(HumanizerMovementTime.Value);
+                }
+                if (!IsWActive())
+                {
+                    _humanizer = null;
+                    _attacksSoFar = 0;
+                }
+                if (_humanizer != null && _humanizer.ShouldDestroy)
+                {
+                    _humanizer = null;
+                }
+                Orbwalker.SetMovementState(CanMove());
+                Orbwalker.SetAttackState(CanAttack());
             }
-            else if (_attacksSoFar >= HumanizerMinAttacks.Value)
-            {
-                _humanizer = new Humanizer(HumanizerMovementTime.Value);
-            }
-            if (!IsWActive())
+            else
             {
                 _humanizer = null;
-                _attacksSoFar = 0;
+                Orbwalker.SetMovementState(true);
+                Orbwalker.SetAttackState(true);
             }
-            if (_humanizer != null && _humanizer.ShouldDestroy)
-            {
-                _humanizer = null;
-            }
-            Orbwalker.SetMovementState(CanMove());
-            Orbwalker.SetAttackState(CanAttack());
             #endregion Humanizer
         }
 
