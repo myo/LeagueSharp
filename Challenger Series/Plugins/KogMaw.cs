@@ -316,7 +316,7 @@ namespace Challenger_Series.Plugins
             var myPos = ObjectManager.Player.ServerPosition;
             foreach (
                 var enemy in
-                    ValidTargets.Where(h => h.Distance(myPos) < R.Range && (!IsWActive() || h.Distance(myPos) > W.Range + 85) && h.HealthPercent < 25 && h.IsValidTarget()))
+                    ValidTargets.Where(h => h.Distance(myPos) < R.Range && h.HealthPercent < 25 && h.IsValidTarget()))
             {
                 var prediction = R.GetPrediction(enemy, true);
                 if ((int)prediction.Hitchance > (int)HitChance.Medium)
@@ -325,7 +325,7 @@ namespace Challenger_Series.Plugins
                 }
             }
             if (GetRStacks() >= MaxRStacksSlider.Value) return;
-            if (IsWActive() || (Orbwalker.ActiveMode != OrbwalkingMode.Combo && !UseRHarass)) return;
+            if ((Orbwalker.ActiveMode != OrbwalkingMode.Combo && !UseRHarass)) return;
 
             foreach (var enemy in ValidTargets.Where(h => h.Distance(myPos) < R.Range && h.IsValidTarget() && h.HealthPercent < 35))
             {
