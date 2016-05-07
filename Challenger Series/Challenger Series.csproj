@@ -139,12 +139,6 @@
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\..\..\..\..\LS\System\clipper_library.dll" />
-    <Analyzer Include="..\..\..\..\..\LS\System\LeagueSharp.Data.dll" />
-    <Analyzer Include="..\..\..\..\..\LS\System\SharpDX.Direct3D9.dll" />
-    <Analyzer Include="..\..\..\..\..\LS\System\SharpDX.dll" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
