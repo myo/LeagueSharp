@@ -50,22 +50,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>C:\L3\System\clipper_library.dll</HintPath>
+      <HintPath>C:\LS\System\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>C:\L3\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\LS\System\LeagueSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LeagueSharp.Common">
+      <HintPath>C:\LS\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Data">
-      <HintPath>C:\L3\System\LeagueSharp.Data.dll</HintPath>
+      <HintPath>C:\LS\System\LeagueSharp.Data.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.SDK">
-      <HintPath>C:\L3\System\LeagueSharp.SDK.dll</HintPath>
+      <HintPath>C:\LS\System\LeagueSharp.SDK.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\L3\System\SharpDX.dll</HintPath>
+      <HintPath>C:\LS\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>C:\L3\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\LS\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -104,6 +107,7 @@
     <Compile Include="Utils\Logic\PositionSaver.cs" />
     <Compile Include="Utils\Logic\PositionSaverCore.cs" />
     <Compile Include="Utils\Misc.cs" />
+    <Compile Include="Utils\Prediction.cs" />
     <Compile Include="Utils\VectorHelper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -134,6 +138,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\..\..\..\..\LS\System\clipper_library.dll" />
+    <Analyzer Include="..\..\..\..\..\LS\System\LeagueSharp.Data.dll" />
+    <Analyzer Include="..\..\..\..\..\LS\System\SharpDX.Direct3D9.dll" />
+    <Analyzer Include="..\..\..\..\..\LS\System\SharpDX.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

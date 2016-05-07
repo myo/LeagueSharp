@@ -422,16 +422,13 @@ namespace Challenger_Series
                         orbwalkingActionArgs.Process = false;
                     }
                 }
-                if (ObjectManager.Player.HasBuff("vaynetumblebonus") && orbwalkingActionArgs.Target is Obj_AI_Minion &&
-                    UseQBonusOnEnemiesNotCS)
+                var possibleTarget = Variables.TargetSelector.GetTarget(615, DamageType.Physical);
+                if (possibleTarget != null && orbwalkingActionArgs.Target is Obj_AI_Minion &&
+                    UseQBonusOnEnemiesNotCS && ObjectManager.Player.HasBuff("vaynetumblebonus"))
                 {
-                    var possibleTarget = Variables.TargetSelector.GetTarget(-1f, DamageType.Physical);
-                    if (possibleTarget != null && possibleTarget.InAutoAttackRange())
-                    {
                         Orbwalker.ForceTarget = possibleTarget;
                         Orbwalker.Attack(possibleTarget);
                         orbwalkingActionArgs.Process = false;
-                    }
                 }
                 var possibleNearbyMeleeChampion =
                     ValidTargets.FirstOrDefault(
@@ -446,8 +443,8 @@ namespace Challenger_Series
                         if (!IsDangerousPosition(pos))
                         {
                             Q.Cast(pos);
+                            orbwalkingActionArgs.Process = false;
                         }
-                        orbwalkingActionArgs.Process = false;
                     }
                     if (UseEWhenMeleesNearBool && !Q.IsReady() && E.IsReady())
                     {
@@ -892,10 +889,8 @@ namespace Challenger_Series
 
         private bool IsDangerousPosition(Vector3 pos)
         {
-            return GameObjects.EnemyHeroes.Any(
-                e => e.IsValidTarget(615) &&
-                     ((e.Distance(pos) < 375) || (Q.GetPrediction(e).UnitPosition.Distance(pos) > 550))) ||
-                     (pos.UnderTurret(true) && !ObjectManager.Player.UnderTurret(true));
+            return ValidTargets.Any(e => e.IsMelee && e.Distance(pos) < 375) ||
+                   (pos.UnderTurret(true) && !ObjectManager.Player.ServerPosition.UnderTurret(true));
         }
 
         private bool IsKillable(Obj_AI_Hero hero)
