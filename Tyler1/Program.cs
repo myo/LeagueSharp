@@ -54,11 +54,18 @@ namespace Tyler1
         static void Main(string[] args)
         {
             if (ObjectManager.Player.CharData.BaseSkinName != "Draven") return;
-            Events.OnLoad += InitSpells;
-            Events.OnLoad += FinishLoading;
+            Events.OnLoad += Load;
         }
 
-        private static void InitSpells(object sender, EventArgs args)
+        private static void Load(object sender, EventArgs args)
+        {
+            DelayAction.Add(2500, () =>
+            {
+                InitSpells();
+                FinishLoading();
+            });
+        }
+        private static void InitSpells()
         {
             Q = new Spell(SpellSlot.Q);
             W = new Spell(SpellSlot.W);
@@ -74,7 +81,7 @@ namespace Tyler1
             QSS = new Items.Item(3140, 22000);
         }
 
-        private static void FinishLoading(object sender, EventArgs args)
+        private static void FinishLoading()
         {
             Drawing.OnDraw += Draw;
             Game.OnUpdate += OnUpdate;
