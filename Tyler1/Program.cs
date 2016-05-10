@@ -53,7 +53,6 @@ namespace Tyler1
 
         static void Main(string[] args)
         {
-            if (ObjectManager.Player.CharData.BaseSkinName != "Draven") return;
             Events.OnLoad += Load;
         }
 
@@ -61,6 +60,7 @@ namespace Tyler1
         {
             DelayAction.Add(2500, () =>
             {
+                if (ObjectManager.Player.CharData.BaseSkinName != "Draven") return;
                 InitSpells();
                 FinishLoading();
             });
