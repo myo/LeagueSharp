@@ -210,7 +210,7 @@ namespace Tyler1
                             .Where(
                                 x =>
                                     x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead  &&
-                                    (!x.Position.IsUnderEnemyTurret() || Mouse.IsUnderEnemyTurret()))
+                                    (!x.Position.IsUnderEnemyTurret() || (Mouse.IsUnderEnemyTurret() && ObjectManager.Player.IsUnderEnemyTurret())))
                             .OrderBy(a => a.Distance(ObjectManager.Player)))
                 {
                     if (OnlyCatchIfSafe &&
