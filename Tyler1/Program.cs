@@ -58,7 +58,7 @@ namespace Tyler1
 
         private static void Load(object sender, EventArgs args)
         {
-            DelayAction.Add(2500, () =>
+            DelayAction.Add(1500, () =>
             {
                 if (ObjectManager.Player.CharData.BaseSkinName != "Draven") return;
                 InitSpells();
