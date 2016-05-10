@@ -23,6 +23,8 @@ namespace Tyler1
         public static MenuBool CatchOnlyCloseToMouse;
         public static MenuSlider MaxDistToMouse;
         public static MenuBool OnlyCatchIfSafe;
+        public static MenuSlider MaxQAxes;
+        public static MenuSlider MinQLaneclearManaPercent;
         public static Menu EMenu;
         public static MenuBool ECombo;
         public static MenuBool EGC;
@@ -48,6 +50,16 @@ namespace Tyler1
                     return 0;
                 }
                 return data.Count == 0 ? 1 : data.Count;
+            }
+        }
+        private static int TotalAxesCount
+        {
+            get
+            {
+                return AxesCount + ObjectManager.Get<GameObject>()
+                    .Count(
+                        x =>
+                            x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead);
             }
         }
 
@@ -97,7 +109,8 @@ namespace Tyler1
             CatchOnlyCloseToMouse = Menu.Add(new MenuBool("tyler1onlyclose", "Catch only axes close to mouse?", true));
             MaxDistToMouse = Menu.Add(new MenuSlider("tyler1maxdist", "Max axe distance to mouse", 500, 250, 1250));
             OnlyCatchIfSafe = Menu.Add(new MenuBool("tyler1safeaxes", "Only catch axes if safe (anti melee)", false));
-
+            MaxQAxes = Menu.Add(new MenuSlider("tyler1MaxQs", "Max Q Axes", 5, 1, 5));
+            MinQLaneclearManaPercent = Menu.Add(new MenuSlider("tyler1QLCMana", "Min Mana Percent for Q Laneclear", 60, 0, 100));
             EMenu = Menu.Add(new Menu("tyler1E", "E Settings: "));
             ECombo = EMenu.Add(new MenuBool("tyler1ECombo", "Use E in Combo", true));
             EGC = EMenu.Add(new MenuBool("tyler1EGC", "Use E on Gapcloser", true));
@@ -145,6 +158,7 @@ namespace Tyler1
 
         private static void Farm()
         {
+            if (ObjectManager.Player.ManaPercent < MinQLaneclearManaPercent.Value) return;
             if (ObjectManager.Get<Obj_AI_Minion>().Any(m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < MyRange))
             {
                 if (AxesCount == 0 && Q.IsReady()) Q.Cast();
@@ -156,7 +170,7 @@ namespace Tyler1
             var target = Variables.TargetSelector.GetTarget(E.Range, DamageType.Physical);
             if (target.Distance(Player) < MyRange + 100)
             {
-                if (AxesCount < 1) Q.Cast();
+                if (AxesCount < 1 && TotalAxesCount <= MaxQAxes.Value) Q.Cast();
                 if (WCombo && W.IsReady() && !Player.HasBuff("dravenfurybuff")) W.Cast();
             }
             if (ECombo && E.IsReady() && target.IsValidTarget(750)) E.Cast(target.ServerPosition);
