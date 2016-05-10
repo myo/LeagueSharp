@@ -31,6 +31,7 @@ namespace Tyler1
         public static MenuBool EInterrupt;
         public static Menu RMenu;
         public static MenuBool RKS;
+        public static MenuBool RKSOnlyIfCantAA;
         public static MenuSlider RIfHit;
         public static MenuBool WCombo;
         private static Obj_AI_Hero Player = ObjectManager.Player;
@@ -117,6 +118,7 @@ namespace Tyler1
             EInterrupt = EMenu.Add(new MenuBool("tyler1EInterrupt", "Use E to Interrupt", true));
             RMenu = Menu.Add(new Menu("tyler1R", "R Settings:"));
             RKS = RMenu.Add(new MenuBool("tyler1RKS", "Use R to steal kills", true));
+            RKSOnlyIfCantAA = RMenu.Add(new MenuBool("tyler1RKSOnlyIfCantAA", "Use R KS only if can't AA", true));
             RIfHit = RMenu.Add(new MenuSlider("tyler1RIfHit", "Use R if it will hit X enemies", 2, 1, 5));
             WCombo = Menu.Add(new MenuBool("tyler1WCombo", "Use W in Combo", true));
             Menu.Attach();
@@ -243,7 +245,7 @@ namespace Tyler1
         if (!RKS) return;
             foreach (
                 var enemy in
-                    GameObjects.EnemyHeroes.Where(e => e.IsHPBarRendered && e.Distance(ObjectManager.Player) < 3000))
+                    GameObjects.EnemyHeroes.Where(e => e.IsHPBarRendered && e.Distance(ObjectManager.Player) < 3000 && (e.Distance(ObjectManager.Player) > MyRange || !RKSOnlyIfCantAA)))
             {
                 if (enemy.Health < R.GetDamage(enemy))
                 {
