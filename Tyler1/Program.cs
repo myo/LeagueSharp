@@ -88,6 +88,7 @@ namespace Tyler1
             Events.OnGapCloser += OnGapcloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
             DelayAction.Add(3000, () => MyRange = Variables.Orbwalker.GetAutoAttackRange(Player));
+            Variables.Orbwalker.Enabled = true
             DelayAction.Add(1000, ()=>Variables.Orbwalker.Enabled = true);
             DelayAction.Add(5000, () => Variables.Orbwalker.Enabled = true);
             DelayAction.Add(10000, () => Variables.Orbwalker.Enabled = true);
