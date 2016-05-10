@@ -161,7 +161,7 @@ namespace Tyler1
             if (ObjectManager.Player.ManaPercent < MinQLaneclearManaPercent.Value) return;
             if (ObjectManager.Get<Obj_AI_Minion>().Any(m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < MyRange))
             {
-                if (AxesCount == 0 && Q.IsReady()) Q.Cast();
+                if (AxesCount < 1 && TotalAxesCount <= MaxQAxes.Value) Q.Cast();
             }
         }
 
