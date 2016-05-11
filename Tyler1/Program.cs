@@ -277,7 +277,11 @@ namespace Tyler1
 
                 for (int i = 0; i < reticles.Length; i++)
                 {
-                    Drawing.DrawLine(Drawing.WorldToScreen(reticles[i].Position), Drawing.WorldToScreen(reticles[i+1].Position), 8, Color.Red);
+                    if (i < reticles.Length - 1)
+                    {
+                        Drawing.DrawLine(Drawing.WorldToScreen(reticles[i].Position),
+                            Drawing.WorldToScreen(reticles[i + 1].Position), 8, Color.Red);
+                    }
                 }
                 if (CatchOnlyCloseToMouse && MaxDistToMouse.Value < 700 &&
                     ObjectManager.Get<GameObject>()
