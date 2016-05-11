@@ -257,24 +257,40 @@ namespace Tyler1
                 }
             }
         }
+
         private static void Draw(EventArgs args)
         {
             if (Player.IsDead) return;
-            foreach (var AXE in ObjectManager.Get<GameObject>().Where(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead))
+            var reticles =
+                ObjectManager.Get<GameObject>()
+                    .Where(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead).ToArray();
+            if (reticles.Any())
             {
-                var AXEToScreen = Drawing.WorldToScreen(AXE.Position);
                 var PlayerPosToScreen = Drawing.WorldToScreen(ObjectManager.Player.Position);
-                Render.Circle.DrawCircle(AXE.Position, 140, Color.Red, 8);
-                Drawing.DrawLine(PlayerPosToScreen, AXEToScreen, 8, Color.Red);
-            }
-            if (CatchOnlyCloseToMouse && MaxDistToMouse.Value < 700 && ObjectManager.Get<GameObject>().Any(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead))
-            {
-                Render.Circle.DrawCircle(Game.CursorPos, MaxDistToMouse.Value, Color.Red, 8);
+                foreach (var AXE in reticles)
+                {
+                    var AXEToScreen = Drawing.WorldToScreen(AXE.Position);
+                    Render.Circle.DrawCircle(AXE.Position, 140, Color.Red, 8);
+                }
+
+                Drawing.DrawLine(PlayerPosToScreen, Drawing.WorldToScreen(reticles[0].Position), 8, Color.Red);
+
+                for (int i = 0; i < reticles.Length; i++)
+                {
+                    Drawing.DrawLine(Drawing.WorldToScreen(reticles[i].Position), Drawing.WorldToScreen(reticles[i+1].Position), 8, Color.Red);
+                }
+                if (CatchOnlyCloseToMouse && MaxDistToMouse.Value < 700 &&
+                    ObjectManager.Get<GameObject>()
+                        .Any(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead))
+                {
+                    Render.Circle.DrawCircle(Game.CursorPos, MaxDistToMouse.Value, Color.Red, 8);
+                }
             }
         }
+
         private static void OnGapcloser(object sender, Events.GapCloserEventArgs gapcloser)
         {
-            if (EGC && E.IsReady())
+            if (EGC && E.IsReady() && gapcloser.Sender.Distance(ObjectManager.Player) < 800)
             {
                 var pred = E.GetPrediction(gapcloser.Sender);
                 if (pred.Hitchance > HitChance.High)
