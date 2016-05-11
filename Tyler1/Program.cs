@@ -222,7 +222,15 @@ namespace Tyler1
                     if (CatchOnlyCloseToMouse && AXE.Distance(Mouse) > MaxDistToMouse.Value)
                     {
                         Variables.Orbwalker.SetMovementState(true);
-                        break;
+
+                        if (GameObjects.EnemyHeroes.Count(
+                            e => e.IsHPBarRendered && e.IsMelee && e.ServerPosition.Distance(AXE.Position) < 350) >= 1)
+                        {
+                            //user probably doesn't want to go there, try the next reticle
+                            break;
+                        }
+                        //maybe user just has potato reaction time
+                        return;
                     }
                     if (AXE.Distance(Player.ServerPosition) > 80 && Variables.Orbwalker.CanMove(30, false))
                     {
