@@ -177,7 +177,12 @@ namespace Tyler1
                 if (AxesCount < 1 && TotalAxesCount <= MaxQAxes.Value) Q.Cast();
                 if (WCombo && W.IsReady() && !Player.HasBuff("dravenfurybuff")) W.Cast();
             }
-            if (ECombo && E.IsReady() && target.IsValidTarget(750)) E.Cast(target.ServerPosition);
+            if (ECombo && E.IsReady() && target.IsValidTarget(750))
+            {
+                var pred = E.GetPrediction(target);
+                if (pred.Hitchance >= HitChance.High)
+                E.Cast(pred.UnitPosition);
+            }
 
             if (UseItems)
             {
