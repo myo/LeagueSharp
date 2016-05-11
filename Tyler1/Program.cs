@@ -34,6 +34,7 @@ namespace Tyler1
         public static MenuBool RKSOnlyIfCantAA;
         public static MenuSlider RIfHit;
         public static MenuBool WCombo;
+        public static MenuBool UseItems;
         private static Obj_AI_Hero Player = ObjectManager.Player;
         private static Spell Q, W, E, R;
         static Items.Item BOTRK, Bilgewater, Yomamas, Mercurial, QSS;
@@ -121,6 +122,7 @@ namespace Tyler1
             RKSOnlyIfCantAA = RMenu.Add(new MenuBool("tyler1RKSOnlyIfCantAA", "Use R KS only if can't AA", true));
             RIfHit = RMenu.Add(new MenuSlider("tyler1RIfHit", "Use R if it will hit X enemies", 2, 1, 5));
             WCombo = Menu.Add(new MenuBool("tyler1WCombo", "Use W in Combo", true));
+            UseItems = Menu.Add(new MenuBool("tyler1Items", "Use Items?", true));
             Menu.Attach();
         }
 
@@ -177,19 +179,22 @@ namespace Tyler1
             }
             if (ECombo && E.IsReady() && target.IsValidTarget(750)) E.Cast(target.ServerPosition);
 
-            if (target.IsValidTarget(MyRange))
+            if (UseItems)
             {
-                if (Yomamas.IsReady) Yomamas.Cast();
-                if (Bilgewater.IsReady) Bilgewater.Cast(target);
-                if (BOTRK.IsReady) BOTRK.Cast(target);
-            }
-            //QSS
-            if (Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Fear) ||
-                Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Taunt) ||
-                Player.HasBuffOfType(BuffType.Blind))
-            {
-                if (Mercurial.IsReady) DelayAction.Add(100, () => Mercurial.Cast());
-                if (QSS.IsReady) DelayAction.Add(100, () => QSS.Cast());
+                if (target.IsValidTarget(MyRange))
+                {
+                    if (Yomamas.IsReady) Yomamas.Cast();
+                    if (Bilgewater.IsReady) Bilgewater.Cast(target);
+                    if (BOTRK.IsReady) BOTRK.Cast(target);
+                }
+                //QSS
+                if (Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Fear) ||
+                    Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Taunt) ||
+                    Player.HasBuffOfType(BuffType.Blind))
+                {
+                    if (Mercurial.IsReady) DelayAction.Add(100, () => Mercurial.Cast());
+                    if (QSS.IsReady) DelayAction.Add(100, () => QSS.Cast());
+                }
             }
         }
 
