@@ -39,8 +39,8 @@ namespace Challenger_Series
             this.E = new Spell(SpellSlot.E, 900);
             this.R = new Spell(SpellSlot.R);
 
-            Q.SetSkillshot(0.5f, 125, 1750, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.5f, 70f, 1750, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.30f, 125, 1750, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.4f, 70f, 1750, false, SkillshotType.SkillshotCircle);
 
             InitializeMenu();
 
@@ -65,12 +65,30 @@ namespace Challenger_Series
 
         private void OnGapCloser(object sender, Events.GapCloserEventArgs args)
         {
-            if (args.Sender.Distance(ObjectManager.Player) < 900 && args.IsDirectedToPlayer)
+            if (args.Target != null && args.Target.Distance(ObjectManager.Player) < 850)
             {
-                this.CastE(
-                    args.End.Distance(ObjectManager.Player.ServerPosition) < 850
-                        ? args.End
-                        : ObjectManager.Player.ServerPosition);
+                var hero = args.Target as Obj_AI_Hero;
+                if (hero != null && hero.IsHPBarRendered)
+                {
+                    E.Cast(hero.ServerPosition.Randomize(-15, 15));
+                    return;
+                }
+                E.Cast(args.Target.Position.Randomize(-15, 15));
+            }
+            if (args.End.Distance(ObjectManager.Player.Position) < 850)
+            {
+                if (args.End.Distance(ObjectManager.Player.Position) < 450)
+                {
+                    E.Cast(ObjectManager.Player.ServerPosition.Randomize(-15, 15));
+                }
+                else
+                {
+                    var gcTarget = GameObjects.AllyHeroes.FirstOrDefault(ally => ally.Position.Distance(args.End) < 450);
+                    if (gcTarget != null)
+                    {
+                        E.Cast(gcTarget.ServerPosition.Randomize(-15, 15));
+                    }
+                }
             }
         }
 
