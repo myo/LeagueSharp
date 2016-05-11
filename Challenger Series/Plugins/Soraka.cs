@@ -34,12 +34,12 @@ namespace Challenger_Series
 
         public Soraka()
         {
-            this.Q = new Spell(SpellSlot.Q, 750);
+            this.Q = new Spell(SpellSlot.Q, 800);
             this.W = new Spell(SpellSlot.W, 550);
             this.E = new Spell(SpellSlot.E, 900);
             this.R = new Spell(SpellSlot.R);
 
-            Q.SetSkillshot(0.30f, 125, 1750, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.25f, 125, 1600, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.4f, 70f, 1750, false, SkillshotType.SkillshotCircle);
 
             InitializeMenu();
