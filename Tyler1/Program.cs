@@ -153,7 +153,7 @@ namespace Tyler1
         private static void RCombo()
         {
             var target = Variables.TargetSelector.GetTarget(E);
-            if (target != null && target.IsHPBarRendered)
+            if (target != null && target.IsHPBarRendered && !target.IsDead && !target.IsZombie)
             {
                 var pred = R.GetPrediction(target);
                 if (pred.Hitchance > HitChance.High && pred.AoeTargetsHit.Count >= RIfHit.Value)
