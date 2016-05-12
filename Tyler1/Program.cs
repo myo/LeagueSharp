@@ -54,6 +54,7 @@ namespace Tyler1
                 return data.Count == 0 ? 1 : data.Count;
             }
         }
+
         private static int TotalAxesCount
         {
             get
@@ -79,6 +80,7 @@ namespace Tyler1
                 FinishLoading();
             });
         }
+
         private static void InitSpells()
         {
             Q = new Spell(SpellSlot.Q);
@@ -103,7 +105,7 @@ namespace Tyler1
             Events.OnInterruptableTarget += OnInterruptableTarget;
             DelayAction.Add(3000, () => MyRange = Variables.Orbwalker.GetAutoAttackRange(Player));
             Variables.Orbwalker.Enabled = true;
-            DelayAction.Add(1000, ()=>Variables.Orbwalker.Enabled = true);
+            DelayAction.Add(1000, () => Variables.Orbwalker.Enabled = true);
             DelayAction.Add(5000, () => Variables.Orbwalker.Enabled = true);
             DelayAction.Add(10000, () => Variables.Orbwalker.Enabled = true);
             Menu = new Menu("tyler1", "Tyler1", true);
@@ -112,7 +114,8 @@ namespace Tyler1
             MaxDistToMouse = Menu.Add(new MenuSlider("tyler1maxdist", "Max axe distance to mouse", 500, 250, 1250));
             OnlyCatchIfSafe = Menu.Add(new MenuBool("tyler1safeaxes", "Only catch axes if safe (anti melee)", false));
             MaxQAxes = Menu.Add(new MenuSlider("tyler1MaxQs", "Max Q Axes", 5, 1, 5));
-            MinQLaneclearManaPercent = Menu.Add(new MenuSlider("tyler1QLCMana", "Min Mana Percent for Q Laneclear", 60, 0, 100));
+            MinQLaneclearManaPercent =
+                Menu.Add(new MenuSlider("tyler1QLCMana", "Min Mana Percent for Q Laneclear", 60, 0, 100));
             EMenu = Menu.Add(new Menu("tyler1E", "E Settings: "));
             ECombo = EMenu.Add(new MenuBool("tyler1ECombo", "Use E in Combo", true));
             EGC = EMenu.Add(new MenuBool("tyler1EGC", "Use E on Gapcloser", true));
@@ -163,7 +166,9 @@ namespace Tyler1
         private static void Farm()
         {
             if (ObjectManager.Player.ManaPercent < MinQLaneclearManaPercent.Value) return;
-            if (ObjectManager.Get<Obj_AI_Minion>().Any(m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < MyRange))
+            if (
+                ObjectManager.Get<Obj_AI_Minion>()
+                    .Any(m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < MyRange))
             {
                 if (AxesCount < 1 && TotalAxesCount <= MaxQAxes.Value) Q.Cast();
             }
@@ -181,7 +186,7 @@ namespace Tyler1
             {
                 var pred = E.GetPrediction(target);
                 if (pred.Hitchance >= HitChance.High)
-                E.Cast(pred.UnitPosition);
+                    E.Cast(pred.UnitPosition);
             }
 
             if (UseItems)
@@ -219,8 +224,9 @@ namespace Tyler1
                         ObjectManager.Get<GameObject>()
                             .Where(
                                 x =>
-                                    x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead  &&
-                                    (!x.Position.IsUnderEnemyTurret() || (Mouse.IsUnderEnemyTurret() && ObjectManager.Player.IsUnderEnemyTurret())))
+                                    x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead &&
+                                    (!x.Position.IsUnderEnemyTurret() ||
+                                     (Mouse.IsUnderEnemyTurret() && ObjectManager.Player.IsUnderEnemyTurret())))
                             .OrderBy(a => a.Distance(ObjectManager.Player)))
                 {
                     if (OnlyCatchIfSafe &&
@@ -255,15 +261,20 @@ namespace Tyler1
                 }
             }
         }
-        
-        
 
-    private static void KS()
-    {
-        if (!RKS) return;
+
+        /// <summary>
+        /// Will need to add an actual missile check for the axes in air instead of brosciencing
+        /// </summary>
+        private static void KS()
+        {
+            if (!RKS) return;
             foreach (
                 var enemy in
-                    GameObjects.EnemyHeroes.Where(e => e.IsHPBarRendered && e.Distance(ObjectManager.Player) < 3000 && (e.Distance(ObjectManager.Player) > MyRange || !RKSOnlyIfCantAA)))
+                    GameObjects.EnemyHeroes.Where(
+                        e =>
+                            e.IsHPBarRendered && e.Distance(ObjectManager.Player) < 3000 &&
+                            (e.Distance(ObjectManager.Player) > MyRange + 150 || !RKSOnlyIfCantAA)))
             {
                 if (enemy.Health < R.GetDamage(enemy))
                 {
@@ -321,6 +332,7 @@ namespace Tyler1
                 }
             }
         }
+
         private static void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
         {
             if (EInterrupt && E.IsReady() && args.Sender.Distance(ObjectManager.Player) < 950)
