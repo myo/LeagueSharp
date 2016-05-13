@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 using Color = System.Drawing.Color;
-using System.Drawing;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using LeagueSharp.SDK.Enumerations;
@@ -23,7 +22,6 @@ namespace Tyler1
         public static MenuBool CatchOnlyCloseToMouse;
         public static MenuSlider MaxDistToMouse;
         public static MenuBool OnlyCatchIfSafe;
-        public static MenuSlider MaxQAxes;
         public static MenuSlider MinQLaneclearManaPercent;
         public static Menu EMenu;
         public static MenuBool ECombo;
@@ -42,6 +40,8 @@ namespace Tyler1
         public static float MyRange = 550f;
         private static int _lastCatchAttempt;
 
+        private static Dictionary<int, GameObject> Reticles;
+
         private static int AxesCount
         {
             get
@@ -59,10 +59,8 @@ namespace Tyler1
         {
             get
             {
-                return AxesCount + ObjectManager.Get<GameObject>()
-                    .Count(
-                        x =>
-                            x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead);
+                return (ObjectManager.Player.HasBuff("dravenspinning") ? 1 : 0)
+                       + (ObjectManager.Player.HasBuff("dravenspinningleft") ? 1 : 0) + Reticles.Count;
             }
         }
 
@@ -78,7 +76,27 @@ namespace Tyler1
                 if (ObjectManager.Player.CharData.BaseSkinName != "Draven") return;
                 InitSpells();
                 FinishLoading();
+                Reticles = new Dictionary<int, GameObject>();
+                GameObject.OnCreate += OnCreate;
+                GameObject.OnDelete += OnDelete;
             });
+        }
+
+        private static void OnDelete(GameObject sender, EventArgs args)
+        {
+            var itemToDelete = Reticles.FirstOrDefault(ret => ret.Value.NetworkId == sender.NetworkId);
+            if (itemToDelete.Key != null)
+            {
+                Reticles.Remove(itemToDelete.Key);
+            }
+        }
+
+        private static void OnCreate(GameObject sender, EventArgs args)
+        {
+            if (sender.Name.Equals("Draven_Base_Q_reticle_self.troy") && !sender.IsDead)
+            {
+                Reticles.Add(Variables.TickCount, sender);
+            }
         }
 
         private static void InitSpells()
@@ -113,7 +131,6 @@ namespace Tyler1
             CatchOnlyCloseToMouse = Menu.Add(new MenuBool("tyler1onlyclose", "Catch only axes close to mouse?", true));
             MaxDistToMouse = Menu.Add(new MenuSlider("tyler1maxdist", "Max axe distance to mouse", 500, 250, 1250));
             OnlyCatchIfSafe = Menu.Add(new MenuBool("tyler1safeaxes", "Only catch axes if safe (anti melee)", false));
-            MaxQAxes = Menu.Add(new MenuSlider("tyler1MaxQs", "Max Q Axes", 5, 1, 5));
             MinQLaneclearManaPercent =
                 Menu.Add(new MenuSlider("tyler1QLCMana", "Min Mana Percent for Q Laneclear", 60, 0, 100));
             EMenu = Menu.Add(new Menu("tyler1E", "E Settings: "));
@@ -144,6 +161,8 @@ namespace Tyler1
                 KS();
                 if (W.IsReady() && Player.HasBuffOfType(BuffType.Slow) &&
                     target.Distance(ObjectManager.Player) <= MyRange) W.Cast();
+
+                
             }
             catch (Exception ex)
             {
@@ -198,9 +217,9 @@ namespace Tyler1
             if (ObjectManager.Player.ManaPercent < MinQLaneclearManaPercent.Value) return;
             if (
                 ObjectManager.Get<Obj_AI_Minion>()
-                    .Any(m => m.IsHPBarRendered && m.Distance(ObjectManager.Player) < MyRange))
+                    .Any(m => m.IsHPBarRendered && m.IsEnemy && m.Distance(ObjectManager.Player) < MyRange))
             {
-                if (AxesCount < 1 && TotalAxesCount <= MaxQAxes.Value) Q.Cast();
+                if (TotalAxesCount < 2) Q.Cast();
             }
         }
 
@@ -209,7 +228,7 @@ namespace Tyler1
             var target = Variables.TargetSelector.GetTarget(E.Range, DamageType.Physical);
             if (target.Distance(Player) < MyRange + 100)
             {
-                if (AxesCount < 1 && TotalAxesCount <= MaxQAxes.Value) Q.Cast();
+                if (TotalAxesCount < 2) Q.Cast();
                 if (WCombo && W.IsReady() && !Player.HasBuff("dravenfurybuff")) W.Cast();
             }
             if (ECombo && E.IsReady() && target.IsValidTarget(750))
@@ -250,15 +269,15 @@ namespace Tyler1
             if (AutoCatch)
             {
                 foreach (
-                    var AXE in
-                        ObjectManager.Get<GameObject>()
+                    var reticle in
+                        Reticles
                             .Where(
-                                x =>
-                                    x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead &&
-                                    (!x.Position.IsUnderEnemyTurret() ||
+                                x => !x.Value.IsDead &&
+                                    (!x.Value.Position.IsUnderEnemyTurret() ||
                                      (Mouse.IsUnderEnemyTurret() && ObjectManager.Player.IsUnderEnemyTurret())))
-                            .OrderBy(a => a.Distance(ObjectManager.Player)))
+                            .OrderBy(ret => ret.Key))
                 {
+                    var AXE = reticle.Value;
                     if (OnlyCatchIfSafe &&
                         GameObjects.EnemyHeroes.Count(
                             e => e.IsHPBarRendered && e.IsMelee && e.ServerPosition.Distance(AXE.Position) < 350) >= 1)
