@@ -161,17 +161,103 @@ namespace Tyler1
                 KS();
                 if (W.IsReady() && Player.HasBuffOfType(BuffType.Slow) &&
                     target.Distance(ObjectManager.Player) <= MyRange) W.Cast();
+                R1V1(target);
 
-                
             }
             catch (Exception ex)
             {
             }
         }
-        
+
+        private static void R1V1(Obj_AI_Hero target)
+        {
+            if (target != null && target.IsHPBarRendered)
+            {
+                if (target.HealthPercent > ObjectManager.Player.HealthPercent &&
+                    (target.MaxHealth <= ObjectManager.Player.MaxHealth + 300 ||
+                     noobchamps.Contains(target.CharData.BaseSkinName)))
+                {
+                    var pred = R.GetPrediction(target);
+                    if (pred.Hitchance >= HitChance.High)
+                    {
+                        R.Cast(pred.UnitPosition);
+                    }
+                }
+            }
+        }
+
+        private static List<string> noobchamps = new List<string>
+        {
+            "Ahri",
+            "Anivia",
+            "Annie",
+            "Ashe",
+            "Azir",
+            "Brand",
+            "Caitlyn",
+            "Cassiopeia",
+            "Corki",
+            "Draven",
+            "Ezreal",
+            "Graves",
+            "Jinx",
+            "Kalista",
+            "Karma",
+            "Karthus",
+            "Katarina",
+            "Kennen",
+            "KogMaw",
+            "Leblanc",
+            "Kindred",
+            "Lucian",
+            "Lux",
+            "Malzahar",
+            "MasterYi",
+            "MissFortune",
+            "Orianna",
+            "Quinn",
+            "Sivir",
+            "Syndra",
+            "Talon",
+            "Teemo",
+            "Tristana",
+            "TwistedFate",
+            "Twitch",
+            "Varus",
+            "Vayne",
+            "Veigar",
+            "Velkoz",
+            "Viktor",
+            "Xerath",
+            "Zed",
+            "Ziggs",
+            "Soraka",
+            "Akali",
+            "Diana",
+            "Ekko",
+            "Fiddlesticks",
+            "Fiora",
+            "Fizz",
+            "Heimerdinger",
+            "Illaoi",
+            "Jayce",
+            "Kassadin",
+            "Kayle",
+            "KhaZix",
+            "Kindred",
+            "Lissandra",
+            "Mordekaiser",
+            "Nidalee",
+            "Riven",
+            "Shaco",
+            "Vladimir",
+            "Yasuo",
+            "Zilean"
+        };
+
         /// <summary>
-                 /// Those buffs make the target either unkillable or a pain in the ass to kill, just wait until they end
-                 /// </summary>
+        /// Those buffs make the target either unkillable or a pain in the ass to kill, just wait until they end
+        /// </summary>
         private static List<string> UndyingBuffs = new List<string>
         {
             "JudicatorIntervention",
@@ -196,7 +282,8 @@ namespace Tyler1
                 return true;
             }
             //Sivir
-            return target.CharData.BaseSkinName == "Sivir" && target.HasBuffOfType(BuffType.SpellShield) || target.HasBuffOfType(BuffType.SpellImmunity);
+            return target.CharData.BaseSkinName == "Sivir" && target.HasBuffOfType(BuffType.SpellShield) ||
+                   target.HasBuffOfType(BuffType.SpellImmunity);
         }
 
         private static void RCombo()
@@ -273,8 +360,8 @@ namespace Tyler1
                         Reticles
                             .Where(
                                 x => !x.Value.IsDead &&
-                                    (!x.Value.Position.IsUnderEnemyTurret() ||
-                                     (Mouse.IsUnderEnemyTurret() && ObjectManager.Player.IsUnderEnemyTurret())))
+                                     (!x.Value.Position.IsUnderEnemyTurret() ||
+                                      (Mouse.IsUnderEnemyTurret() && ObjectManager.Player.IsUnderEnemyTurret())))
                             .OrderBy(ret => ret.Key))
                 {
                     var AXE = reticle.Value;
