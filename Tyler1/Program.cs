@@ -149,6 +149,36 @@ namespace Tyler1
             {
             }
         }
+        
+        /// <summary>
+                 /// Those buffs make the target either unkillable or a pain in the ass to kill, just wait until they end
+                 /// </summary>
+        private static List<string> UndyingBuffs = new List<string>
+        {
+            "JudicatorIntervention",
+            "UndyingRage",
+            "FerociousHowl",
+            "ChronoRevive",
+            "ChronoShift",
+            "lissandrarself",
+            "kindredrnodeathbuff"
+        };
+
+        private static bool ShouldntUlt(Obj_AI_Hero target)
+        {
+            //Dead or not a hero
+            if (target == null || !target.IsHPBarRendered) return true;
+            //Undying
+            if (UndyingBuffs.Any(buff => target.HasBuff(buff))) return true;
+            //Blitzcrank
+            if (target.CharData.BaseSkinName == "Blitzcrank" && !target.HasBuff("BlitzcrankManaBarrierCD")
+                && !target.HasBuff("ManaBarrier"))
+            {
+                return true;
+            }
+            //Sivir
+            return target.CharData.BaseSkinName == "Sivir" && target.HasBuffOfType(BuffType.SpellShield) || target.HasBuffOfType(BuffType.SpellImmunity);
+        }
 
         private static void RCombo()
         {
@@ -276,7 +306,7 @@ namespace Tyler1
                             e.IsHPBarRendered && e.Distance(ObjectManager.Player) < 3000 &&
                             (e.Distance(ObjectManager.Player) > MyRange + 150 || !RKSOnlyIfCantAA)))
             {
-                if (enemy.Health < R.GetDamage(enemy))
+                if (enemy.Health < R.GetDamage(enemy) && !ShouldntUlt(enemy))
                 {
                     var pred = R.GetPrediction(enemy);
                     if (pred.Hitchance >= HitChance.High)

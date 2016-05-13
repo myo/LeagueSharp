@@ -454,7 +454,7 @@ namespace Challenger_Series.Plugins
                 return true;
             }
             //SpellShield
-            return target.HasBuffOfType(BuffType.SpellShield) && target.HasBuffOfType(BuffType.SpellImmunity);
+            return target.HasBuffOfType(BuffType.SpellShield) || target.HasBuffOfType(BuffType.SpellImmunity);
         }
 
         private BuffInstance GetRendBuff(Obj_AI_Base target)
