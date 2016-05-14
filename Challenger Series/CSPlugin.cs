@@ -39,6 +39,7 @@ namespace Challenger_Series
 
         public CSPlugin()
         {
+			Bootstrap.Init(new string[1]);
             MainMenu = new Menu("challengerseries", ObjectManager.Player.ChampionName + " To The Challenger", true, ObjectManager.Player.ChampionName);
             CrossAssemblySettings = MainMenu.Add(new Menu("crossassemblysettings", "Challenger Utils: "));
             DrawEnemyWaypoints =
