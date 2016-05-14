@@ -7,7 +7,7 @@ using System.Security.Permissions;
 using System.Threading;
 
 using LeagueSharp;
-using LeagueSharp.SDKEx;
+using LeagueSharp.SDK;
 
 using SharpDX;
 

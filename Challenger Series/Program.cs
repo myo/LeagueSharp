@@ -11,7 +11,7 @@
 
 using Challenger_Series.Plugins;
 using LeagueSharp;
-using LeagueSharp.SDKEx;
+using LeagueSharp.SDK;
 
 namespace Challenger_Series
 {

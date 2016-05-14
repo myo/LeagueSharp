@@ -7,12 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
-using LeagueSharp.SDKEx;
-using LeagueSharp.SDKEx.UI;
+using LeagueSharp.SDK;
+using LeagueSharp.SDK.UI;
 using SharpDX;
 using PredictionInput = LeagueSharp.Common.PredictionInput;
-using SkillshotType = LeagueSharp.SDKEx.Enumerations.SkillshotType;
-using Spell = LeagueSharp.SDKEx.Spell;
+using SkillshotType = LeagueSharp.SDK.Enumerations.SkillshotType;
+using Spell = LeagueSharp.SDK.Spell;
 
 namespace Challenger_Series.Utils
 {
@@ -23,7 +23,7 @@ namespace Challenger_Series.Utils
         {
             switch (PredictionMode.SelectedValue)
             {
-                case "SDKEx":
+                case "SDK":
                 {
                     return spell.GetPrediction(target);
                 }
@@ -40,7 +40,7 @@ namespace Challenger_Series.Utils
             }
         }
 
-        public static LeagueSharp.Common.SkillshotType GetCommonSkillshotType(LeagueSharp.SDKEx.Enumerations.SkillshotType sdkType)
+        public static LeagueSharp.Common.SkillshotType GetCommonSkillshotType(LeagueSharp.SDK.Enumerations.SkillshotType sdkType)
         {
             switch (sdkType)
             {

@@ -14,16 +14,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Challenger_Series.Utils;
 using LeagueSharp;
-using LeagueSharp.SDKEx;
+using LeagueSharp.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
 using Challenger_Series.Utils;
 using System.Windows.Forms;
 using LeagueSharp.Data.Enumerations;
-using LeagueSharp.SDKEx.Enumerations;
-using LeagueSharp.SDKEx.UI;
-using LeagueSharp.SDKEx.Utils;
-using Menu = LeagueSharp.SDKEx.UI.Menu;
+using LeagueSharp.SDK.Enumerations;
+using LeagueSharp.SDK.UI;
+using LeagueSharp.SDK.Utils;
+using Menu = LeagueSharp.SDK.UI.Menu;
 
 namespace Challenger_Series
 {
@@ -50,7 +50,7 @@ namespace Challenger_Series
                 this.CrossAssemblySettings.Add(
                     new MenuSlider("triggeronupdate", "Trigger OnUpdate X times a second", 26, 20, 33));
             Utils.Prediction.PredictionMode =
-                this.CrossAssemblySettings.Add(new MenuList<string>("pred", "Use Prediction: ", new[] {"SDKEx", "Common"}));
+                this.CrossAssemblySettings.Add(new MenuList<string>("pred", "Use Prediction: ", new[] {"SDK", "Common"}));
 
 
             DelayAction.Add(15000, () => Orbwalker.Enabled = true);

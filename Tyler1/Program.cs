@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using SharpDX;
 using Color = System.Drawing.Color;
 using LeagueSharp;
-using LeagueSharp.SDKEx;
-using LeagueSharp.SDKEx.Enumerations;
-using LeagueSharp.SDKEx.UI;
-using LeagueSharp.SDKEx.Utils;
+using LeagueSharp.SDK;
+using LeagueSharp.SDK.Enumerations;
+using LeagueSharp.SDK.UI;
+using LeagueSharp.SDK.Utils;
 using SharpDX.IO;
 
 namespace Tyler1
@@ -33,17 +33,12 @@ namespace Tyler1
         public static MenuSlider RIfHit;
         public static MenuBool WCombo;
         public static MenuBool UseItems;
-        public static Menu DrawingMenu;
-        public static MenuBool DrawAXELocation;
-        public static MenuBool DrawAXECatchRadius;
-        public static MenuBool DrawAXELine;
-        public static MenuColor DrawingColor;
         private static Obj_AI_Hero Player = ObjectManager.Player;
         private static Spell Q, W, E, R;
         static Items.Item BOTRK, Bilgewater, Yomamas, Mercurial, QSS;
         public static Color color = Color.DarkOrange;
         public static float MyRange = 550f;
-        //private static int _lastCatchAttempt;
+        private static int _lastCatchAttempt;
         private static MenuBool R1vs1;
 
         private static Dictionary<int, GameObject> Reticles;
@@ -123,7 +118,7 @@ namespace Tyler1
 
         private static void FinishLoading()
         {
-            LeagueSharp.Drawing.OnDraw += Draw;
+            Drawing.OnDraw += Draw;
             Game.OnUpdate += OnUpdate;
             Events.OnGapCloser += OnGapcloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
@@ -151,13 +146,6 @@ namespace Tyler1
 
             WCombo = Menu.Add(new MenuBool("tyler1WCombo", "Use W in Combo", true));
             UseItems = Menu.Add(new MenuBool("tyler1Items", "Use Items?", true));
-
-            DrawingMenu = Menu.Add(new Menu("tyler1DrawSettings", "Draw Settings:"));
-            DrawAXECatchRadius = DrawingMenu.Add(new MenuBool("tyler1AxeCatchDraw", "Draw Axe Catch Radius", true));
-            DrawAXELocation = DrawingMenu.Add(new MenuBool("tyler1AxeLocationDraw", "Draw Axe Location", true));
-            DrawAXELine = DrawingMenu.Add(new MenuBool("tyler1AxeLineDraw", "Draw Line to Axe Position", true));
-            DrawingColor = DrawingMenu.Add(new MenuColor("tyler1DrawingColor", "Drawing Color", ColorBGRA.FromRgba(Color.Red.ToRgba())));
-
             Menu.Attach();
         }
 
@@ -444,36 +432,31 @@ namespace Tyler1
             var reticles =
                 ObjectManager.Get<GameObject>()
                     .Where(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead).ToArray();
-            Color lColor = DrawingColor.Color.ToSystemColor();
             if (reticles.Any())
             {
-                var PlayerPosToScreen = LeagueSharp.Drawing.WorldToScreen(ObjectManager.Player.Position);
+                var PlayerPosToScreen = Drawing.WorldToScreen(ObjectManager.Player.Position);
+                foreach (var AXE in reticles)
+                {
+                    var AXEToScreen = Drawing.WorldToScreen(AXE.Position);
+                    Render.Circle.DrawCircle(AXE.Position, 140, Color.Red, 8);
+                }
 
-                if (DrawAXELocation.Value)
-                    foreach (var AXE in reticles)
-                    {
-                        var AXEToScreen = LeagueSharp.Drawing.WorldToScreen(AXE.Position);
-                        Render.Circle.DrawCircle(AXE.Position, 140, lColor, 8);
-                    }
+                Drawing.DrawLine(PlayerPosToScreen, Drawing.WorldToScreen(reticles[0].Position), 8, Color.Red);
 
-                LeagueSharp.Drawing.DrawLine(PlayerPosToScreen, LeagueSharp.Drawing.WorldToScreen(reticles[0].Position), 8, lColor);
-
-                if (DrawAXELine.Value)
-                    for (int i = 0; i < reticles.Length; i++)
+                for (int i = 0; i < reticles.Length; i++)
+                {
+                    if (i < reticles.Length - 1)
                     {
-                        if (i < reticles.Length - 1)
-                        {
-                            LeagueSharp.Drawing.DrawLine(LeagueSharp.Drawing.WorldToScreen(reticles[i].Position),
-                                LeagueSharp.Drawing.WorldToScreen(reticles[i + 1].Position), 8, lColor);
-                        }
+                        Drawing.DrawLine(Drawing.WorldToScreen(reticles[i].Position),
+                            Drawing.WorldToScreen(reticles[i + 1].Position), 8, Color.Red);
                     }
-                if (DrawAXECatchRadius.Value)
-                    if (CatchOnlyCloseToMouse && MaxDistToMouse.Value < 700 &&
-                        ObjectManager.Get<GameObject>()
-                            .Any(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead))
-                    {
-                        Render.Circle.DrawCircle(Game.CursorPos, MaxDistToMouse.Value, lColor, 8);
-                    }
+                }
+                if (CatchOnlyCloseToMouse && MaxDistToMouse.Value < 700 &&
+                    ObjectManager.Get<GameObject>()
+                        .Any(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead))
+                {
+                    Render.Circle.DrawCircle(Game.CursorPos, MaxDistToMouse.Value, Color.Red, 8);
+                }
             }
         }
 
