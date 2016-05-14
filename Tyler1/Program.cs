@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using SharpDX;
 using Color = System.Drawing.Color;
 using LeagueSharp;
-using LeagueSharp.SDK;
-using LeagueSharp.SDK.Enumerations;
-using LeagueSharp.SDK.UI;
-using LeagueSharp.SDK.Utils;
+using LeagueSharp.SDKEx;
+using LeagueSharp.SDKEx.Enumerations;
+using LeagueSharp.SDKEx.UI;
+using LeagueSharp.SDKEx.Utils;
 using SharpDX.IO;
 
 namespace Tyler1

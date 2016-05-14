@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
-using LeagueSharp.SDK;
-using LeagueSharp.SDK.Utils;
+using LeagueSharp.SDKEx;
+using LeagueSharp.SDKEx.Utils;
 using SharpDX;
 
 namespace Challenger_Series.Utils

@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Challenger_Series.Utils;
 using LeagueSharp;
-using LeagueSharp.SDK;
+using LeagueSharp.SDKEx;
 using SharpDX;
 using Color = System.Drawing.Color;
 using Challenger_Series.Utils;
 using System.Windows.Forms;
 using LeagueSharp.Data.Enumerations;
-using LeagueSharp.SDK.Enumerations;
-using LeagueSharp.SDK.UI;
-using LeagueSharp.SDK.Utils;
-using Menu = LeagueSharp.SDK.UI.Menu;
+using LeagueSharp.SDKEx.Enumerations;
+using LeagueSharp.SDKEx.UI;
+using LeagueSharp.SDKEx.Utils;
+using Menu = LeagueSharp.SDKEx.UI.Menu;
 
 namespace Challenger_Series.Plugins
 {
-    using Collision = LeagueSharp.SDK.Collision;
+    using Collision = LeagueSharp.SDKEx.Collision;
 
     public class Kalista : CSPlugin
     {
