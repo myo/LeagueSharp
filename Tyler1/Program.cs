@@ -39,6 +39,7 @@ namespace Tyler1
         public static Color color = Color.DarkOrange;
         public static float MyRange = 550f;
         private static int _lastCatchAttempt;
+        private static MenuBool R1vs1;
 
         private static Dictionary<int, GameObject> Reticles;
 
@@ -141,6 +142,8 @@ namespace Tyler1
             RKS = RMenu.Add(new MenuBool("tyler1RKS", "Use R to steal kills", true));
             RKSOnlyIfCantAA = RMenu.Add(new MenuBool("tyler1RKSOnlyIfCantAA", "Use R KS only if can't AA", true));
             RIfHit = RMenu.Add(new MenuSlider("tyler1RIfHit", "Use R if it will hit X enemies", 2, 1, 5));
+            R1vs1 = RMenu.Add(new MenuBool("tyler1R1v1", "Always use R in 1v1", true));
+
             WCombo = Menu.Add(new MenuBool("tyler1WCombo", "Use W in Combo", true));
             UseItems = Menu.Add(new MenuBool("tyler1Items", "Use Items?", true));
             Menu.Attach();
@@ -171,7 +174,7 @@ namespace Tyler1
 
         private static void R1V1(Obj_AI_Hero target)
         {
-            if (target != null && target.IsHPBarRendered)
+            if (R1vs1 && target != null && target.IsHPBarRendered && target.Distance(ObjectManager.Player) < 650 && !ShouldntUlt(target))
             {
                 if (target.HealthPercent > ObjectManager.Player.HealthPercent &&
                     (target.MaxHealth <= ObjectManager.Player.MaxHealth + 300 ||
