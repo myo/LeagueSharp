@@ -291,7 +291,7 @@ namespace Challenger_Series.Plugins
             }
             if (Variables.TickCount - this.ECastTime > 250)
             {
-                if (!HasPassive && Orbwalker.CanMove())
+                if (!HasPassive && Orbwalker.CanMove(45f, false))
                 {
                     if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
                     {
