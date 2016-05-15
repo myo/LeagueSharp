@@ -19,6 +19,7 @@ namespace Challenger_Series
     {
         static void Main(string[] args)
         {
+            Bootstrap.Init();
             Events.OnLoad += (sender, eventArgs) =>
             {
                 switch (ObjectManager.Player.ChampionName)
