@@ -73,7 +73,7 @@ namespace Tyler1
 
         static void Main(string[] args)
         {
-            Bootstrap.Init(new string[1]);
+            Bootstrap.Init();
             Events.OnLoad += Load;
         }
 
