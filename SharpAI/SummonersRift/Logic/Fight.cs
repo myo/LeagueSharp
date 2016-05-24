@@ -17,13 +17,17 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            if (ObjectManager.Player.CountEnemyHeroesInRange(1400) >= 2)
+            if (ObjectManager.Get<Obj_AI_Hero>().Count(e=>e.IsEnemy&&!e.IsDead&&e.Distance(ObjectManager.Player) < 1400) >= 2)
             {
                 return false;
             }
             var orbwalkerTarget = Variables.Orbwalker.GetTarget();
             if (orbwalkerTarget is Obj_AI_Hero)
             {
+                if (orbwalkerTarget.Type != GameObjectType.obj_AI_Hero)
+                {
+                    return false;
+                }
                 var target = Variables.Orbwalker.GetTarget() as Obj_AI_Hero;
                 return ObjectManager.Player.HealthPercent > target.HealthPercent && target.HealthPercent < 45 &&
                        !target.IsUnderEnemyTurret();

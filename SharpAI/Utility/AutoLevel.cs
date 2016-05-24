@@ -120,7 +120,7 @@ namespace SharpAI.Utility
 
             NextDelay = RandomNumber.Next(300, 1200);
             LastLeveled = Environment.TickCount;
-            var spell = order[GetTotalPoints()];
+            var spell = order[ObjectManager.Player.Level-1];
             Player.Spellbook.LevelSpell(spell);
         }
 
