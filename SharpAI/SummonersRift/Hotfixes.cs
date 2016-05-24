@@ -50,10 +50,13 @@ namespace SharpAI.SummonersRift
                         }
                         if (issueOrderArgs.Target != null)
                         {
-                            if (issueOrderArgs.Target is Obj_AI_Hero && ObjectManager.Player.IsUnderEnemyTurret())
+                            if (issueOrderArgs.Target is Obj_AI_Hero)
                             {
-                                issueOrderArgs.Process = false;
-                                return;
+                                if (ObjectManager.Player.IsUnderEnemyTurret() || ObjectManager.Get<Obj_AI_Minion>().Count(m => m.IsEnemy && !m.IsDead && m.Distance(ObjectManager.Player) < 600) > 4)
+                                {
+                                    issueOrderArgs.Process = false;
+                                    return;
+                                }
                             }
                             if (issueOrderArgs.Target is Obj_AI_Minion &&
                                 !((Obj_AI_Minion) issueOrderArgs.Target).CharData.BaseSkinName.Contains("Minion"))
