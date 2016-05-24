@@ -21,12 +21,14 @@ namespace SharpAI.SummonersRift.Logic
             {
                 return false;
             }
-            var target = Variables.Orbwalker.GetTarget() as Obj_AI_Hero;
-            if (target == null)
+            var orbwalkerTarget = Variables.Orbwalker.GetTarget();
+            if (orbwalkerTarget is Obj_AI_Hero)
             {
-                return false;
+                var target = Variables.Orbwalker.GetTarget() as Obj_AI_Hero;
+                return ObjectManager.Player.HealthPercent > target.HealthPercent && target.HealthPercent < 45 &&
+                       !target.IsUnderEnemyTurret();
             }
-            return ObjectManager.Player.HealthPercent > target.HealthPercent && target.HealthPercent < 45 && !target.IsUnderEnemyTurret();
+            return false;
         }
 
         static TreeSharp.Action TakeAction()
