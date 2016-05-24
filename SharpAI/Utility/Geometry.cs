@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ClipperLib;
 using LeagueSharp;
 using LeagueSharp.SDK;
@@ -9,7 +10,7 @@ using Path = System.Collections.Generic.List<ClipperLib.IntPoint>;
 using Paths = System.Collections.Generic.List<System.Collections.Generic.List<ClipperLib.IntPoint>>;
 using GamePath = System.Collections.Generic.List<SharpDX.Vector2>;
 
-namespace AutoSharp.Utility
+namespace SharpAI.Utility
 {
     /// <summary>
     /// Class that contains the geometry related methods.
@@ -17,6 +18,22 @@ namespace AutoSharp.Utility
     public static class Geometry
     {
         private const int CircleLineSegmentN = 22;
+
+        public static bool IsInside(this Vector3 position, Polygon polygon)
+        {
+            return position.ToVector2().IsInside(polygon);
+        }
+
+        public static bool IsInside(this Vector2 point, Polygon polygon)
+        {
+            return !polygon.IsOutside(point);
+        }
+
+        public static Vector3 GetRandomPointInPolygon(this Polygon poly)
+        {
+            var points = poly.Points;
+            return points.Shuffle().FirstOrDefault().ToVector3();
+        }
 
         public static Vector3 SwitchYZ(this Vector3 v)
         {
@@ -30,6 +47,19 @@ namespace AutoSharp.Utility
             foreach (var path in v)
             {
                 result.Add(path.ToPolygon());
+            }
+            return result;
+        }
+
+        public static Polygon PathsToPolygon(this Paths paths)
+        {
+            var result = new Polygon();
+            foreach (var path in paths)
+            {
+                foreach (var point in path)
+                {
+                    result.Add(new Vector2(point.X, point.Y));
+                }
             }
             return result;
         }
@@ -75,7 +105,8 @@ namespace AutoSharp.Utility
             return polygon;
         }
 
-        public static Paths ClipPolygons(List<Polygon> polygons)
+        // perform union on a list of polygons
+        public static Paths ClipperUnion(this List<Polygon> polygons)
         {
             var subj = new Paths(polygons.Count);
             var clip = new Paths(polygons.Count);
@@ -88,8 +119,21 @@ namespace AutoSharp.Utility
             var c = new Clipper();
             c.AddPaths(subj, PolyType.ptSubject, true);
             c.AddPaths(clip, PolyType.ptClip, true);
-            c.Execute(ClipType.ctUnion, solution, PolyFillType.pftPositive, PolyFillType.pftEvenOdd);
+            c.Execute(ClipType.ctUnion, solution, PolyFillType.pftPositive, PolyFillType.pftPositive);
             return solution;
+        }
+
+        // perform xor
+        public static Paths ClipperXor(this Polygon clip, Polygon subject)
+        {
+            var subj = new Paths();
+            subj.Add(subject.ToClipperPath());
+            var clp = new Paths();
+            clp.Add(clip.ToClipperPath());
+            var result = new Paths();
+            var c = new Clipper();
+            c.Execute(ClipType.ctXor, result, PolyFillType.pftPositive, PolyFillType.pftPositive);
+            return result;
         }
 
         public class Circle

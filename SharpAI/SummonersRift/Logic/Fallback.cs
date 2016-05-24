@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoSharp.Logic
+namespace SharpAI.Logic
 {
-    public interface ILogic
+    class Fallback
     {
-        bool ShouldTakeAction();
-        void TakeAction(EventArgs args);
     }
 }

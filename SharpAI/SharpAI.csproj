@@ -7,8 +7,8 @@
     <ProjectGuid>{B29C6D9B-7A0B-449F-BFAC-4F25B2C38C84}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AutoSharp</RootNamespace>
-    <AssemblyName>AutoSharp</AssemblyName>
+    <RootNamespace>SharpAI</RootNamespace>
+    <AssemblyName>SharpAI</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,16 +33,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>..\..\..\..\..\LeagueSharp\System\clipper_library.dll</HintPath>
+      <HintPath>C:\L\System\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>..\..\..\..\..\LeagueSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\L\System\LeagueSharp.dll</HintPath>
     </Reference>
-    <Reference Include="LeagueSharp.SDK">
-      <HintPath>..\..\..\..\..\LeagueSharp\System\LeagueSharp.SDK.dll</HintPath>
+    <Reference Include="LeagueSharp.SDKEx">
+      <HintPath>C:\L\System\LeagueSharp.SDKEx.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\..\..\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>C:\L\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,14 +52,41 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TreeSharp">
+      <HintPath>C:\L\System\TreeSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\StaticData.cs" />
-    <Compile Include="Logic\ILogic.cs" />
-    <Compile Include="Logic\Push.cs" />
+    <Compile Include="Enums\Lane.cs" />
+    <Compile Include="SummonersRift\Data\Positioning.cs" />
+    <Compile Include="SummonersRift\Data\SessionBasedData.cs" />
+    <Compile Include="SummonersRift\Data\StaticData.cs" />
+    <Compile Include="SummonersRift\Hotfixes.cs" />
+    <Compile Include="SummonersRift\Logic\FailSafe.cs" />
+    <Compile Include="SummonersRift\Logic\Fight.cs" />
+    <Compile Include="SummonersRift\Logic\Freeze.cs" />
+    <Compile Include="SummonersRift\Logic\Objectives.cs" />
+    <Compile Include="SummonersRift\Logic\PickALane.cs" />
+    <Compile Include="SummonersRift\Logic\PrivillegeCheck.cs" />
+    <Compile Include="SummonersRift\Logic\Push.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SummonersRift\Logic\Recall.cs" />
+    <Compile Include="SummonersRift\Logic\Shop.cs" />
+    <Compile Include="SummonersRift\Logic\Teamfight.cs" />
+    <Compile Include="SummonersRift\Logic\WalkToLane.cs" />
+    <Compile Include="SummonersRift\Shop\BuyItemEvent.cs" />
+    <Compile Include="SummonersRift\Shop\CustomEvents.cs" />
+    <Compile Include="SummonersRift\Shop\Item.cs" />
+    <Compile Include="SummonersRift\Shop\Main.cs" />
+    <Compile Include="SummonersRift\Tree.cs" />
+    <Compile Include="Utility\AutoLevel.cs" />
+    <Compile Include="Utility\AutoLevelSequences.cs" />
+    <Compile Include="Utility\EnumerableExtensions.cs" />
     <Compile Include="Utility\Geometry.cs" />
+    <Compile Include="Utility\Logging.cs" />
+    <Compile Include="Utility\Misc.cs" />
+    <Compile Include="Utility\Random.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

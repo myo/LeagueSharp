@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AutoSharp.Logic
+namespace SharpAI.SummonersRift.Logic
 {
-    class Fallback
+    class Shop
     {
     }
 }
