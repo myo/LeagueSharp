@@ -52,7 +52,7 @@ namespace SharpAI.SummonersRift
                         {
                             if (issueOrderArgs.Target is Obj_AI_Hero)
                             {
-                                if (ObjectManager.Player.IsUnderEnemyTurret() || ObjectManager.Get<Obj_AI_Minion>().Count(m => m.IsEnemy && !m.IsDead && m.Distance(ObjectManager.Player) < 600) > 4)
+                                if (ObjectManager.Player.IsUnderEnemyTurret() || (ObjectManager.Get<Obj_AI_Minion>().Count(m => m.IsEnemy && !m.IsDead && m.Distance(ObjectManager.Player) < 600) > 4 && Variables.Orbwalker.ActiveMode != OrbwalkingMode.Combo))
                                 {
                                     issueOrderArgs.Process = false;
                                     return;
