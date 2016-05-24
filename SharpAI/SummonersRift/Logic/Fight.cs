@@ -21,7 +21,7 @@ namespace SharpAI.SummonersRift.Logic
             {
                 return false;
             }
-            var target = (Obj_AI_Hero)Variables.Orbwalker.GetTarget();
+            var target = Variables.Orbwalker.GetTarget() as Obj_AI_Hero;
             if (target == null)
             {
                 return false;
