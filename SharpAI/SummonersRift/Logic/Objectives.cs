@@ -9,6 +9,7 @@ using SharpAI.Utility;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using LeagueSharp.SDK.Enumerations;
+using LeagueSharp.SDK.Utils;
 using TreeSharp;
 using Action = TreeSharp.Action;
 
@@ -18,7 +19,7 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            return ObjectManager.Get<Obj_AI_Turret>().Any(t=>t.IsEnemy && !t.IsDead && t.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || ObjectManager.Get<Obj_BarracksDampener>().Any(b=>b.IsEnemy && !b.IsDead && b.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange);
+            return ObjectManager.Get<Obj_AI_Turret>().Any(t=>t.IsEnemy && !t.IsDead && t.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || ObjectManager.Get<Obj_BarracksDampener>().Any(b=>b.IsEnemy && !b.IsDead && b.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || GameObjects.EnemyNexus.Distance(ObjectManager.Player) < ObjectManager.Player.GetRealAutoAttackRange();
         }
 
         static TreeSharp.Action TakeAction()
