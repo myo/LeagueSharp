@@ -61,8 +61,7 @@ namespace SharpAI.SummonersRift
                                     return;
                                 }
                             }
-                            if (issueOrderArgs.Target is Obj_AI_Minion &&
-                                !((Obj_AI_Minion) issueOrderArgs.Target).CharData.BaseSkinName.Contains("Minion"))
+                            if (issueOrderArgs.Target is Obj_AI_Minion && (issueOrderArgs.Target as Obj_AI_Minion).Team == GameObjectTeam.Neutral)
                             {
                                 issueOrderArgs.Process = false;
                                 return;
