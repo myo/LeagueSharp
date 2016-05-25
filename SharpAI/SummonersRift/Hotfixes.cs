@@ -8,6 +8,7 @@ using SharpAI.Utility;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using LeagueSharp.SDK.Enumerations;
+using LeagueSharp.SDK.Utils;
 using NLog;
 using Random = SharpAI.Utility.Random;
 
@@ -18,6 +19,7 @@ namespace SharpAI.SummonersRift
     {
         private static int _lastMovementCommand = 0;
         private static AutoLevel _autoLevel;
+        public static bool GettingAttackedByMinionsFlag = false;
         public static void Load()
         {
             Events.OnLoad += (obj, loadArgs) =>
@@ -79,10 +81,9 @@ namespace SharpAI.SummonersRift
                 {
                     if (Variables.Orbwalker.ActiveMode != OrbwalkingMode.Combo && spellCastArgs.Target != null && spellCastArgs.Target.IsMe && (sender is Obj_AI_Minion || sender is Obj_AI_Turret))
                     {
-                        Variables.Orbwalker.ActiveMode = OrbwalkingMode.None;
-                        ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo,
-                        ObjectManager.Player.Position.Extend(GameObjects.AllyNexus.Position, Random.GetRandomInteger(400, 600)), false);
-                        Logging.Log("IM GETTING ATTACKED BY MINIONS");
+                        GettingAttackedByMinionsFlag = true;
+                        DelayAction.Add(350, () => GettingAttackedByMinionsFlag = false);
+                        //Logging.Log("IM GETTING ATTACKED BY MINIONS");
                     }
                 };
                 Game.OnUpdate += args =>
