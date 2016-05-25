@@ -29,7 +29,7 @@ namespace SharpAI.SummonersRift.Logic
                     return false;
                 }
                 var target = Variables.Orbwalker.GetTarget() as Obj_AI_Hero;
-                return ObjectManager.Player.HealthPercent > target.HealthPercent && target.HealthPercent < 45 &&
+                return ObjectManager.Player.HealthPercent >= target.HealthPercent*2 &&
                        !target.IsUnderEnemyTurret();
             }
             return false;
