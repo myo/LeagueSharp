@@ -17,7 +17,7 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            return SessionBasedData.MyLane == Lane.Unknown || (Environment.TickCount - SessionBasedData.LoadTick < 105000 && ObjectManager.Get<Obj_AI_Hero>().Count(h=>h.IsAlly && !h.IsDead && h.Position.IsInside(SessionBasedData.MyLanePolygon)) < (SessionBasedData.MyLane == Lane.Mid ? 1:2));
+            return SessionBasedData.MyLane == Lane.Unknown || (Environment.TickCount - SessionBasedData.LoadTick < 105000 && ObjectManager.Get<Obj_AI_Hero>().Count(h=>h.IsAlly && !h.IsDead && h.Position.IsInside(SessionBasedData.MyLanePolygon)) > 0);
         }
 
         static Action TakeAction()
