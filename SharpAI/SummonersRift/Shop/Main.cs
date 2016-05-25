@@ -1099,8 +1099,8 @@ namespace SharpAI.SummonersRift.Shop
 
         public static void BuyItems(EventArgs args)
         {
-            if ((ObjectManager.Player.InFountain() || ObjectManager.Player.IsDead) && Environment.TickCount - _lastShop < Utility.Random.GetRandomInteger(150, 350)) return;
-            if (!InventoryFull() && !Items.HasItem(2003))
+            if ((ObjectManager.Player.InFountain() || ObjectManager.Player.IsDead) && Environment.TickCount - _lastShop < Utility.Random.GetRandomInteger(350, 450)) return;
+            if (!InventoryFull() && !Items.HasItem(2003) && ObjectManager.Player.Gold > 400)
             {
                 ObjectManager.Player.BuyItem(ItemId.Health_Potion);
             }

@@ -40,7 +40,7 @@ namespace SharpAI.Utility
         /// <summary>
         /// The order
         /// </summary>
-        private static List<SpellSlot> order = new List<SpellSlot>();
+        private static List<int> order = new List<int>();
 
         /// <summary>
         /// The last leveled
@@ -78,17 +78,7 @@ namespace SharpAI.Utility
         /// <param name="levels">The levels.</param>
         public AutoLevel(IEnumerable<int> levels)
         {
-            UpdateSequence(levels);
-            Init();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AutoLevel"/> class.
-        /// </summary>
-        /// <param name="levels">The levels.</param>
-        public AutoLevel(List<SpellSlot> levels)
-        {
-            UpdateSequence(levels);
+            UpdateSequence(new List<int> { 1, 1, 2, 3, 1, 2, 4, 3, 1, 2, 3, 4, 1, 2, 3, 1, 4, 2, 3, 1, 2, 3 });
             Init();
         }
 
@@ -120,8 +110,20 @@ namespace SharpAI.Utility
 
             NextDelay = RandomNumber.Next(300, 1200);
             LastLeveled = Environment.TickCount;
-            var spell = order[ObjectManager.Player.Level-1];
-            Player.Spellbook.LevelSpell(spell);
+            var spell = (SpellSlot)order[ObjectManager.Player.Level-1];
+            if (ObjectManager.Player.Spellbook.GetSpell(spell).Level < 5)
+            {
+                Player.Spellbook.LevelSpell(spell);
+            }
+            else
+            {
+               var list = new List<SpellDataInst> {Player.Spellbook.GetSpell(SpellSlot.Q), Player.Spellbook.GetSpell(SpellSlot.W), Player.Spellbook.GetSpell(SpellSlot.E), Player.Spellbook.GetSpell(SpellSlot.R)};
+                var spellWithLowestLevel = list.OrderBy(entry => entry.Level).FirstOrDefault();
+                if (spellWithLowestLevel != null)
+                {
+                    Player.Spellbook.LevelSpell(spellWithLowestLevel.Slot);
+                }
+            }
         }
 
         /// <summary>
@@ -172,21 +174,7 @@ namespace SharpAI.Utility
         {
             Init();
             order.Clear();
-            foreach (var level in levels)
-            {
-                order.Add((SpellSlot)level);
-            }
-        }
-
-        /// <summary>
-        /// Updates the sequence.
-        /// </summary>
-        /// <param name="levels">The levels.</param>
-        public static void UpdateSequence(List<SpellSlot> levels)
-        {
-            Init();
-            order.Clear();
-            order = levels;
+            order = levels.ToList();
         }
 
         /// <summary>
@@ -195,14 +183,14 @@ namespace SharpAI.Utility
         /// <returns></returns>
         public static int[] GetSequence()
         {
-            return order.Select(spell => (int)spell).ToArray();
+            return order.Select(spell => spell).ToArray();
         }
 
         /// <summary>
         /// Gets the sequence list.
         /// </summary>
         /// <returns></returns>
-        public static List<SpellSlot> GetSequenceList()
+        public static List<int> GetSequenceList()
         {
             return order;
         }

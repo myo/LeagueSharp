@@ -31,16 +31,18 @@ namespace SharpAI.SummonersRift.Data
             {
                 return
                     new Geometry.Circle(ourMinion
-                        .Position.Extend(GameObjects.AllyNexus.Position, Utility.Random.GetRandomInteger(250, 450)).ToVector2(),
-                        Utility.Random.GetRandomInteger(100, 450)).ToPolygon().GetRandomPointInPolygon();
+                        .Position.Extend(GameObjects.AllyNexus.Position, Utility.Random.GetRandomInteger(350, 550)).ToVector2(),
+                        Utility.Random.GetRandomInteger(100, 350)).ToPolygon().GetRandomPointInPolygon();
             }
             return Game.CursorPos;
         }
 
         public static Vector3 GetLastHitPosition(Obj_AI_Minion lasthittableresult)
         {
+            var myRange = (int)ObjectManager.Player.AttackRange;
             return
-                new Utility.Geometry.Circle(lasthittableresult.Position.ToVector2(), 250).ToPolygon()
+                new Utility.Geometry.Circle(lasthittableresult.Position.Extend(ObjectManager.Player.ServerPosition,
+                    Utility.Random.GetRandomInteger(myRange - 250, myRange - 150)).ToVector2(), 250).ToPolygon()
                     .GetRandomPointInPolygon();
         }
 
