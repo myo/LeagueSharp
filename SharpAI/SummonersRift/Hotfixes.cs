@@ -8,6 +8,7 @@ using SharpAI.Utility;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using LeagueSharp.SDK.Enumerations;
+using NLog;
 using Random = SharpAI.Utility.Random;
 
 namespace SharpAI.SummonersRift

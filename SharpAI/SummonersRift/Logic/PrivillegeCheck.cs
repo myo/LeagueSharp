@@ -16,7 +16,7 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            return ObjectManager.Player.Position.IsDangerousPosition();
+            return ObjectManager.Player.Position.IsDangerousPosition() || ObjectManager.Get<Obj_AI_Hero>().Count(h => h.IsEnemy && !h.IsDead && h.Distance(ObjectManager.Player) < 750) > ObjectManager.Get<Obj_AI_Hero>().Count(h=>h.IsAlly && !h.IsDead && h.Distance(ObjectManager.Player) < 750);
         }
 
         static TreeSharp.Action TakeAction()
