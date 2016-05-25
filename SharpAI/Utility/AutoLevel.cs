@@ -78,7 +78,7 @@ namespace SharpAI.Utility
         /// <param name="levels">The levels.</param>
         public AutoLevel(IEnumerable<int> levels)
         {
-            UpdateSequence(new List<int> { 1, 1, 2, 3, 1, 2, 4, 3, 1, 2, 3, 4, 1, 2, 3, 1, 4, 2, 3, 1, 2, 3 });
+            UpdateSequence(levels);
             Init();
         }
 
@@ -110,7 +110,8 @@ namespace SharpAI.Utility
 
             NextDelay = RandomNumber.Next(300, 1200);
             LastLeveled = Environment.TickCount;
-            var spell = (SpellSlot)order[ObjectManager.Player.Level-1];
+            // subtract 1 from spell int cuz in enum q=0 but it looks better to have q=1, w=2 etc.
+            var spell = (SpellSlot)(order[ObjectManager.Player.Level-1] - 1);
             if (ObjectManager.Player.Spellbook.GetSpell(spell).Level < 5)
             {
                 Player.Spellbook.LevelSpell(spell);
@@ -121,8 +122,8 @@ namespace SharpAI.Utility
                 var spellWithLowestLevel = list.OrderBy(entry => entry.Level).FirstOrDefault();
                 if (spellWithLowestLevel != null)
                 {
-                    Player.Spellbook.LevelSpell(spellWithLowestLevel.Slot);
-                }
+                Player.Spellbook.LevelSpell(spellWithLowestLevel.Slot);
+}
             }
         }
 
