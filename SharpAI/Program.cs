@@ -9,6 +9,7 @@ using SharpAI.SummonersRift.Data;
 using SharpAI.Utility;
 using LeagueSharp;
 using LeagueSharp.SDK;
+using LeagueSharp.SDK.UI;
 using LeagueSharp.SDK.Utils;
 using SharpDX;
 using Color=System.Drawing.Color;
@@ -46,6 +47,15 @@ namespace SharpAI
                     {
                         Logging.Log("WAITING FOR GAME START");
                     }
+                };
+                Game.OnEnd += endArgs =>
+                {
+                    Task.Run(
+                        async () =>
+                        {
+                            await Task.Delay(5000);
+                            Game.Quit();
+                        });
                 };
             };
         }
