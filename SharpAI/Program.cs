@@ -18,10 +18,8 @@ namespace SharpAI
 {
     class Program
     {
-        public static string myocry;
         static void Main(string[] args)
         {
-            myocry = "You are quite the l33t revuresuzurez if u got this far, plz consider not dumping/sharing/porting/feeding it to your cat, cheers!";
             Bootstrap.Init();
             Hacks.UseGameObjectCache = true;
             Events.OnLoad += (sender, loadArgs) =>
