@@ -23,9 +23,9 @@ namespace SharpAI.SummonersRift.Logic
             }
             if (
                 ObjectManager.Get<Obj_AI_Hero>()
-                    .Count(h => h.IsAlly && !h.IsDead && h.Distance(ObjectManager.Player) < 800) >
+                    .Count(h => h.IsAlly && !h.IsDead && h.Distance(ObjectManager.Player) < 1000) >
                 ObjectManager.Get<Obj_AI_Hero>()
-                    .Count(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 800))
+                    .Count(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1000))
             {
                 return true;
             }
