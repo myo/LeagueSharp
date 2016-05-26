@@ -21,6 +21,14 @@ namespace SharpAI.SummonersRift.Logic
             {
                 return false;
             }
+            if (
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Count(h => h.IsAlly && !h.IsDead && h.Distance(ObjectManager.Player) < 800) >
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Count(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 800))
+            {
+                return true;
+            }
             var orbwalkerTarget = Variables.Orbwalker.GetTarget();
             if (orbwalkerTarget is Obj_AI_Hero)
             {
@@ -40,7 +48,7 @@ namespace SharpAI.SummonersRift.Logic
             return new TreeSharp.Action(a =>
             {
                 Logging.Log("SWITCHED MODE TO FIGHT");
-                Variables.Orbwalker.ForceOrbwalkingPoint = Variables.Orbwalker.GetTarget().Position.Extend(ObjectManager.Player.Position, ObjectManager.Player.GetRealAutoAttackRange() - 200);
+                Variables.Orbwalker.ForceOrbwalkingPoint = Variables.Orbwalker.GetTarget().Position.Extend(ObjectManager.Player.Position, ObjectManager.Player.GetRealAutoAttackRange() - 250);
                 Variables.Orbwalker.Enabled = true;
                 Variables.Orbwalker.ActiveMode = OrbwalkingMode.Combo;
             });
