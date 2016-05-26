@@ -18,7 +18,7 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            return !ObjectManager.Player.InFountain() && !ObjectManager.Player.IsUnderEnemyTurret() && ObjectManager.Player.HealthPercent < 30 && !ObjectManager.Player.IsDead;
+            return !ObjectManager.Player.InFountain() && !ObjectManager.Player.IsUnderEnemyTurret() && ObjectManager.Player.HealthPercent < 35 && !ObjectManager.Player.IsDead;
         }
 
         static TreeSharp.Action TakeAction()

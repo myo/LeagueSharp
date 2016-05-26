@@ -17,7 +17,7 @@ namespace SharpAI.SummonersRift.Logic
         static bool ShouldTakeAction()
         {
             return Minions.GetMinionsInLane(SessionBasedData.MyTeam, SessionBasedData.CurrentLane).Count() >=
-                   Minions.GetMinionsInLane(SessionBasedData.EnemyTeam, SessionBasedData.CurrentLane).Count();
+                   Minions.GetMinionsInLane(SessionBasedData.EnemyTeam, SessionBasedData.CurrentLane).Count() && !ObjectManager.Player.IsUnderAllyTurret() && !ObjectManager.Player.IsUnderEnemyTurret();
         }
 
         static TreeSharp.Action TakeAction()

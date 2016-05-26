@@ -19,7 +19,7 @@ namespace SharpAI.SummonersRift
     {
         private static int _lastMovementCommand = 0;
         private static AutoLevel _autoLevel;
-        public static bool GettingAttackedByMinionsFlag = false;
+        public static bool InDangerFlag = false;
         public static void Load()
         {
             Events.OnLoad += (obj, loadArgs) =>
@@ -55,7 +55,7 @@ namespace SharpAI.SummonersRift
                         {
                             if (issueOrderArgs.Target is Obj_AI_Hero)
                             {
-                                if (ObjectManager.Player.IsUnderEnemyTurret() || (ObjectManager.Get<Obj_AI_Minion>().Count(m => m.IsEnemy && !m.IsDead && m.Distance(ObjectManager.Player) < 600) > 4 && Variables.Orbwalker.ActiveMode != OrbwalkingMode.Combo))
+                                if (ObjectManager.Player.IsUnderEnemyTurret() || (ObjectManager.Get<Obj_AI_Minion>().Count(m => m.IsEnemy && !m.IsDead && m.Distance(ObjectManager.Player) < 600) > 4))
                                 {
                                     issueOrderArgs.Process = false;
                                     return;
@@ -80,8 +80,8 @@ namespace SharpAI.SummonersRift
                 {
                     if (Variables.Orbwalker.ActiveMode != OrbwalkingMode.Combo && spellCastArgs.Target != null && spellCastArgs.Target.IsMe && (sender is Obj_AI_Minion || sender is Obj_AI_Turret))
                     {
-                        GettingAttackedByMinionsFlag = true;
-                        DelayAction.Add(350, () => GettingAttackedByMinionsFlag = false);
+                        InDangerFlag = true;
+                        DelayAction.Add(350, () => InDangerFlag = false);
                         //Logging.Log("IM GETTING ATTACKED BY MINIONS");
                     }
                 };
@@ -95,10 +95,8 @@ namespace SharpAI.SummonersRift
                     }
                     if (ObjectManager.Player.Position.IsDangerousPosition())
                     {
-                        Variables.Orbwalker.ActiveMode = OrbwalkingMode.None;
-                        ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo,
-                        ObjectManager.Player.Position.Extend(GameObjects.AllyNexus.Position, Random.GetRandomInteger(400, 600)), false);
-                        Logging.Log("IM IN DANGER");
+                        InDangerFlag = true;
+                        DelayAction.Add(350, () => InDangerFlag = false);
                     }
                     
                 };
