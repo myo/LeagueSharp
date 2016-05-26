@@ -16,14 +16,14 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            return Hotfixes.InDangerFlag || ObjectManager.Player.Position.IsDangerousPosition() || ObjectManager.Get<Obj_AI_Hero>().Any(h=>h.IsEnemy && !h.IsDead && h.IsVisible && h.Level > ObjectManager.Player.Level + 1 && h.Distance(ObjectManager.Player) < h.AttackRange + 50*h.Level-ObjectManager.Player.Level) ||  ObjectManager.Get<Obj_AI_Hero>().Count(h => h.IsEnemy && !h.IsDead && h.Distance(ObjectManager.Player) < 850) > ObjectManager.Get<Obj_AI_Hero>().Count(h=>h.IsAlly && !h.IsDead && h.Distance(ObjectManager.Player) < 850);
+            return Hotfixes.AttackedByMinionsFlag || Hotfixes.AttackedByTurretFlag || ObjectManager.Player.Position.IsDangerousPosition() || ObjectManager.Get<Obj_AI_Hero>().Any(h=>h.IsEnemy && !h.IsDead && h.IsVisible && h.Level > ObjectManager.Player.Level + 1 && h.Distance(ObjectManager.Player) < h.AttackRange + 50*h.Level-ObjectManager.Player.Level) ||  ObjectManager.Get<Obj_AI_Hero>().Count(h => h.IsEnemy && !h.IsDead && h.Distance(ObjectManager.Player) < 850) > ObjectManager.Get<Obj_AI_Hero>().Count(h=>h.IsAlly && !h.IsDead && h.Distance(ObjectManager.Player) < 850);
         }
 
         static TreeSharp.Action TakeAction()
         {
             return new TreeSharp.Action(a =>
             {
-                if (Variables.Orbwalker.CanMove())
+                if (Variables.Orbwalker.CanMove() || Hotfixes.AttackedByTurretFlag)
                 {
                     Logging.Log("SWITCHED MODE TO PRIVILLEGE CHECK");
                     ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo,
