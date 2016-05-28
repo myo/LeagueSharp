@@ -15,7 +15,7 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            return Minions.GetMinionsInLane(SessionBasedData.MyTeam, SessionBasedData.CurrentLane).Count() <
+            return GameObjects.AllyMinions.Count(m=>!m.IsDead && m.Distance(ObjectManager.Player.Position) < 800) == 0 || Minions.GetMinionsInLane(SessionBasedData.MyTeam, SessionBasedData.CurrentLane).Count() <
                    Minions.GetMinionsInLane(SessionBasedData.EnemyTeam, SessionBasedData.CurrentLane).Count() || ObjectManager.Get<Obj_AI_Hero>().Count(e=>e.IsEnemy && !e.IsDead && e.IsVisible && e.Distance(ObjectManager.Player) < 1600) < 1;
         }
 
