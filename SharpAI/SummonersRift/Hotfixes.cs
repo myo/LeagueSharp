@@ -32,7 +32,7 @@ namespace SharpAI.SummonersRift
                 {
                     if (SessionBasedData.Loaded && sender.IsMe)
                     {
-                        if (issueOrderArgs.Order == GameObjectOrder.MoveTo)
+                        if (issueOrderArgs.Order == GameObjectOrder.MoveTo && ObjectManager.Player.Distance(issueOrderArgs.TargetPosition) < 1000)
                         {
                             if (ObjectManager.Player.IsRecalling() ||
                                 (ObjectManager.Player.InFountain() && ObjectManager.Player.HealthPercent < 95))
