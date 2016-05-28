@@ -17,11 +17,14 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            if (ObjectManager.Get<Obj_AI_Hero>().Count(e=>e.IsEnemy&&!e.IsDead&&e.Distance(ObjectManager.Player) < 1400) >= 2)
+            if (
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Count(e => e.IsEnemy && !e.IsDead && e.Distance(ObjectManager.Player) < 1400) >= 2)
             {
                 return false;
             }
-            if (
+            if (ObjectManager.Get<Obj_AI_Hero>()
+                .Any(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1000) &&
                 ObjectManager.Get<Obj_AI_Hero>()
                     .Count(h => h.IsAlly && !h.IsDead && h.Distance(ObjectManager.Player) < 1000) >
                 ObjectManager.Get<Obj_AI_Hero>()
@@ -30,15 +33,17 @@ namespace SharpAI.SummonersRift.Logic
                 return true;
             }
             var orbwalkerTarget = Variables.Orbwalker.GetTarget();
-            if (orbwalkerTarget is Obj_AI_Hero)
+            if (orbwalkerTarget != null)
             {
-                if (orbwalkerTarget.Type != GameObjectType.obj_AI_Hero)
+                if (
+
+                    orbwalkerTarget is Obj_AI_Hero)
                 {
-                    return false;
+                    var target = Variables.Orbwalker.GetTarget() as Obj_AI_Hero;
+                    return (target != null && ObjectManager.Player.HealthPercent >= target.HealthPercent*2 ||
+                            target.HealthPercent < 10) &&
+                           !target.IsUnderEnemyTurret();
                 }
-                var target = Variables.Orbwalker.GetTarget() as Obj_AI_Hero;
-                return (target != null && ObjectManager.Player.HealthPercent >= target.HealthPercent*2 || target.HealthPercent < 10) &&
-                       !target.IsUnderEnemyTurret();
             }
             return false;
         }
