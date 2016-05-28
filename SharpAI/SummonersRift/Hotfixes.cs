@@ -19,7 +19,8 @@ namespace SharpAI.SummonersRift
     {
         private static int _lastMovementCommand = 0;
         private static AutoLevel _autoLevel;
-        public static bool InDangerFlag = false;
+        public static bool AttackedByMinionsFlag = false;
+        public static bool AttackedByTurretFlag = false;
         public static void Load()
         {
             Events.OnLoad += (obj, loadArgs) =>
@@ -78,11 +79,18 @@ namespace SharpAI.SummonersRift
                 };
                 Obj_AI_Base.OnProcessSpellCast += (sender, spellCastArgs) =>
                 {
-                    if (Variables.Orbwalker.ActiveMode != OrbwalkingMode.Combo && spellCastArgs.Target != null && spellCastArgs.Target.IsMe && (sender is Obj_AI_Minion || sender is Obj_AI_Turret))
+                    if (Variables.Orbwalker.ActiveMode != OrbwalkingMode.Combo && spellCastArgs.Target != null && spellCastArgs.Target.IsMe)
                     {
-                        InDangerFlag = true;
-                        DelayAction.Add(350, () => InDangerFlag = false);
-                        //Logging.Log("IM GETTING ATTACKED BY MINIONS");
+                        if (sender is Obj_AI_Minion)
+                        {
+                            AttackedByMinionsFlag = true;
+                            DelayAction.Add(350, () => AttackedByMinionsFlag = false);
+                        }
+                        if (sender is Obj_AI_Turret)
+                        {
+                            AttackedByTurretFlag = true;
+                            DelayAction.Add(500, () => AttackedByTurretFlag = false);
+                        }
                     }
                 };
                 Game.OnUpdate += args =>
@@ -95,8 +103,8 @@ namespace SharpAI.SummonersRift
                     }
                     if (ObjectManager.Player.Position.IsDangerousPosition())
                     {
-                        InDangerFlag = true;
-                        DelayAction.Add(350, () => InDangerFlag = false);
+                        AttackedByMinionsFlag = true;
+                        DelayAction.Add(350, () => AttackedByMinionsFlag = false);
                     }
                     
                 };

@@ -86,6 +86,7 @@
     <Compile Include="Utility\Geometry.cs" />
     <Compile Include="Utility\Logging.cs" />
     <Compile Include="Utility\Misc.cs" />
+    <Compile Include="Utility\Pathfinding.cs" />
     <Compile Include="Utility\Random.cs" />
   </ItemGroup>
   <ItemGroup>
