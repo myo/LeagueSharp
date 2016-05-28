@@ -53,9 +53,10 @@ namespace SharpAI.SummonersRift.Logic
             return new TreeSharp.Action(a =>
             {
                 Logging.Log("SWITCHED MODE TO FIGHT");
-                Variables.Orbwalker.ForceOrbwalkingPoint = Variables.Orbwalker.GetTarget().Position.Extend(ObjectManager.Player.Position, ObjectManager.Player.GetRealAutoAttackRange() - 250);
-                Variables.Orbwalker.Enabled = true;
-                Variables.Orbwalker.ActiveMode = OrbwalkingMode.Combo;
+                Variables.Orbwalker.GetTarget()
+                        .Position.Extend(ObjectManager.Player.Position,
+                            ObjectManager.Player.GetRealAutoAttackRange() - 250)
+                        .WalkToPoint(OrbwalkingMode.Combo);
             });
         }
 

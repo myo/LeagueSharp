@@ -19,17 +19,23 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            return ObjectManager.Get<Obj_AI_Turret>().Any(t=>t.IsEnemy && !t.IsDead && t.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || ObjectManager.Get<Obj_BarracksDampener>().Any(b=>b.IsEnemy && !b.IsDead && b.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || GameObjects.EnemyNexus.Distance(ObjectManager.Player) < ObjectManager.Player.GetRealAutoAttackRange();
+            return !ObjectManager.Player.Position.IsDangerousPosition() && ObjectManager.Get<Obj_AI_Turret>().Any(t=>t.IsEnemy && !t.IsDead && t.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || ObjectManager.Get<Obj_BarracksDampener>().Any(b=>b.IsEnemy && !b.IsDead && b.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || GameObjects.EnemyNexus.Distance(ObjectManager.Player) < ObjectManager.Player.GetRealAutoAttackRange();
         }
 
         static TreeSharp.Action TakeAction()
         {
             return new Action(a =>
             {
-                Logging.Log("SWITCHED MODE TO OBJECTIVES");
-                Variables.Orbwalker.ForceOrbwalkingPoint = Positioning.GetFarmingPosition();
-                Variables.Orbwalker.Enabled = true;
-                Variables.Orbwalker.ActiveMode = OrbwalkingMode.LaneClear;
+                var turret =
+                    ObjectManager.Get<Obj_AI_Turret>()
+                        .FirstOrDefault(t => t.IsEnemy && !t.IsDead && t.IsVisible && t.Distance(ObjectManager.Player) < 1250);
+                if (turret != null)
+                {
+                    if (!turret.Position.IsDangerousPosition())
+                    {
+                        turret.Position.Extend(ObjectManager.Player.Position, ObjectManager.Player.AttackRange - 225).WalkToPoint(OrbwalkingMode.LaneClear);
+                    }
+                }
             });
         }
 

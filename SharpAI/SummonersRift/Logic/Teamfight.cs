@@ -24,9 +24,7 @@ namespace SharpAI.SummonersRift.Logic
             Logging.Log("SWITCHED MODE TO TEAMFIGHT");
             return new Action(a =>
             {
-                Variables.Orbwalker.ForceOrbwalkingPoint = Positioning.GetTeamfightPosition();
-                Variables.Orbwalker.Enabled = true;
-                Variables.Orbwalker.ActiveMode = OrbwalkingMode.LaneClear;
+                Positioning.GetTeamfightPosition().WalkToPoint(OrbwalkingMode.Combo);
             });
         }
 

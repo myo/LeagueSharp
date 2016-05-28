@@ -25,10 +25,7 @@ namespace SharpAI.SummonersRift.Logic
             return new TreeSharp.Action(a =>
             {
                 Logging.Log("SWITCHED MODE TO FREEZE");
-                Variables.Orbwalker.ForceOrbwalkingPoint =
-                    Positioning.GetFarmingPosition();
-                Variables.Orbwalker.Enabled = true;
-                Variables.Orbwalker.ActiveMode = OrbwalkingMode.Hybrid;
+                Positioning.GetFarmingPosition().WalkToPoint(OrbwalkingMode.Hybrid);
             });
         }
 

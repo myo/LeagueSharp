@@ -24,9 +24,8 @@ namespace SharpAI.SummonersRift.Logic
             return new TreeSharp.Action(a =>
             {
                 Logging.Log("SWITCHED MODE TO FAILSAFE");
-                Variables.Orbwalker.ForceOrbwalkingPoint = StaticData.GetLastTurretInLanePolygon(
-                    SessionBasedData.MyTeam, SessionBasedData.CurrentLane).GetRandomPointInPolygon();
-                Variables.Orbwalker.ActiveMode = OrbwalkingMode.Hybrid;
+                StaticData.GetLastTurretInLanePolygon(
+                    SessionBasedData.MyTeam, SessionBasedData.CurrentLane).GetRandomPointInPolygon().WalkToPoint(OrbwalkingMode.Hybrid);
             });
         }
 

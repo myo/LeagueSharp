@@ -29,10 +29,8 @@ namespace SharpAI.SummonersRift.Logic
                 SessionBasedData.MyLane = StaticData.ChooseBestLane();
                 SessionBasedData.CurrentLane = SessionBasedData.MyLane;
                 //WALK TO LANE
-                Variables.Orbwalker.ForceOrbwalkingPoint = StaticData.GetLastTurretInLanePolygon(
-                     SessionBasedData.MyTeam, SessionBasedData.CurrentLane).GetRandomPointInPolygon();
-                Variables.Orbwalker.Enabled = true;
-                Variables.Orbwalker.ActiveMode = OrbwalkingMode.Hybrid;
+                StaticData.GetLastTurretInLanePolygon(
+                     SessionBasedData.MyTeam, SessionBasedData.CurrentLane).GetRandomPointInPolygon().WalkToPoint(OrbwalkingMode.Combo);
             });
         }
         

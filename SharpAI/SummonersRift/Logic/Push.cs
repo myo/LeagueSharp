@@ -24,9 +24,7 @@ namespace SharpAI.SummonersRift.Logic
             return new Action(a =>
             {
                 Logging.Log("SWITCHED MODE TO PUSH");
-                Variables.Orbwalker.ForceOrbwalkingPoint = Positioning.GetFarmingPosition();
-                Variables.Orbwalker.Enabled = true;
-                Variables.Orbwalker.ActiveMode = OrbwalkingMode.LaneClear;
+                Positioning.GetFarmingPosition().WalkToPoint(OrbwalkingMode.LaneClear);
             });
         }
 

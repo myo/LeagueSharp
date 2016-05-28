@@ -11,7 +11,7 @@ namespace SharpAI.SummonersRift
 {
     public static class Tree
     {
-        private static Composite _root = new PrioritySelector(Recall.BehaviorComposite, PickALane.BehaviorComposite, Teamfight.BehaviorComposite, Fight.BehaviorComposite, Objectives.BehaviorComposite, WalkToLane.BehaviorComposite, PrivillegeCheck.BehaviorComposite, Push.BehaviorComposite, Freeze.BehaviorComposite, FailSafe.BehaviorComposite);
+        private static Composite _root = new PrioritySelector(Recall.BehaviorComposite, PickALane.BehaviorComposite, WalkToLane.BehaviorComposite, Teamfight.BehaviorComposite, Fight.BehaviorComposite, Objectives.BehaviorComposite, PrivillegeCheck.BehaviorComposite, Push.BehaviorComposite, Freeze.BehaviorComposite, FailSafe.BehaviorComposite);
 
         public static void Seed(string[] args = null)
         {

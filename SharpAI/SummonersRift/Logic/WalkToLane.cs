@@ -26,10 +26,8 @@ namespace SharpAI.SummonersRift.Logic
             return new Action(a =>
             {
                 Logging.Log("SWITCHED MODE TO WALKTOLANE");
-                Variables.Orbwalker.ForceOrbwalkingPoint = StaticData.GetLastTurretInLanePolygon(
-                    SessionBasedData.MyTeam, SessionBasedData.CurrentLane).GetRandomPointInPolygon();
-                Variables.Orbwalker.Enabled = true;
-                Variables.Orbwalker.ActiveMode = OrbwalkingMode.Hybrid;
+                StaticData.GetLastTurretInLanePolygon(
+                    SessionBasedData.MyTeam, SessionBasedData.CurrentLane).GetRandomPointInPolygon().WalkToPoint(OrbwalkingMode.Combo);
             });
         }
 

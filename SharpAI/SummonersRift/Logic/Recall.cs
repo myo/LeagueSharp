@@ -43,10 +43,8 @@ namespace SharpAI.SummonersRift.Logic
                         ObjectManager.Get<Obj_AI_Hero>()
                             .Any(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1250))
                     {
-                        ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo,
-                            ObjectManager.Player.Position.Extend(GameObjects.AllyNexus.Position,
-                                Random.GetRandomInteger(400, 600)),
-                            false);
+                        ObjectManager.Player.Position.Extend(GameObjects.AllyNexus.Position,
+                                Random.GetRandomInteger(400, 600)).WalkToPoint(OrbwalkingMode.None, true);
                         Logging.Log("LOOKING FOR SAFE RECALL SPOT");
                     }
                 }
