@@ -10,6 +10,7 @@ using LeagueSharp.SDK;
 using LeagueSharp.SDK.Enumerations;
 using LeagueSharp.SDK.Utils;
 using NLog;
+using SharpDX;
 using Random = SharpAI.Utility.Random;
 
 namespace SharpAI.SummonersRift
@@ -21,6 +22,8 @@ namespace SharpAI.SummonersRift
         private static AutoLevel _autoLevel;
         public static bool AttackedByMinionsFlag = false;
         public static bool AttackedByTurretFlag = false;
+        public static int _lastAfkCheckTime = 0;
+        public static Vector3 _lastAfkCheckPosition;
         public static void Load()
         {
             Events.OnLoad += (obj, loadArgs) =>
@@ -37,16 +40,19 @@ namespace SharpAI.SummonersRift
                             if (ObjectManager.Player.IsRecalling() ||
                                 (ObjectManager.Player.InFountain() && ObjectManager.Player.HealthPercent < 95))
                             {
+                                Logging.Log("bot is recalling");
                                 issueOrderArgs.Process = false;
                                 return;
                             }
                             if (issueOrderArgs.TargetPosition.IsDangerousPosition())
                             {
+                                Logging.Log("target position is dangerous");
                                 issueOrderArgs.Process = false;
                                 return;
                             }
                             if (Environment.TickCount - _lastMovementCommand > Utility.Random.GetRandomInteger(300, 1100))
                             {
+                                Logging.Log("humanizing");
                                 _lastMovementCommand = Environment.TickCount;
                                 return;
                             }
@@ -56,6 +62,7 @@ namespace SharpAI.SummonersRift
                         {
                             if (issueOrderArgs.Target is Obj_AI_Hero)
                             {
+                                Logging.Log("anti outtraded");
                                 if (ObjectManager.Player.IsUnderEnemyTurret() || (ObjectManager.Get<Obj_AI_Minion>().Count(m => m.IsEnemy && !m.IsDead && m.Distance(ObjectManager.Player) < 600) > 4))
                                 {
                                     issueOrderArgs.Process = false;
@@ -64,6 +71,7 @@ namespace SharpAI.SummonersRift
                             }
                             if (issueOrderArgs.Target is Obj_AI_Minion && (issueOrderArgs.Target as Obj_AI_Minion).Team == GameObjectTeam.Neutral)
                             {
+                                Logging.Log("skipped hitting jg camp");
                                 issueOrderArgs.Process = false;
                                 return;
                             }
@@ -114,6 +122,16 @@ namespace SharpAI.SummonersRift
                     {
                         args.Process = false;
                         Variables.Orbwalker.ActiveMode = OrbwalkingMode.None;
+                    }
+                    if (Environment.TickCount - _lastAfkCheckTime > 30000)
+                    {
+                        _lastAfkCheckTime = Environment.TickCount;
+                        if (_lastAfkCheckPosition.Distance(ObjectManager.Player.ServerPosition) < 400)
+                        {
+                            var pos = new Utility.Geometry.Circle(ObjectManager.Player.Position.ToVector2(), 500).ToPolygon().GetRandomPointInPolygon();
+                            pos.WalkToPoint(OrbwalkingMode.None, true);
+                        }
+                        _lastAfkCheckPosition = ObjectManager.Player.ServerPosition;
                     }
                 };
             };
