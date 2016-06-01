@@ -25,7 +25,7 @@ namespace Challenger_Series.Plugins
             E = new Spell(SpellSlot.E, 770);
             R = new Spell(SpellSlot.R, 2000);
 
-            Q.SetSkillshot(0.62f, 60f, 2200f, false, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.40f, 60f, 2200f, false, SkillshotType.SkillshotLine);
             E.SetSkillshot(0.25f, 80f, 1600f, true, SkillshotType.SkillshotLine);
             R.SetSkillshot(3000f, 50f, 1000f, false, SkillshotType.SkillshotLine);
             InitMenu();
