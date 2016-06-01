@@ -181,7 +181,7 @@ namespace Challenger_Series.Plugins
                 FarmMenu.Add(new MenuBool("alwaysuseeif2minkillable", "Always use E if resetted with no mana cost", true));
             RendDamageMenu = MainMenu.Add(new Menu("kalirenddmgmenu", "Adjust Rend (E) DMG Prediction: "));
             ReduceRendDamageBySlider =
-                RendDamageMenu.Add(new MenuSlider("kalirendreducedmg", "Reduce E DMG by: ", 0, 0, 300));
+                RendDamageMenu.Add(new MenuSlider("kalirendreducedmg", "Reduce E DMG by: ", 15, 0, 300));
             DrawMenu = MainMenu.Add(new Menu("kalidrawmenu", "Drawing Settings: "));
             DrawERangeBool = DrawMenu.Add(new MenuBool("drawerangekali", "Draw E Range", true));
             DrawRRangeBool = DrawMenu.Add(new MenuBool("kalidrawrrange", "Draw R Range", true));
@@ -485,7 +485,7 @@ namespace Challenger_Series.Plugins
             // Take into account all kinds of shields
             var totalHealth = GetTotalHealthWithShieldsApplied(target);
 
-            var dmg = GetRendDamage(target);
+            var dmg = GetRendDamage(target) - ReduceRendDamageBySlider;
 
             if (target.Name.Contains("Baron") && ObjectManager.Player.HasBuff("barontarget"))
             {
@@ -511,7 +511,7 @@ namespace Challenger_Series.Plugins
         public double GetRendDamage(Obj_AI_Base target, int customStacks = -1, BuffInstance rendBuff = null)
         {
             // Calculate the damage and return
-            return ObjectManager.Player.CalculateDamage(target, DamageType.Physical, GetRawRendDamage(target, customStacks, rendBuff) - this.ReduceRendDamageBySlider.Value); 
+            return ObjectManager.Player.CalculateDamage(target, DamageType.Physical, GetRawRendDamage(target, customStacks, rendBuff)); 
         }
 
         public float GetRawRendDamage(Obj_AI_Base target, int customStacks = -1, BuffInstance rendBuff = null)
