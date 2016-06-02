@@ -49,8 +49,9 @@ namespace Challenger_Series.Plugins
                 {
                     foreach (var target in targets)
                     {
+                        if (target == null) continue;
                         if (target.Health < Q.GetDamage(target) &&
-                            (!target.HasBuff("kindrednodeathbuff") && !target.HasBuff("Undying Rage") &&
+                            (!target.HasBuff("Undying Rage") &&
                              !target.HasBuff("JudicatorIntervention")))
                         {
                             var pred = Q.GetPrediction(target);
@@ -66,7 +67,7 @@ namespace Challenger_Series.Plugins
                 if (Q.IsReady())
                 {
                     var qtarget = TargetSelector.GetTarget(Q);
-                    if (qtarget.IsHPBarRendered)
+                    if (qtarget != null && qtarget.IsHPBarRendered)
                     {
                         var pred = Q.GetPrediction(qtarget);
                         if (Q.IsReady() && UseQ && pred.Hitchance >= HitChance.High && !pred.CollisionObjects.Any())
