@@ -106,27 +106,30 @@ namespace Challenger_Series.Plugins
             if (wMode == "ALWAYS" || (wMode == "COMBO" && Orbwalker.ActiveMode == OrbwalkingMode.Combo))
             {
                 var wtarget = TargetSelector.GetTarget(W);
-                if (wMode == "COMBO" && wtarget.Distance(ObjectManager.Player) < 500)
+                if (wtarget != null)
                 {
-                    if (wtarget.IsHPBarRendered)
+                    if (wMode == "COMBO" && wtarget.Distance(ObjectManager.Player) < 500)
                     {
-                        var pred = W.GetPrediction(wtarget);
-                        if (pred.Hitchance >= HitChance.High)
+                        if (wtarget.IsHPBarRendered)
                         {
-                            W.Cast(pred.UnitPosition);
-                            return;
+                            var pred = W.GetPrediction(wtarget);
+                            if (pred.Hitchance >= HitChance.High)
+                            {
+                                W.Cast(pred.UnitPosition);
+                                return;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    if (wtarget.IsHPBarRendered)
+                    else
                     {
-                        var pred = W.GetPrediction(wtarget);
-                        if (pred.Hitchance >= HitChance.High)
+                        if (wtarget.IsHPBarRendered)
                         {
-                            W.Cast(pred.UnitPosition);
-                            return;
+                            var pred = W.GetPrediction(wtarget);
+                            if (pred.Hitchance >= HitChance.High)
+                            {
+                                W.Cast(pred.UnitPosition);
+                                return;
+                            }
                         }
                     }
                 }
@@ -136,6 +139,10 @@ namespace Challenger_Series.Plugins
         void RLogic()
         {
             var rtarget = TargetSelector.GetTarget(R);
+            if (rtarget == null)
+            {
+                return;
+            }
             if (UseRKey.Active)
             {
                 var pred = R.GetPrediction(rtarget);
