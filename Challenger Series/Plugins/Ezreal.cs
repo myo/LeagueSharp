@@ -41,6 +41,7 @@ namespace Challenger_Series.Plugins
         }
 
         private Obj_AI_Minion _lastTurretTarget;
+        private bool pressedR = false;
 
         void QLogic()
         {
@@ -143,16 +144,6 @@ namespace Challenger_Series.Plugins
             {
                 return;
             }
-            if (UseRKey.Active)
-            {
-                var pred = R.GetPrediction(rtarget);
-                if (pred.Hitchance >= HitChance.High)
-                {
-                    castedR = true;
-                    R.Cast(pred.UnitPosition);
-                    return;
-                }
-            }
             if (ObjectManager.Player.CountEnemyHeroesInRange(800) < 1)
             {
                 R.CastIfWillHit(rtarget, 3);
@@ -165,6 +156,27 @@ namespace Challenger_Series.Plugins
                         if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseSheenCombo && HasSheenBuff && ObjectManager.Player.CountEnemyHeroesInRange(550) > 0)
             {
                 return;
+            }
+            if (this.SemiAutoRKey.Active)
+            {
+                if (ObjectManager.Player.CountEnemyHeroesInRange(1300) > 0)
+                {
+                    var ultTarget = TargetSelector.GetTarget(R);
+                    if (ultTarget != null && ultTarget.IsHPBarRendered)
+                    {
+                        this.pressedR = true;
+                        var rPred = R.GetPrediction(ultTarget);
+                        if (rPred.Hitchance >= HitChance.High)
+                        {
+                            R.Cast(rPred.UnitPosition);
+                        }
+                        return;
+                    }
+                }
+                else
+                {
+                    R.Cast(Game.CursorPos);
+                }
             }
             if (_lastTurretTarget == null || !_lastTurretTarget.IsHPBarRendered)
             {
@@ -205,21 +217,19 @@ namespace Challenger_Series.Plugins
 
         private void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
-            if (sender.Owner.IsMe && args.Slot == SpellSlot.R)
+            if (args.Slot == SpellSlot.R && this.BlockManualR && ObjectManager.Player.CountEnemyHeroesInRange(1450) > 0)
             {
-                if (!castedR && ObjectManager.Player.CountEnemyHeroesInRange(2500) > 0)
+                if (!pressedR && !ObjectManager.Player.IsCastingInterruptableSpell())
                 {
                     args.Process = false;
                 }
                 else
                 {
                     args.Process = true;
-                    castedR = false;
+                    this.pressedR = false;
                 }
             }
         }
-
-        private bool castedR = false;
 
         private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs args)
         {
@@ -247,7 +257,9 @@ namespace Challenger_Series.Plugins
         private MenuBool QFarm;
         private MenuSlider QMana;
         private MenuBool UseSheenCombo;
-        private MenuKeyBind UseRKey;
+        private MenuKeyBind SemiAutoRKey;
+        private MenuBool BlockManualR;
+        private MenuBool ForceR;
 
         public void InitMenu()
         {
@@ -255,7 +267,8 @@ namespace Challenger_Series.Plugins
             QFarm = MainMenu.Add(new MenuBool("Ezrealqfarm", "Use Q Farm", true));
             QMana = MainMenu.Add(new MenuSlider("Ezrealqfarmmana", "Q Farm Mana", 80, 0, 100));
             UseWMode = MainMenu.Add(new MenuList<string>("Ezrealw", "Use W", new [] {"COMBO", "ALWAYS", "NEVER"}));
-            UseRKey = MainMenu.Add(new MenuKeyBind("Ezrealr", "Use R Key: ", Keys.R, KeyBindType.Press));
+            SemiAutoRKey = MainMenu.Add(new MenuKeyBind("Ezrealr", "Use R Key: ", Keys.R, KeyBindType.Press));
+            BlockManualR = MainMenu.Add(new MenuBool("Ezrealblockmanualr", "Block manual R", true));
             UseSheenCombo = MainMenu.Add(new MenuBool("Ezrealsheencombo", "Use SHEEN Combo", true));
             MainMenu.Attach();
         }

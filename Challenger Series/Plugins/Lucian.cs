@@ -230,7 +230,7 @@ namespace Challenger_Series.Plugins
         {
             if (sender.Owner.IsMe)
             {
-                if (args.Slot == SpellSlot.R && this.BlockManualR)
+                if (args.Slot == SpellSlot.R && this.BlockManualR && ObjectManager.Player.CountEnemyHeroesInRange(1450) > 0)
                 {
                     if (!pressedR && !ObjectManager.Player.IsCastingInterruptableSpell())
                     {
