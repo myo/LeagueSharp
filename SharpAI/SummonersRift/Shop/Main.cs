@@ -52,7 +52,7 @@ namespace SharpAI.SummonersRift.Shop
             return responseFromServer;
         }
 
-        public static string[] List = new[] {"", "", "", "", "", ""};
+        public static string[] List = new[] { "", "", "", "", "", "" };
 
         public static string[] Aatrox =
         {
@@ -817,7 +817,7 @@ namespace SharpAI.SummonersRift.Shop
         {
             string itemJson = "https://raw.githubusercontent.com/myo/Experimental/master/item.json";
             string itemsData = Request(itemJson);
-            string itemArray = itemsData.Split(new[] {"data"}, StringSplitOptions.None)[1];
+            string itemArray = itemsData.Split(new[] { "data" }, StringSplitOptions.None)[1];
             MatchCollection itemIdArray = Regex.Matches(itemArray, "[\"]\\d*[\"][:][{].*?(?=},\"\\d)");
             foreach (Item item in from object iItem in itemIdArray select new Item(iItem.ToString()))
                 ItemList.Add(item);
@@ -1229,13 +1229,14 @@ namespace SharpAI.SummonersRift.Shop
             }
             return shoppingItems;
         }
-
         public static void BuyItems(EventArgs args)
         {
-            if ((ObjectManager.Player.InFountain() || ObjectManager.Player.IsDead) && Environment.TickCount - _lastShop < Utility.Random.GetRandomInteger(350, 450)) return;
-            if (!InventoryFull() && !Items.HasItem(2003) && ObjectManager.Player.Gold > 400)
+            if ((ObjectManager.Player.InFountain() || ObjectManager.Player.IsDead) && Environment.TickCount - _lastShop < new Random().Next(350, 450)) return;
+            if (Environment.TickCount - _lastShop > 250 + Game.Ping && !InventoryFull() && !Items.HasItem(2003) && !Items.HasItem(2010) &&
+                ObjectManager.Player.Gold > 400 && ObjectManager.Player.Gold < 3000)
             {
                 ObjectManager.Player.BuyItem(ItemId.Health_Potion);
+                _lastShop = Environment.TickCount;
             }
             if ((Queue.Peek() != null && InventoryFull()) &&
                    (Queue.Peek().From == null ||
@@ -1248,7 +1249,7 @@ namespace SharpAI.SummonersRift.Shop
                    ObjectManager.Player.InShop())
             {
                 var y = Queue.Dequeue();
-                ObjectManager.Player.BuyItem((ItemId) y.Id);
+                ObjectManager.Player.BuyItem((ItemId)y.Id);
                 _lastItem = y;
                 _priceAddup = 0;
             }
@@ -1271,7 +1272,7 @@ namespace SharpAI.SummonersRift.Shop
             var z = ObjectManager.Player.InventoryItems.ToList().OrderBy(i => i.Slot).Select(item => item.Id).ToList();
             for (int i = 0; i < z.Count - 2; i++)
             {
-                var x = GetItemById((int) z[i]);
+                var x = GetItemById((int)z[i]);
                 Queue<Item> temp = new Queue<Item>();
                 ItemSequence(x, temp);
                 y += temp.Count;
