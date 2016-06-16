@@ -112,6 +112,19 @@ namespace Challenger_Series.Plugins
             {
                 Render.Circle.DrawCircle(ObjectManager.Player.Position, drawRange, Color.Gold);
             }
+            var victims =
+                   GameObjects.EnemyHeroes.Where(
+                       x =>
+                           x.IsValid && !x.IsDead && x.IsEnemy &&
+                           (x.IsVisible && x.IsValidTarget()) &&
+                           ObjectManager.Player.GetSpellDamage(x, SpellSlot.R) >= x.Health - 150)
+                       .Aggregate("", (current, target) => current + (target.ChampionName + " "));
+
+            if (victims != "" && R.IsReady())
+            {
+                    Drawing.DrawText(Drawing.Width * 0.44f, Drawing.Height * 0.7f, System.Drawing.Color.GreenYellow,
+                        "Ult can kill: " + victims);
+            }
         }
 
         private void OnAction(object sender, OrbwalkingActionArgs orbwalkingActionArgs)

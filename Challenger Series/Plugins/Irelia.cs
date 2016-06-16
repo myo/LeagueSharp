@@ -26,7 +26,7 @@ namespace Challenger_Series
             base.W = new Spell(SpellSlot.W);
             base.E = new Spell(SpellSlot.E, 425);
             base.R = new Spell(SpellSlot.R, 1000);
-            base.R.SetSkillshot(100, 50, 1600, false, SkillshotType.SkillshotLine);
+            base.R.SetSkillshot(0.25f, 50, 1600, false, SkillshotType.SkillshotLine);
 
             InitMenu();
             DelayedOnUpdate += OnUpdate;

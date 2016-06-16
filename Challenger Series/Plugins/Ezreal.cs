@@ -29,7 +29,7 @@ namespace Challenger_Series.Plugins
             E = new Spell(SpellSlot.E, 475);
 
             R = new Spell(SpellSlot.R, 2500);
-            R.SetSkillshot(1f, 160f, 2000f, false, SkillshotType.SkillshotLine);
+            R.SetSkillshot(1.00f, 160f, 2000f, false, SkillshotType.SkillshotLine);
             InitMenu();
             DelayedOnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
