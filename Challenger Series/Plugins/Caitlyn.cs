@@ -25,9 +25,10 @@ namespace Challenger_Series.Plugins
             E = new Spell(SpellSlot.E, 770);
             R = new Spell(SpellSlot.R, 2000);
 
-            Q.SetSkillshot(0.65f, 60f, 2000f, false, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.25f, 50f, 2000f, false, SkillshotType.SkillshotLine);
+            W.SetSkillshot(1.00f, 100f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.25f, 80f, 1600f, true, SkillshotType.SkillshotLine);
-            R.SetSkillshot(3000f, 50f, 1000f, false, SkillshotType.SkillshotLine);
+            R.SetSkillshot(3.00f, 50f, 1000f, false, SkillshotType.SkillshotLine);
             InitMenu();
             Orbwalker.OnAction += OnAction;
             DelayedOnUpdate += OnUpdate;
@@ -275,9 +276,9 @@ namespace Challenger_Series.Plugins
             var goodTarget =
                 ValidTargets.FirstOrDefault(
                     e =>
-                    e.IsValidTarget(820) && e.HasBuffOfType(BuffType.Knockup) || e.HasBuffOfType(BuffType.Snare)
+                    !e.IsDead && e.HasBuffOfType(BuffType.Knockup) || e.HasBuffOfType(BuffType.Snare)
                     || e.HasBuffOfType(BuffType.Stun) || e.HasBuffOfType(BuffType.Suppression) || e.IsCharmed
-                    || e.IsCastingInterruptableSpell() || e.HasBuff("ChronoRevive") || e.HasBuff("ChronoShift"));
+                    || e.IsCastingInterruptableSpell() || !e.CanMove);
             if (goodTarget != null)
             {
                 var pos = goodTarget.ServerPosition;
@@ -295,6 +296,14 @@ namespace Challenger_Series.Plugins
             {
 
                 W.Cast(enemyMinion.ServerPosition);
+            }
+            foreach (var hero in GameObjects.EnemyHeroes.Where(h=>h.Distance(ObjectManager.Player) < W.Range))
+            {
+                var pred = Prediction.GetPrediction(hero, W);
+                if ((int) pred.Item1 > (int) HitChance.Medium)
+                {
+                    W.Cast(pred.Item2);
+                }
             }
         }
 
