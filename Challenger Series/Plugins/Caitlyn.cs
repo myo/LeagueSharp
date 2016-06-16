@@ -250,7 +250,7 @@ namespace Challenger_Series.Plugins
                     if (goodQTarget != null)
                     {
                         var pred = Prediction.GetPrediction(goodQTarget, Q);
-                        if ((int)pred.Item1 > (int)HitChance.Medium)
+                        if ((int)pred.Item1 > (int)HitChance.Medium && pred.Item2.Distance(ObjectManager.Player.Position) < 1100)
                         {
                             Q.Cast(pred.Item2);
                         }
@@ -267,7 +267,7 @@ namespace Challenger_Series.Plugins
                     if (qTarget != null)
                     {
                         var pred = Prediction.GetPrediction(qTarget, Q);
-                        if ((int)pred.Item1 > (int)HitChance.Medium)
+                        if ((int)pred.Item1 > (int)HitChance.Medium && pred.Item2.Distance(ObjectManager.Player.Position) < 1100)
                         {
                             if (qHarassMode == "ALLOWMINIONS")
                             {
