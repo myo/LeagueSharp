@@ -242,7 +242,6 @@ namespace Challenger_Series.Plugins
                 if (UseQCombo && Q.IsReady() && ObjectManager.Player.CountEnemyHeroesInRange(800) == 0
                     && ObjectManager.Player.CountEnemyHeroesInRange(1100) > 0)
                 {
-                    Q.CastIfWillHit(TargetSelector.GetTarget(900, DamageType.Physical), 2);
                     var goodQTarget =
                         ValidTargets.FirstOrDefault(
                             t =>
