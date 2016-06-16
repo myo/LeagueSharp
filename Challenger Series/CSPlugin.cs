@@ -51,7 +51,7 @@ namespace Challenger_Series
                 this.CrossAssemblySettings.Add(
                     new MenuSlider("triggeronupdate", "Trigger OnUpdate X times a second", 26, 20, 33));
             Utils.Prediction.PredictionMode =
-                this.CrossAssemblySettings.Add(new MenuList<string>("pred", "Use Prediction: ", new[] {"SDK", "Common"}));
+                this.CrossAssemblySettings.Add(new MenuList<string>("predictiontouse", "Use Prediction: ", new[] {"Common", "SDK"}));
 
 
             DelayAction.Add(15000, () => Orbwalker.Enabled = true);
