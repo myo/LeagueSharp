@@ -341,7 +341,7 @@ namespace Challenger_Series.Plugins
 
         private Tuple<HitChance, Vector3, List<Obj_AI_Base>> GetPrediction(Obj_AI_Hero target, Spell spell)
         {
-            switch (PredictionType.SelectedValue)
+            switch (Utils.Prediction.PredictionMode.SelectedValue)
             {
                 case "SDK":
                 {

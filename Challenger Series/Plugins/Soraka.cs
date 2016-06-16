@@ -24,6 +24,7 @@ using LeagueSharp.SDK.Enumerations;
 using LeagueSharp.SDK.UI;
 using LeagueSharp.SDK.Utils;
 using Menu = LeagueSharp.SDK.UI.Menu;
+using Prediction = Challenger_Series.Utils.Prediction;
 
 namespace Challenger_Series
 {
@@ -189,7 +190,6 @@ namespace Challenger_Series
         private MenuSlider OnlyQIfMyHPLessThanSlider;
         private MenuBool NoNeedForSpacebarBool;
         private MenuBool DontWTanksBool;
-        private MenuList<string> PredictionType;
         private MenuSlider ATankTakesXHealsToHealSlider;
         private MenuSlider EDelay;
         private MenuSlider UseUltForMeIfMyHpIsLessThanSlider;
@@ -252,8 +252,6 @@ namespace Challenger_Series
             TryToUltAfterIgniteBool = MainMenu.Add(new MenuBool("ultafterignite", "ULT (R) after IGNITE", false));
 
             BlockAutoAttacksBool = MainMenu.Add(new MenuBool("blockaas", "Block AutoAttacks?", true));
-
-            PredictionType = new MenuList<string>("rakapredtype", "PredictionType", new List<string>() {"Common", "SDK"});
 
             DrawW = MainMenu.Add(new MenuBool("draww", "Draw W?", true));
 
@@ -332,7 +330,7 @@ namespace Challenger_Series
                 {
                     continue;
                 }
-                var pred = GetPrediction(hero, Q);
+                var pred = Prediction.GetPrediction(hero, Q);
                 if (((int) pred.Item1 > (int) HitChance.Medium || hero.HasBuff("SorakaEPacify")) &&
             pred.Item2.Distance(ObjectManager.Player.ServerPosition) < Q.Range)
                 {
@@ -529,24 +527,7 @@ namespace Challenger_Series
         }
 
         #endregion STTCSelector
-
-        private Tuple<HitChance, Vector3, List<Obj_AI_Base>> GetPrediction(Obj_AI_Hero target, Spell spell)
-        {
-            switch (PredictionType.SelectedValue)
-            {
-                case "SDK":
-                    {
-                        var pred = spell.GetPrediction(target);
-                        return new Tuple<HitChance, Vector3, List<Obj_AI_Base>>(pred.Hitchance, pred.UnitPosition, pred.CollisionObjects);
-                    }
-                default:
-                    {
-
-                        var pred = LeagueSharp.Common.Prediction.GetPrediction(target, spell.Delay, spell.Width, spell.Speed);
-                        return new Tuple<HitChance, Vector3, List<Obj_AI_Base>>((HitChance)((int)pred.Hitchance), pred.UnitPosition, pred.CollisionObjects);
-                    }
-            }
-        }
+        
 
     }
 }
