@@ -48,7 +48,16 @@ namespace Challenger_Series
             Drawing.OnDraw += OnDraw;
             GameObject.OnCreate += OnCreateObj;
             Events.OnGapCloser += OnGapCloser;
+            Events.OnInterruptableTarget += OnInterruptableTarget;
             this._rand = new Random();
+        }
+
+        private void OnInterruptableTarget(object sender, Events.InterruptableTargetEventArgs interruptableTargetEventArgs)
+        {
+            if (interruptableTargetEventArgs.Sender.Distance(ObjectManager.Player) < 800)
+            {
+                E.Cast(interruptableTargetEventArgs.Sender);
+            }
         }
 
         private Random _rand;
@@ -103,11 +112,11 @@ namespace Challenger_Series
                     if (enemyJ4 != null && enemyJ4.IsValidTarget())
                     this.CastE(enemyJ4.ServerPosition);
                 }
-                if (obj.Name.ToLower().Contains("soraka_base_e_rune.troy") &&
-                    GameObjects.EnemyHeroes.Count(e => e.IsHPBarRendered && e.Distance(obj.Position) < 300) > 0)
+                /*if (obj.Name.ToLower().Contains("soraka_base_e_rune.troy") &&
+                    GameObjects.EnemyHeroes.Count(e => e.IsHPBarRendered && e.Distance(obj.Position) < 200) > 0)
                 {
                     this.Q.Cast(obj.Position);
-                }
+                }*/
                 var rengo = GameObjects.EnemyHeroes.FirstOrDefault(e => e.CharData.BaseSkinName == "Rengar");
                 if (rengo != null)
                 {
@@ -180,6 +189,7 @@ namespace Challenger_Series
         private MenuSlider OnlyQIfMyHPLessThanSlider;
         private MenuBool NoNeedForSpacebarBool;
         private MenuBool DontWTanksBool;
+        private MenuList<string> PredictionType;
         private MenuSlider ATankTakesXHealsToHealSlider;
         private MenuSlider EDelay;
         private MenuSlider UseUltForMeIfMyHpIsLessThanSlider;
@@ -242,6 +252,8 @@ namespace Challenger_Series
             TryToUltAfterIgniteBool = MainMenu.Add(new MenuBool("ultafterignite", "ULT (R) after IGNITE", false));
 
             BlockAutoAttacksBool = MainMenu.Add(new MenuBool("blockaas", "Block AutoAttacks?", true));
+
+            PredictionType = new MenuList<string>("rakapredtype", "PredictionType", new List<string>() {"Common", "SDK"});
 
             DrawW = MainMenu.Add(new MenuBool("draww", "Draw W?", true));
 
@@ -320,11 +332,11 @@ namespace Challenger_Series
                 {
                     continue;
                 }
-                var pred = Q.GetPrediction(hero);
-                if ((int) pred.Hitchance > (int) HitChance.Medium &&
-                    pred.UnitPosition.Distance(ObjectManager.Player.ServerPosition) < Q.Range)
+                var pred = GetPrediction(hero, Q);
+                if (((int) pred.Item1 > (int) HitChance.Medium || hero.HasBuff("SorakaEPacify")) &&
+            pred.Item2.Distance(ObjectManager.Player.ServerPosition) < Q.Range)
                 {
-                    Q.Cast(pred.UnitPosition);
+                    Q.Cast(pred.Item2);
                 }
             }
         }
@@ -517,6 +529,24 @@ namespace Challenger_Series
         }
 
         #endregion STTCSelector
+
+        private Tuple<HitChance, Vector3, List<Obj_AI_Base>> GetPrediction(Obj_AI_Hero target, Spell spell)
+        {
+            switch (PredictionType.SelectedValue)
+            {
+                case "SDK":
+                    {
+                        var pred = spell.GetPrediction(target);
+                        return new Tuple<HitChance, Vector3, List<Obj_AI_Base>>(pred.Hitchance, pred.UnitPosition, pred.CollisionObjects);
+                    }
+                default:
+                    {
+
+                        var pred = LeagueSharp.Common.Prediction.GetPrediction(target, spell.Delay, spell.Width, spell.Speed);
+                        return new Tuple<HitChance, Vector3, List<Obj_AI_Base>>((HitChance)((int)pred.Hitchance), pred.UnitPosition, pred.CollisionObjects);
+                    }
+            }
+        }
 
     }
 }
