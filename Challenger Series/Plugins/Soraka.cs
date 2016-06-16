@@ -40,7 +40,7 @@ namespace Challenger_Series
             this.E = new Spell(SpellSlot.E, 900);
             this.R = new Spell(SpellSlot.R);
 
-            Q.SetSkillshot(0.30f, 125, 1750, false, SkillshotType.SkillshotCircle);
+            Q.SetSkillshot(0.30f, 125, 1600, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.4f, 70f, 1750, false, SkillshotType.SkillshotCircle);
 
             InitializeMenu();
