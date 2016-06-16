@@ -83,7 +83,7 @@ namespace Challenger_Series.Plugins
         private void OnInterruptableTarget(object oSender, Events.InterruptableTargetEventArgs args)
         {
             var sender = args.Sender;
-            if (!GameObjects.AllyMinions.Any(m => !m.IsDead && m.Name.ToLower().Contains("yordle")) && ObjectManager.Player.Distance(sender) < 550)
+            if (!GameObjects.AllyMinions.Any(m => !m.IsDead && m.CharData.BaseSkinName.Contains("trap") && m.Distance(sender.ServerPosition) < 100) && ObjectManager.Player.Distance(sender) < 550)
             {
                 W.Cast(sender.ServerPosition);
             }
@@ -282,7 +282,7 @@ namespace Challenger_Series.Plugins
             if (goodTarget != null)
             {
                 var pos = goodTarget.ServerPosition;
-                if (pos.Distance(ObjectManager.Player.ServerPosition) < 820)
+                if (!GameObjects.AllyMinions.Any(m => !m.IsDead && m.CharData.BaseSkinName.Contains("trap") && m.Distance(goodTarget.ServerPosition) < 100) && pos.Distance(ObjectManager.Player.ServerPosition) < 820)
                 {
                     W.Cast(goodTarget.ServerPosition);
                 }
@@ -300,7 +300,7 @@ namespace Challenger_Series.Plugins
             foreach (var hero in GameObjects.EnemyHeroes.Where(h=>h.Distance(ObjectManager.Player) < W.Range))
             {
                 var pred = Prediction.GetPrediction(hero, W);
-                if ((int) pred.Item1 > (int) HitChance.Medium)
+                if (!GameObjects.AllyMinions.Any(m => !m.IsDead && m.CharData.BaseSkinName.Contains("trap") && m.Distance(pred.Item2) < 100) && (int) pred.Item1 > (int) HitChance.Medium)
                 {
                     W.Cast(pred.Item2);
                 }
