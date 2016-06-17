@@ -13,6 +13,7 @@ using LeagueSharp.SDK.Enumerations;
 using LeagueSharp.SDK.UI;
 using LeagueSharp.SDK.Utils;
 using Menu = LeagueSharp.SDK.UI.Menu;
+using Geometry = Challenger_Series.Utils.Geometry;
 
 namespace Challenger_Series.Plugins
 {
@@ -25,7 +26,7 @@ namespace Challenger_Series.Plugins
             E = new Spell(SpellSlot.E, 770);
             R = new Spell(SpellSlot.R, 2000);
 
-            Q.SetSkillshot(0.25f, 50f, 2000f, false, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.25f, 60f, 2000f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(1.00f, 100f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.25f, 80f, 1600f, true, SkillshotType.SkillshotLine);
             R.SetSkillshot(3.00f, 50f, 1000f, false, SkillshotType.SkillshotLine);
@@ -72,7 +73,7 @@ namespace Challenger_Series.Plugins
             {
                 if (args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 750)
                 {
-                    if (E.IsReady())
+                    if (E.IsReady() && ShouldE(sender as Obj_AI_Hero))
                     {
                         E.Cast(sender.ServerPosition);
                     }
@@ -97,7 +98,7 @@ namespace Challenger_Series.Plugins
                 if (args.SData.Name == "summonerflash" && args.End.Distance(ObjectManager.Player.ServerPosition) < 650)
                 {
                     var pred = Prediction.GetPrediction((Obj_AI_Hero) args.Target, E);
-                    if (!pred.Item3.Any(o => o.IsMinion && !o.IsDead && !o.IsAlly))
+                    if (!pred.Item3.Any(o => o.IsMinion && !o.IsDead && !o.IsAlly) && ShouldE(sender as Obj_AI_Hero))
                     {
                         E.Cast(args.End);
                     }
@@ -157,7 +158,7 @@ namespace Challenger_Series.Plugins
                         if (eTarget != null)
                         {
                             var pred = Prediction.GetPrediction(eTarget, E);
-                            if (pred.Item3.Count == 0 && (int)pred.Item1 >= (int)HitChance.High)
+                            if (pred.Item3.Count == 0 && (int)pred.Item1 >= (int)HitChance.High && ShouldE(eTarget))
                             {
                                 E.Cast(pred.Item2);
                             }
@@ -171,7 +172,7 @@ namespace Challenger_Series.Plugins
                                 e.IsMelee && e.Distance(ObjectManager.Player) < UseEOnEnemiesCloserThanSlider.Value
                                 && !e.IsZombie);
                         var pred = Prediction.GetPrediction(eTarget, E);
-                        if (pred.Item3.Count == 0 && (int)pred.Item1 > (int)HitChance.Medium)
+                        if (pred.Item3.Count == 0 && (int)pred.Item1 > (int)HitChance.Medium && ShouldE(eTarget))
                         {
                             E.Cast(pred.Item2);
                         }
@@ -364,6 +365,20 @@ namespace Challenger_Series.Plugins
                 "Viktor", "Xerath", "Zed", "Ziggs", "Jhin", "Soraka"
             };
 
-        
+        private bool ShouldE(Obj_AI_Hero target)
+        {
+            if (target.IsHPBarRendered)
+            {
+                var rect = new Geometry.Rectangle(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), 80f).ToPolygon();
+                if (GameObjects.EnemyMinions.Any(m => m.Position.IsInside(rect)))
+                {
+                    Game.Say("Collision!");
+                    return false;
+                }
+                return true;
+            }
+            Game.Say("Target HPBar not rendered!");
+            return false;
+        }
     }
 }
