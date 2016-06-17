@@ -312,7 +312,7 @@ namespace Challenger_Series.Plugins
             foreach (var hero in GameObjects.EnemyHeroes.Where(h=>h.Distance(ObjectManager.Player) < W.Range))
             {
                 var pred = Prediction.GetPrediction(hero, W);
-                if (!GameObjects.AllyMinions.Any(m => !m.IsDead && m.CharData.BaseSkinName.Contains("trap") && m.Distance(pred.Item2) < 100) && (int) pred.Item1 > (int) HitChance.Medium)
+                if (!GameObjects.AllyMinions.Any(m => !m.IsDead && m.CharData.BaseSkinName.Contains("trap") && m.Distance(pred.Item2) < 100) && (int) pred.Item1 > (int) HitChance.Medium && ObjectManager.Player.Distance(pred.Item2) < W.Range)
                 {
                     W.Cast(pred.Item2);
                 }
