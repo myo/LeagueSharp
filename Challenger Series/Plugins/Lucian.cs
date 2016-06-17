@@ -205,8 +205,8 @@ namespace Challenger_Series.Plugins
                                     foreach (var minion in objAiMinions)
                                     {
                                         var QHit = new Utils.Geometry.Rectangle(
-                                            ObjectManager.Player.Position,
-                                            ObjectManager.Player.Position.Extend(minion.Position, Q2.Range),
+                                            ObjectManager.Player.Position.ToVector2(),
+                                            ObjectManager.Player.Position.Extend(minion.Position, Q2.Range).ToVector2(),
                                             Q2.Width);
                                         if (!QPred.UnitPosition.IsOutside(QHit))
                                         {
