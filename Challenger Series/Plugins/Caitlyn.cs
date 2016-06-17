@@ -227,7 +227,7 @@ namespace Challenger_Series.Plugins
                         new[] { "FULLDAMAGE", "ALLOWMINIONS", "DISABLED" }));
             UseEAntiGapclose = MainMenu.Add(new MenuBool("caiteantigapclose", "Use E AntiGapclose", false));
             UseEOnEnemiesCloserThanSlider =
-                MainMenu.Add(new MenuSlider("caitescape", "Use E on enemies closer than", 400, 100, 650));
+                MainMenu.Add(new MenuSlider("caitecomboshit", "Use E on enemies closer than", 770, 200, 770));
             OnlyUseEOnMelees = MainMenu.Add(new MenuBool("caiteonlymelees", "Only use E on melees", false));
             DrawRange = MainMenu.Add(new MenuSlider("caitdrawrange", "Draw a circle with radius: ", 800, 0, 1240));
             MainMenu.Attach();
