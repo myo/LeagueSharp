@@ -372,12 +372,10 @@ namespace Challenger_Series.Plugins
                 var rect = new Geometry.Rectangle(ObjectManager.Player.Position, target.Position, 80f);
                 if (GameObjects.EnemyMinions.Any(m => m.Distance(ObjectManager.Player) < 900 && !m.Position.IsOutside(rect)))
                 {
-                    Game.PrintChat("Collision!");
                     return false;
                 }
                 return true;
             }
-            Game.PrintChat("Target HPBar not rendered!");
             return false;
         }
     }
