@@ -183,7 +183,7 @@ namespace Challenger_Series.Plugins
         private Menu ComboMenu;
 
         private MenuBool UseQCombo;
-
+        private MenuBool UseWCombo;
         private MenuBool UseECombo;
         
 
@@ -211,7 +211,8 @@ namespace Challenger_Series.Plugins
         {
             ComboMenu = MainMenu.Add(new Menu("caitcombomenu", "Combo Settings: "));
             UseQCombo = ComboMenu.Add(new MenuBool("caitqcombo", "Use Q", true));
-            UseECombo = ComboMenu.Add(new MenuBool("caitecombo", "Use E Combo", true));
+            UseWCombo = ComboMenu.Add(new MenuBool("caitwcombo", "Use W"));
+            UseECombo = ComboMenu.Add(new MenuBool("caitecombo", "Use E", true));
             UseRCombo = ComboMenu.Add(new MenuKeyBind("caitrcombo", "Use R", Keys.R, KeyBindType.Press));
             AutoWConfig = MainMenu.Add(new Menu("caitautow", "W Settings: "));
             UseWInterrupt = AutoWConfig.Add(new MenuBool("caitusewinterrupt", "Use W to Interrupt", true));
@@ -309,12 +310,18 @@ namespace Challenger_Series.Plugins
 
                 W.Cast(enemyMinion.ServerPosition);
             }
-            foreach (var hero in GameObjects.EnemyHeroes.Where(h=>h.Distance(ObjectManager.Player) < W.Range))
+            if (UseWCombo)
             {
-                var pred = Prediction.GetPrediction(hero, W);
-                if (!GameObjects.AllyMinions.Any(m => !m.IsDead && m.CharData.BaseSkinName.Contains("trap") && m.Distance(pred.Item2) < 100) && (int) pred.Item1 > (int) HitChance.Medium && ObjectManager.Player.Distance(pred.Item2) < W.Range)
+                foreach (var hero in GameObjects.EnemyHeroes.Where(h => h.Distance(ObjectManager.Player) < W.Range))
                 {
-                    W.Cast(pred.Item2);
+                    var pred = Prediction.GetPrediction(hero, W);
+                    if (
+                        !GameObjects.AllyMinions.Any(
+                            m => !m.IsDead && m.CharData.BaseSkinName.Contains("trap") && m.Distance(pred.Item2) < 100) &&
+                        (int) pred.Item1 > (int) HitChance.Medium && ObjectManager.Player.Distance(pred.Item2) < W.Range)
+                    {
+                        W.Cast(pred.Item2);
+                    }
                 }
             }
         }
