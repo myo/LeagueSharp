@@ -1,6 +1,16 @@
-﻿using System;
+﻿#region License
+/* Copyright (c) LeagueSharp 2016
+ * No reproduction is allowed in any way unless given written consent
+ * from the LeagueSharp staff.
+ * 
+ * Author: imsosharp & Kortatu
+ * Date: 2/21/2016
+ * File: Geometry.cs
+ */
+#endregion License
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using ClipperLib;
 using LeagueSharp;
 using LeagueSharp.SDK;
@@ -19,14 +29,16 @@ namespace Challenger_Series.Utils
     {
         private const int CircleLineSegmentN = 22;
 
-        public static bool IsInside(this Vector3 position, Polygon polygon)
+        public static bool IsOutside(this Vector3 point, Geometry.Polygon poly)
         {
-            return position.ToVector2().IsInside(polygon);
+            var p = new IntPoint(point.X, point.Y);
+            return Clipper.PointInPolygon(p, poly.ToClipperPath()) != 1;
         }
 
-        public static bool IsInside(this Vector2 point, Polygon polygon)
+        public static bool IsOutside(this Vector2 point, Polygon poly)
         {
-            return !polygon.IsOutside(point);
+            var p = new IntPoint(point.X, point.Y);
+            return Clipper.PointInPolygon(p, poly.ToClipperPath()) != 1;
         }
 
         public static Vector3 SwitchYZ(this Vector3 v)
@@ -41,19 +53,6 @@ namespace Challenger_Series.Utils
             foreach (var path in v)
             {
                 result.Add(path.ToPolygon());
-            }
-            return result;
-        }
-
-        public static Polygon PathsToPolygon(this Paths paths)
-        {
-            var result = new Polygon();
-            foreach (var path in paths)
-            {
-                foreach (var point in path)
-                {
-                    result.Add(new Vector2(point.X, point.Y));
-                }
             }
             return result;
         }
@@ -99,8 +98,7 @@ namespace Challenger_Series.Utils
             return polygon;
         }
 
-        // perform union on a list of polygons
-        public static Paths ClipperUnion(this List<Polygon> polygons)
+        public static Paths ClipPolygons(List<Polygon> polygons)
         {
             var subj = new Paths(polygons.Count);
             var clip = new Paths(polygons.Count);
@@ -113,21 +111,8 @@ namespace Challenger_Series.Utils
             var c = new Clipper();
             c.AddPaths(subj, PolyType.ptSubject, true);
             c.AddPaths(clip, PolyType.ptClip, true);
-            c.Execute(ClipType.ctUnion, solution, PolyFillType.pftPositive, PolyFillType.pftPositive);
+            c.Execute(ClipType.ctUnion, solution, PolyFillType.pftPositive, PolyFillType.pftEvenOdd);
             return solution;
-        }
-
-        // perform xor
-        public static Paths ClipperXor(this Polygon clip, Polygon subject)
-        {
-            var subj = new Paths();
-            subj.Add(subject.ToClipperPath());
-            var clp = new Paths();
-            clp.Add(clip.ToClipperPath());
-            var result = new Paths();
-            var c = new Clipper();
-            c.Execute(ClipType.ctXor, result, PolyFillType.pftPositive, PolyFillType.pftPositive);
-            return result;
         }
 
         public class Circle
@@ -193,35 +178,81 @@ namespace Challenger_Series.Utils
             }
         }
 
-        public class Rectangle
+
+        /// <summary>
+        /// Represents a rectangle polygon.
+        /// </summary>
+        public class Rectangle : Polygon
         {
-            public Vector2 Direction;
-            public Vector2 Perpendicular;
-            public Vector2 REnd;
-            public Vector2 RStart;
+            /// <summary>
+            /// Gets the direction.
+            /// </summary>
+            /// <value>
+            /// The direction.
+            /// </value>
+            public Vector2 Direction { get { return (End - Start).Normalized(); } }
+
+            /// <summary>
+            /// Gets the perpendicular.
+            /// </summary>
+            /// <value>
+            /// The perpendicular.
+            /// </value>
+            public Vector2 Perpendicular { get { return Direction.Perpendicular(); } }
+
+            /// <summary>
+            /// The end
+            /// </summary>
+            public Vector2 End;
+
+            /// <summary>
+            /// The start
+            /// </summary>
+            public Vector2 Start;
+
+            /// <summary>
+            /// The width
+            /// </summary>
             public float Width;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Rectangle"/> class.
+            /// </summary>
+            /// <param name="start">The start.</param>
+            /// <param name="end">The end.</param>
+            /// <param name="width">The width.</param>
+            public Rectangle(Vector3 start, Vector3 end, float width) : this(start.ToVector2(), end.ToVector2(), width) { }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Rectangle"/> class.
+            /// </summary>
+            /// <param name="start">The start.</param>
+            /// <param name="end">The end.</param>
+            /// <param name="width">The width.</param>
             public Rectangle(Vector2 start, Vector2 end, float width)
             {
-                RStart = start;
-                REnd = end;
+                Start = start;
+                End = end;
                 Width = width;
-                Direction = (end - start).Normalized();
-                Perpendicular = Direction.Perpendicular();
+                UpdatePolygon();
             }
 
-            public Polygon ToPolygon(int offset = 0, float overrideWidth = -1)
+            /// <summary>
+            /// Updates the polygon.
+            /// </summary>
+            /// <param name="offset">The offset.</param>
+            /// <param name="overrideWidth">Width of the override.</param>
+            public void UpdatePolygon(int offset = 0, float overrideWidth = -1)
             {
-                var result = new Polygon();
-                result.Add(
-                    RStart + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
-                result.Add(
-                    RStart - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
-                result.Add(
-                    REnd - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
-                result.Add(
-                    REnd + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
-                return result;
+                Points.Clear();
+                Points.Add(
+                    Start + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
+                Points.Add(
+                    Start - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular - offset * Direction);
+                Points.Add(
+                    End - (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
+                Points.Add(
+                    End + (overrideWidth > 0 ? overrideWidth : Width + offset) * Perpendicular + offset * Direction);
             }
         }
 

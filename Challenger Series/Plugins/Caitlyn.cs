@@ -369,8 +369,8 @@ namespace Challenger_Series.Plugins
         {
             if (target.IsHPBarRendered)
             {
-                var rect = new Geometry.Rectangle(ObjectManager.Player.Position.ToVector2(), target.Position.ToVector2(), 80f).ToPolygon();
-                if (GameObjects.EnemyMinions.Any(m => m.Position.IsInside(rect)))
+                var rect = new Geometry.Rectangle(ObjectManager.Player.Position, target.Position, 80f);
+                if (GameObjects.EnemyMinions.Any(m => m.Distance(ObjectManager.Player) < 900 && !m.Position.IsOutside(rect)))
                 {
                     Game.Say("Collision!");
                     return false;
