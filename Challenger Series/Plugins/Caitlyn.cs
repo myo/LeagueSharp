@@ -328,12 +328,12 @@ namespace Challenger_Series.Plugins
 
         void RLogic()
         {
-            if (UseRCombo.Active && R.IsReady() && ObjectManager.Player.CountEnemyHeroesInRange(900) == 0)
+            if (UseRCombo.Active && ObjectManager.Player.CountEnemyHeroesInRange(900) == 0)
             {
                 foreach (var rTarget in
                     ValidTargets.Where(
                         e =>
-                        SquishyTargets.Contains(e.CharData.BaseSkinName) && R.GetDamage(e) > 0.1 * e.MaxHealth
+                        SquishyTargets.Contains(e.CharData.BaseSkinName) && R.GetDamage(e) > 0.15 * e.MaxHealth
                         || R.GetDamage(e) > e.Health))
                 {
                     if (rTarget.Distance(ObjectManager.Player) > 1400)
