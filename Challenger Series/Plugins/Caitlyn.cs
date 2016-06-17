@@ -73,7 +73,7 @@ namespace Challenger_Series.Plugins
             {
                 if (args.IsDirectedToPlayer && args.Sender.Distance(ObjectManager.Player) < 750)
                 {
-                    if (E.IsReady() && ShouldE(sender as Obj_AI_Hero))
+                    if (E.IsReady() && ShouldE(sender.ServerPosition))
                     {
                         E.Cast(sender.ServerPosition);
                     }
@@ -98,7 +98,7 @@ namespace Challenger_Series.Plugins
                 if (args.SData.Name == "summonerflash" && args.End.Distance(ObjectManager.Player.ServerPosition) < 650)
                 {
                     var pred = Prediction.GetPrediction((Obj_AI_Hero) args.Target, E);
-                    if (!pred.Item3.Any(o => o.IsMinion && !o.IsDead && !o.IsAlly) && ShouldE(sender as Obj_AI_Hero))
+                    if (!pred.Item3.Any(o => o.IsMinion && !o.IsDead && !o.IsAlly) && ShouldE(args.End))
                     {
                         E.Cast(args.End);
                     }
@@ -158,7 +158,7 @@ namespace Challenger_Series.Plugins
                         if (eTarget != null)
                         {
                             var pred = Prediction.GetPrediction(eTarget, E);
-                            if (pred.Item3.Count == 0 && (int)pred.Item1 >= (int)HitChance.High && ShouldE(eTarget))
+                            if (pred.Item3.Count == 0 && (int)pred.Item1 >= (int)HitChance.High && ShouldE(pred.Item2))
                             {
                                 E.Cast(pred.Item2);
                             }
@@ -172,7 +172,7 @@ namespace Challenger_Series.Plugins
                                 e.IsMelee && e.Distance(ObjectManager.Player) < UseEOnEnemiesCloserThanSlider.Value
                                 && !e.IsZombie);
                         var pred = Prediction.GetPrediction(eTarget, E);
-                        if (pred.Item3.Count == 0 && (int)pred.Item1 > (int)HitChance.Medium && ShouldE(eTarget))
+                        if (pred.Item3.Count == 0 && (int)pred.Item1 > (int)HitChance.Medium && ShouldE(pred.Item2))
                         {
                             E.Cast(pred.Item2);
                         }
@@ -365,18 +365,14 @@ namespace Challenger_Series.Plugins
                 "Viktor", "Xerath", "Zed", "Ziggs", "Jhin", "Soraka"
             };
 
-        private bool ShouldE(Obj_AI_Hero target)
+        private bool ShouldE(Vector3 predictedPos)
         {
-            if (target.IsHPBarRendered)
+            var rect = new Geometry.Rectangle(ObjectManager.Player.ServerPosition, predictedPos, 80f);
+            if (GameObjects.EnemyMinions.Any(m => m.Distance(ObjectManager.Player) < 900 && !m.Position.IsOutside(rect)))
             {
-                var rect = new Geometry.Rectangle(ObjectManager.Player.Position, target.Position, 80f);
-                if (GameObjects.EnemyMinions.Any(m => m.Distance(ObjectManager.Player) < 900 && !m.Position.IsOutside(rect)))
-                {
-                    return false;
-                }
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
     }
 }
