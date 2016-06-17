@@ -118,7 +118,7 @@ namespace Challenger_Series.Plugins
                        x =>
                            x.IsValid && !x.IsDead && x.IsEnemy &&
                            (x.IsVisible && x.IsValidTarget()) &&
-                           ObjectManager.Player.GetSpellDamage(x, SpellSlot.R) >= x.Health - 150)
+                           R.GetDamage(x) > x.Health - 150)
                        .Aggregate("", (current, target) => current + (target.ChampionName + " "));
 
             if (victims != "" && R.IsReady())
