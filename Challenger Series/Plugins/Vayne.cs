@@ -405,6 +405,10 @@ namespace Challenger_Series
             }
             if (orbwalkingActionArgs.Type == OrbwalkingType.BeforeAttack)
             {
+                if (R.IsReady() && Orbwalker.ActiveMode == OrbwalkingMode.Combo && UseRBool && orbwalkingActionArgs.Target is Obj_AI_Hero && (!(orbwalkingActionArgs.Target as Obj_AI_Hero).IsUnderEnemyTurret() || ObjectManager.Player.IsUnderEnemyTurret()) && ObjectManager.Player.CountAllyHeroesInRange(800) >= ObjectManager.Player.CountEnemyHeroesInRange(800))
+                {
+                    R.Cast();
+                }
                 var possible2WTarget = ValidTargets.FirstOrDefault(
                     h =>
                         h.ServerPosition.Distance(ObjectManager.Player.ServerPosition) < 500 &&
