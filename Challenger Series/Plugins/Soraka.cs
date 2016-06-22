@@ -18,7 +18,6 @@ using LeagueSharp.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
 using Challenger_Series.Utils;
-using System.Windows.Forms;
 using LeagueSharp.Data.Enumerations;
 using LeagueSharp.SDK.Enumerations;
 using LeagueSharp.SDK.UI;
@@ -312,7 +311,7 @@ namespace Challenger_Series
 
         public bool CanW()
         {
-            return !ObjectManager.Player.InFountain() && ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Level >= 1 &&
+            return (!ObjectManager.Player.InFountain() || ObjectManager.Player.CountEnemyHeroesInRange(1200) > 0) && ObjectManager.Player.Spellbook.GetSpell(SpellSlot.W).Level >= 1 &&
                    ObjectManager.Player.Health - GetWHealthCost() >
                    DontHealIfImBelowHpSlider.Value/100f*ObjectManager.Player.MaxHealth;
         }
