@@ -107,14 +107,18 @@ namespace Challenger_Series
         {
             if (this.DelayedOnUpdate != null)
             {
-                if (this.IsPerformanceChallengerEnabled
-                    && Variables.TickCount - this._lastOnUpdateTriggerT > 1000 / this.TriggerOnUpdate.Value)
+                if (this.IsPerformanceChallengerEnabled)
                 {
-                    this._lastOnUpdateTriggerT = Variables.TickCount;
-                    this.DelayedOnUpdate(args);
-                    return;
+                    if (Variables.TickCount - this._lastOnUpdateTriggerT > 1000/this.TriggerOnUpdate.Value)
+                    {
+                        this._lastOnUpdateTriggerT = Variables.TickCount;
+                        this.DelayedOnUpdate(args);
+                    }
                 }
-                this.DelayedOnUpdate(args);
+                else
+                {
+                    this.DelayedOnUpdate(args);
+                }
             }
         }
 
