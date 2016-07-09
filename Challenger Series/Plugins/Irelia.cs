@@ -32,6 +32,15 @@ namespace Challenger_Series
             DelayedOnUpdate += OnUpdate;
             Orbwalker.OnAction += OnOrbwalkerAction;
             Spellbook.OnCastSpell += OnCastSpell;
+            Drawing.OnDraw += OnDraw;
+        }
+
+        private void OnDraw(EventArgs args)
+        {
+            foreach (var minion in GameObjects.EnemyMinions.Where(m => m.Distance(ObjectManager.Player) < Q.Range + 200))
+            {
+                Render.Circle.DrawCircle(minion.Position, minion.BoundingRadius, Color.Red);
+            }
         }
 
         private bool pressedR = false;
@@ -260,7 +269,21 @@ namespace Challenger_Series
                     }
                 }
             }
-
+            if (EscapeKey.Active)
+            {
+                var gapclosingMinion =
+                                        GameObjects.EnemyMinions.Where(
+                                                m =>
+                                                    m.ServerPosition.Distance(ObjectManager.Player.ServerPosition) <
+                                                    650 && m.IsHPBarRendered &&
+                                                    m.Health < Q.GetDamage(m))
+                                            .OrderBy(m => m.Position.Distance(Game.CursorPos))
+                                            .FirstOrDefault();
+                if (gapclosingMinion != null)
+                {
+                    Q.Cast(gapclosingMinion);
+                }
+            }
         }
 
         private MenuList<string> UseQComboStringList;
@@ -268,6 +291,7 @@ namespace Challenger_Series
         private MenuList<string> UseEComboStringList;
         private MenuBool UseEKSBool;
         private MenuKeyBind UseRComboKeybind;
+        private MenuKeyBind EscapeKey;
         private MenuList<string> QGapcloseModeStringList;
         private MenuSlider MinDistForQGapcloser;
         private MenuList<string> QFarmModeStringList;
@@ -278,6 +302,7 @@ namespace Challenger_Series
             UseEComboStringList = MainMenu.Add(new MenuList<string>("useecombo", "Use E Combo", new [] {"CHALLENGER", "BRONZE", "NEVER"}));
             UseEKSBool = MainMenu.Add(new MenuBool("useeks", "Use E KS if Q on CD", true));
             UseRComboKeybind = MainMenu.Add(new MenuKeyBind("usercombo", "Use R Combo", Keys.R, KeyBindType.Press));
+            EscapeKey = new MenuKeyBind("ireesckey", "Escape (Flee) Key: ", Keys.N, KeyBindType.Press);
             QGapcloseModeStringList =
                 MainMenu.Add(new MenuList<string>("qgc", "Q Gapcloser Mode",
                     new[] {"ONLY-CLOSEST-TO-TARGET", "ALL-KILLABLE-MINIONS"}));

@@ -24,7 +24,7 @@ namespace Challenger_Series.Plugins
         public Lucian()
         {
             Q = new Spell(SpellSlot.Q, 675);
-            Q2 = new Spell(SpellSlot.Q, 1200);
+            Q2 = new Spell(SpellSlot.Q, 1100);
             W = new Spell(SpellSlot.W, 1200f);
             E = new Spell(SpellSlot.E, 475f);
             R = new Spell(SpellSlot.R, 1400);
