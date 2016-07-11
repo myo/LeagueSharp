@@ -284,6 +284,7 @@ namespace Challenger_Series
                 {
                     Q.Cast(gapclosingMinion);
                 }
+                Orbwalker.ActiveMode = OrbwalkingMode.Hybrid;
             }
         }
 
