@@ -6,7 +6,6 @@ using LeagueSharp;
 using LeagueSharp.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
-using Challenger_Series.Utils;
 using System.Windows.Forms;
 using LeagueSharp.Data.Enumerations;
 using LeagueSharp.SDK.Enumerations;
@@ -68,7 +67,7 @@ namespace Challenger_Series.Plugins
             base.OnUpdate(args);
 
             if (E.IsReady()) this.ELogic();
-            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && Q.IsReady() && Orbwalker.CanMove())
+            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && Q.IsReady() && Orbwalker.CanMove)
             {
                 foreach (var enemy in ValidTargets.Where(e => e.Distance(ObjectManager.Player) < 900))
                 {

@@ -17,7 +17,6 @@ using LeagueSharp;
 using LeagueSharp.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
-using Challenger_Series.Utils;
 using LeagueSharp.Data.Enumerations;
 using LeagueSharp.SDK.Enumerations;
 using LeagueSharp.SDK.UI;
@@ -152,7 +151,7 @@ namespace Challenger_Series
                 EAntiMelee();
                 EInterruptable();
             }
-            Orbwalker.SetAttackState(!BlockAutoAttacksBool);
+            Orbwalker.AttackState = !BlockAutoAttacksBool;
         }
 
         public override void OnDraw(EventArgs args)
