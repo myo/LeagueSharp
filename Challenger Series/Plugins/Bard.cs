@@ -40,7 +40,6 @@ namespace Challenger_Series
             var hero = new Obj_AI_Hero();
             var spellslotName = hero.Spellbook.Spells.FirstOrDefault(spell => spell.Slot == SpellSlot.Q).Name;
             var spellDbData = SpellDatabase.GetByName(spellslotName);
-            BuffType
 
             Q.SetSkillshot(0.30f, 125, 1600, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.4f, 70f, 1750, false, SkillshotType.SkillshotCircle);
@@ -155,7 +154,7 @@ namespace Challenger_Series
                 EAntiMelee();
                 EInterruptable();
             }
-            Orbwalker.SetAttackState(!BlockAutoAttacksBool);
+            Orbwalker.AttackState = !BlockAutoAttacksBool;
         }
 
         public override void OnDraw(EventArgs args)
