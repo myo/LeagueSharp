@@ -26,7 +26,7 @@ namespace SharpAI.Utility
                     // skip from triggering the orbwalker too
                     return;
                 }
-                Variables.Orbwalker.ForceOrbwalkingPoint = point;
+                Variables.Orbwalker.ForceOrbwalkPoint = point;
                 Variables.Orbwalker.ActiveMode = mode;
             }
         }

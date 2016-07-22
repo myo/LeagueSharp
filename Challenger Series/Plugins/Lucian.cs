@@ -146,7 +146,7 @@ namespace Challenger_Series.Plugins
         void JungleClear(AttackableUnit target)
         {
             var tg = target as Obj_AI_Minion;
-            if (tg != null && !HasPassive && Orbwalker.CanMove())
+            if (tg != null && !HasPassive && Orbwalker.CanMove)
             {
                 if (tg.IsHPBarRendered && tg.CharData.BaseSkinName.Contains("SRU")
                     && !tg.CharData.BaseSkinName.Contains("Mini"))

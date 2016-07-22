@@ -80,7 +80,7 @@ namespace Challenger_Series.Plugins
                 }
             }
             
-            if (Orbwalker.CanMove() && QFarm && ObjectManager.Player.ManaPercent > QMana &&
+            if (Orbwalker.CanMove && QFarm && ObjectManager.Player.ManaPercent > QMana &&
                 (Orbwalker.ActiveMode == OrbwalkingMode.LaneClear || Orbwalker.ActiveMode == OrbwalkingMode.LastHit))
             {
                 var minion =

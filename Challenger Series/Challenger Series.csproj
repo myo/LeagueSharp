@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="CSPlugin.cs" />
     <Compile Include="Plugins\Ashe.cs" />
+    <Compile Include="Plugins\Bard.cs" />
     <Compile Include="Plugins\Caitlyn.cs" />
     <Compile Include="Plugins\Kalista.cs" />
     <Compile Include="Plugins\Kayle.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Plugins\Ezreal.cs" />
     <Compile Include="Plugins\Lucian.cs" />
     <Compile Include="Plugins\Soraka.cs" />
+    <Compile Include="Plugins\Teemo.cs" />
     <Compile Include="Plugins\Vayne.cs" />
     <Compile Include="Plugins\Xerath.cs" />
     <Compile Include="Plugins\_bone.cs" />

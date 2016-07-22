@@ -23,7 +23,7 @@ namespace SharpAI.SummonersRift.Logic
         {
             return new TreeSharp.Action(a =>
             {
-                if (Variables.Orbwalker.CanMove() || Hotfixes.AttackedByTurretFlag)
+                if (Variables.Orbwalker.CanMove || Hotfixes.AttackedByTurretFlag)
                 {
                     Logging.Log("SWITCHED MODE TO PRIVILLEGE CHECK");
                     ObjectManager.Player.Position.Extend(GameObjects.AllyNexus.Position,

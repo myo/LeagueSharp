@@ -68,7 +68,7 @@ namespace Challenger_Series.Plugins
             base.OnUpdate(args);
 
             if (E.IsReady()) this.ELogic();
-            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && Q.IsReady() && Orbwalker.CanMove())
+            if (Orbwalker.ActiveMode == OrbwalkingMode.Combo && Q.IsReady() && Orbwalker.CanMove)
             {
                 foreach (var enemy in ValidTargets.Where(e => e.Distance(ObjectManager.Player) < 900))
                 {
