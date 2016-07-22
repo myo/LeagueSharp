@@ -162,14 +162,14 @@ namespace Challenger_Series.Plugins
                 {
                     _humanizer = null;
                 }
-                Orbwalker.SetMovementState(CanMove());
-                Orbwalker.SetAttackState(CanAttack());
+                Orbwalker.MovementState = CanMove();
+                Orbwalker.AttackState = CanAttack();
             }
             else
             {
                 _humanizer = null;
-                Orbwalker.SetMovementState(true);
-                Orbwalker.SetAttackState(true);
+                Orbwalker.MovementState = true;
+                Orbwalker.AttackState = true;
             }
             #endregion Humanizer
         }

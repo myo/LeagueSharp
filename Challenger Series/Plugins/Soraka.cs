@@ -152,7 +152,7 @@ namespace Challenger_Series
                 EAntiMelee();
                 EInterruptable();
             }
-            Orbwalker.SetAttackState(!BlockAutoAttacksBool);
+            Orbwalker.AttackState = !BlockAutoAttacksBool;
         }
 
         public override void OnDraw(EventArgs args)
