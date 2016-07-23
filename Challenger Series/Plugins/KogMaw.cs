@@ -17,7 +17,6 @@ using LeagueSharp;
 using LeagueSharp.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
-using Challenger_Series.Utils;
 using System.Windows.Forms;
 using LeagueSharp.Data.Enumerations;
 using LeagueSharp.SDK.Enumerations;
@@ -330,7 +329,7 @@ namespace Challenger_Series.Plugins
             foreach (var enemy in ValidTargets.Where(h => h.Distance(myPos) < R.Range && h.IsValidTarget() && h.HealthPercent < 35))
             {
                 var dist = enemy.Distance(ObjectManager.Player.ServerPosition);
-                if (Orbwalker.CanAttack() && dist < 550) continue;
+                if (Orbwalker.CanAttack && dist < 550) continue;
                 var prediction = R.GetPrediction(enemy, true);
                 if ((int) prediction.Hitchance > (int) HitChance.Medium)
                 {

@@ -93,7 +93,7 @@ namespace Tyler1
         private static void OnDelete(GameObject sender, EventArgs args)
         {
             var itemToDelete = Reticles.FirstOrDefault(ret => ret.Value.NetworkId == sender.NetworkId);
-            if (itemToDelete.Key != null)
+            if (itemToDelete.Key != 0)
             {
                 Reticles.Remove(itemToDelete.Key);
             }
@@ -129,11 +129,11 @@ namespace Tyler1
             Game.OnUpdate += OnUpdate;
             Events.OnGapCloser += OnGapcloser;
             Events.OnInterruptableTarget += OnInterruptableTarget;
-            DelayAction.Add(3000, () => MyRange = Variables.Orbwalker.GetAutoAttackRange(Player));
-            Variables.Orbwalker.Enabled = true;
-            DelayAction.Add(1000, () => Variables.Orbwalker.Enabled = true);
-            DelayAction.Add(5000, () => Variables.Orbwalker.Enabled = true);
-            DelayAction.Add(10000, () => Variables.Orbwalker.Enabled = true);
+            DelayAction.Add(3000, () => MyRange = Player.GetRealAutoAttackRange());
+            //Variables.Orbwalker.Enabled = true;
+            //DelayAction.Add(1000, () => Variables.Orbwalker.Enabled = true);
+            //DelayAction.Add(5000, () => Variables.Orbwalker.Enabled = true);
+            //DelayAction.Add(10000, () => Variables.Orbwalker.Enabled = true);
             Menu = new Menu("tyler1", "Tyler1", true);
             AutoCatch = Menu.Add(new MenuBool("tyler1auto", "Auto catch axes?", true));
             CatchOnlyCloseToMouse = Menu.Add(new MenuBool("tyler1onlyclose", "Catch only axes close to mouse?", true));
@@ -181,7 +181,7 @@ namespace Tyler1
                 R1V1(target);
 
             }
-            catch (Exception ex)
+            catch
             {
             }
         }
@@ -368,7 +368,7 @@ namespace Tyler1
                 .Get<GameObject>(
                 ).Any(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead) || !AutoCatch)
             {
-                Variables.Orbwalker.SetMovementState(true);
+                Variables.Orbwalker.MovementState = true;
             }
             if (AutoCatch)
             {
@@ -390,7 +390,7 @@ namespace Tyler1
                     }
                     if (CatchOnlyCloseToMouse && AXE.Distance(Mouse) > MaxDistToMouse.Value)
                     {
-                        Variables.Orbwalker.SetMovementState(true);
+                        Variables.Orbwalker.MovementState = true;
 
                         if (GameObjects.EnemyHeroes.Count(
                             e => e.IsHPBarRendered && e.IsMelee && e.ServerPosition.Distance(AXE.Position) < 350) >= 1)
@@ -401,15 +401,15 @@ namespace Tyler1
                         //maybe user just has potato reaction time
                         return;
                     }
-                    if (AXE.Distance(Player.ServerPosition) > 80 && Variables.Orbwalker.CanMove(30, false))
+                    if (AXE.Distance(Player.ServerPosition) > 80 && Variables.Orbwalker.CanMove)
                     {
                         Variables.Orbwalker.Move(AXE.Position.Randomize());
-                        Variables.Orbwalker.SetMovementState(false);
+                        Variables.Orbwalker.MovementState = false;
                         //DelayAction.Add(300, () => Variables.Orbwalker.SetMovementState(true));
                     }
                     if (AXE.Distance(Player.ServerPosition) <= 80)
                     {
-                        Variables.Orbwalker.SetMovementState(true);
+                        Variables.Orbwalker.MovementState = true;
                     }
                 }
             }
@@ -442,7 +442,7 @@ namespace Tyler1
 
         private static void Draw(EventArgs args)
         {
-            if (Player.IsDead) return;
+            if (ObjectManager.Player.IsDead) return;
             var reticles =
                 ObjectManager.Get<GameObject>()
                     .Where(x => x.Name.Equals("Draven_Base_Q_reticle_self.troy") && !x.IsDead).ToArray();

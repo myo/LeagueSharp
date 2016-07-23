@@ -52,7 +52,6 @@ namespace Challenger_Series
                         new Ezreal();
                         break;
                     default:
-                        Variables.Orbwalker.Enabled = false;
                         break;
                 }
             };

@@ -6,7 +6,6 @@ using LeagueSharp;
 using LeagueSharp.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
-using Challenger_Series.Utils;
 using System.Windows.Forms;
 using LeagueSharp.Data.Enumerations;
 using LeagueSharp.SDK.Enumerations;
@@ -338,7 +337,7 @@ namespace Challenger_Series.Plugins
             }
             if (Variables.TickCount - this.ECastTime > 300)
             {
-                if (!HasPassive && Orbwalker.CanMove(45f, false))
+                if (!HasPassive && Orbwalker.CanMove)
                 {
                     if (Orbwalker.ActiveMode == OrbwalkingMode.Combo)
                     {

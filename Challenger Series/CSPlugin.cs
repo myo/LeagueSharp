@@ -17,7 +17,6 @@ using LeagueSharp;
 using LeagueSharp.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
-using Challenger_Series.Utils;
 using System.Windows.Forms;
 using LeagueSharp.Data.Enumerations;
 using LeagueSharp.SDK.Enumerations;
@@ -53,8 +52,6 @@ namespace Challenger_Series
             Utils.Prediction.PredictionMode =
                 this.CrossAssemblySettings.Add(new MenuList<string>("predictiontouse", "Use Prediction: ", new[] {"Common", "SDK"}));
 
-
-            DelayAction.Add(15000, () => Orbwalker.Enabled = true);
 
             Game.OnUpdate += this.DelayOnUpdate;
 

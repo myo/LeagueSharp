@@ -6,7 +6,6 @@ using LeagueSharp;
 using LeagueSharp.SDK;
 using SharpDX;
 using Color = System.Drawing.Color;
-using Challenger_Series.Utils;
 using System.Windows.Forms;
 using LeagueSharp.Data.Enumerations;
 using LeagueSharp.SDK.Enumerations;
