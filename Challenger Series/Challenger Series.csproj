@@ -50,25 +50,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>C:\L\System\clipper_library.dll</HintPath>
+      <HintPath>C:\PS\References\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
       <HintPath>C:\L\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>C:\L\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\PS\References\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Data">
-      <HintPath>C:\L\System\LeagueSharp.Data.dll</HintPath>
+      <HintPath>C:\PS\References\LeagueSharp.Data.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.SDKEx">
-      <HintPath>C:\L\System\LeagueSharp.SDKEx.dll</HintPath>
+      <HintPath>C:\PS\References\LeagueSharp.SDKEx.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\L\System\SharpDX.dll</HintPath>
+      <HintPath>C:\PS\References\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>C:\L\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>C:\PS\References\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
