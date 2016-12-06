@@ -641,6 +641,10 @@ namespace Mastery_Badge_Spammer
         private static Random _rand = new Random();
         public static void Say(string shit)
         {
+            if (Hacks.DisableSay)
+            {
+                Hacks.DisableSay = false;
+            }
             var typeTime = shit.Length*_rand.Next(25, 85);
             Utility.DelayAction.Add(typeTime, ()=>LeagueSharp.Game.Say(shit));
         }
