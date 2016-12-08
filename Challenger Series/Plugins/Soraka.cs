@@ -33,7 +33,7 @@ namespace Challenger_Series
 
         public Soraka()
         {
-            this.Q = new Spell(SpellSlot.Q, 750);
+            this.Q = new Spell(SpellSlot.Q, 700);
             this.W = new Spell(SpellSlot.W, 550);
             this.E = new Spell(SpellSlot.E, 900);
             this.R = new Spell(SpellSlot.R);
