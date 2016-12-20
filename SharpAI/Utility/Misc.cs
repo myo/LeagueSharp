@@ -14,7 +14,7 @@ namespace SharpAI.Utility
     {
         public static bool IsDangerousPosition(this Vector3 pos)
         {
-            var possibleTurret = ObjectManager.Get<Obj_AI_Turret>().FirstOrDefault(t => !t.IsDead && t.IsEnemy && t.Distance(ObjectManager.Player.Position) < 900);
+            var possibleTurret = ObjectManager.Get<Obj_AI_Turret>().FirstOrDefault(t => !t.IsDead && t.IsEnemy && t.Distance(ObjectManager.Player.ServerPosition) < 900);
             if (possibleTurret == null)
             {
                 return false;

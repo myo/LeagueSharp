@@ -98,7 +98,7 @@ namespace SharpAI.SummonersRift.Data
                 {
                     Logging.Log("[Polygon Cache] A turret was deleted");
                     // we gather some information about the dead turret
-                    var teamLaneTuple = Turrets.GetTurretTeamAndLaneByPosition(sender.Position);
+                    var teamLaneTuple = Turrets.GetTurretTeamAndLaneByPosition(sender.ServerPosition);
                     var team = teamLaneTuple.Item1;
                     var lane = teamLaneTuple.Item2;
                     var position = teamLaneTuple.Item3;
@@ -198,7 +198,7 @@ namespace SharpAI.SummonersRift.Data
         public static Geometry.Polygon GetLastTurretInLanePolygon(GameObjectTeam team, Lane lane)
         {
             var turret = Turrets.GetTurretsPosition(team, lane);
-            return new Geometry.Circle(turret.LastOrDefault(), 850).ToPolygon();
+            return new Geometry.Circle(turret.LastOrDefault(), 500).ToPolygon();
         }
 
         /// <summary>
@@ -243,8 +243,8 @@ namespace SharpAI.SummonersRift.Data
             if (farthestMinion != null)
             {
                 return
-                    new Geometry.Rectangle(farthestMinion.Position.ToVector2(),
-                        farthestMinion.Position.ToVector2().Extend(farthestTurret, maxFieldDistance), 700).ToPolygon();
+                    new Geometry.Rectangle(farthestMinion.ServerPosition.ToVector2(),
+                        farthestMinion.ServerPosition.ToVector2().Extend(farthestTurret, maxFieldDistance), 700).ToPolygon();
             }
             return GetLanePolygon(laneZoneTeam, lane);
         }
@@ -254,19 +254,19 @@ namespace SharpAI.SummonersRift.Data
             var allies = GameObjects.AllyHeroes.Where(h => !h.IsMe);
             if (!allies.Any(
                 h =>
-                    h.Position.IsInside(GetWholeLane(Lane.Mid))))
+                    h.ServerPosition.IsInside(GetWholeLane(Lane.Mid))))
             {
                 return Lane.Mid;
             }
             if (allies.Count(
                 h =>
-                    h.Position.IsInside(GetWholeLane(Lane.Bot))) < 2)
+                    h.ServerPosition.IsInside(GetWholeLane(Lane.Bot))) < 2)
             {
                 return Lane.Bot;
             }
             if (allies.Count(
                 h =>
-                    h.Position.IsInside(GetWholeLane(Lane.Top))) < 2)
+                    h.ServerPosition.IsInside(GetWholeLane(Lane.Top))) < 2)
             {
                 return Lane.Top;
             }
@@ -302,6 +302,10 @@ namespace SharpAI.SummonersRift.Data
             var minionsToRemove = new List<int>();
             foreach (var minion in GameObjects.Minions)
             {
+                if (!minion.CharData.BaseSkinName.Contains("SRU_"))
+                {
+                    continue;
+                }
                 if (_minionsInLanes.ContainsKey(minion.NetworkId))
                 {
                     if (minion.IsDead)
@@ -311,17 +315,17 @@ namespace SharpAI.SummonersRift.Data
                     continue;
                 }
                 // we're only gonna consider top, mid and bot since we might add lane,jg etc
-                if (minion.Position.IsInside(StaticData.GetWholeLane(Lane.Top)))
+                if (minion.ServerPosition.IsInside(StaticData.GetWholeLane(Lane.Top)))
                 {
                     _minionsInLanes.Add(minion.NetworkId,
                         new SharpAIMinion {Lane = Lane.Top, MinionPtr = minion, NetworkId = minion.NetworkId});
                 }
-                if (minion.Position.IsInside(StaticData.GetWholeLane(Lane.Mid)))
+                if (minion.ServerPosition.IsInside(StaticData.GetWholeLane(Lane.Mid)))
                 {
                     _minionsInLanes.Add(minion.NetworkId,
                         new SharpAIMinion {Lane = Lane.Mid, MinionPtr = minion, NetworkId = minion.NetworkId});
                 }
-                if (minion.Position.IsInside(StaticData.GetWholeLane(Lane.Bot)))
+                if (minion.ServerPosition.IsInside(StaticData.GetWholeLane(Lane.Bot)))
                 {
                     _minionsInLanes.Add(minion.NetworkId,
                         new SharpAIMinion {Lane = Lane.Bot, MinionPtr = minion, NetworkId = minion.NetworkId});
@@ -594,28 +598,28 @@ namespace SharpAI.SummonersRift.Data
                                     turret =>
                                         orderBase.Any(
                                             orderBaseTurretPosition =>
-                                                orderBaseTurretPosition.Distance(turret.Position) < 250));
+                                                orderBaseTurretPosition.Distance(turret.ServerPosition) < 250));
                         }
                         case Lane.Bot:
                         {
                             return GameObjects.Turrets.Where(
                                 turret =>
                                     orderBot.Any(
-                                        orderBotTurretPosition => orderBotTurretPosition.Distance(turret.Position) < 250));
+                                        orderBotTurretPosition => orderBotTurretPosition.Distance(turret.ServerPosition) < 250));
                         }
                         case Lane.Mid:
                         {
                             return GameObjects.Turrets.Where(
                                 turret =>
                                     orderMid.Any(
-                                        orderMidPosition => orderMidPosition.Distance(turret.Position) < 250));
+                                        orderMidPosition => orderMidPosition.Distance(turret.ServerPosition) < 250));
                         }
                         case Lane.Top:
                         {
                             return GameObjects.Turrets.Where(
                                 turret =>
                                     orderTop.Any(
-                                        orderTopTurretPosition => orderTopTurretPosition.Distance(turret.Position) < 250));
+                                        orderTopTurretPosition => orderTopTurretPosition.Distance(turret.ServerPosition) < 250));
                         }
                     }
                     break;
@@ -631,28 +635,28 @@ namespace SharpAI.SummonersRift.Data
                                     turret =>
                                         chaosBase.Any(
                                             chaosBaseTurretPosition =>
-                                                chaosBaseTurretPosition.Distance(turret.Position) < 250));
+                                                chaosBaseTurretPosition.Distance(turret.ServerPosition) < 250));
                         }
                         case Lane.Bot:
                         {
                             return GameObjects.Turrets.Where(
                                 turret =>
                                     chaosBot.Any(
-                                        chaosBotTurretPosition => chaosBotTurretPosition.Distance(turret.Position) < 250));
+                                        chaosBotTurretPosition => chaosBotTurretPosition.Distance(turret.ServerPosition) < 250));
                         }
                         case Lane.Mid:
                         {
                             return GameObjects.Turrets.Where(
                                 turret =>
                                     chaosMid.Any(
-                                        chaosMidPosition => chaosMidPosition.Distance(turret.Position) < 250));
+                                        chaosMidPosition => chaosMidPosition.Distance(turret.ServerPosition) < 250));
                         }
                         case Lane.Top:
                         {
                             return GameObjects.Turrets.Where(
                                 turret =>
                                     chaosTop.Any(
-                                        chaosTopTurretPosition => chaosTopTurretPosition.Distance(turret.Position) < 250));
+                                        chaosTopTurretPosition => chaosTopTurretPosition.Distance(turret.ServerPosition) < 250));
                         }
                     }
                     break;

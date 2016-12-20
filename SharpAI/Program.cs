@@ -32,6 +32,7 @@ namespace SharpAI
                 SessionBasedData.LoadTick = ObjectManager.Get<Obj_AI_Minion>().Any(m => m.CharData.BaseSkinName.Contains("Minion"))
                     ? Environment.TickCount - 190000
                     : Environment.TickCount;
+                UniversalLeveler.Program.Init();
                 Hotfixes.Load();
                 Logging.Log("LOADED " + SessionBasedData.LoadTick);
                 Game.OnUpdate += (updateArgs) =>

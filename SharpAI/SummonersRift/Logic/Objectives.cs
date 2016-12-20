@@ -19,7 +19,7 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            return !ObjectManager.Player.Position.IsDangerousPosition() && ObjectManager.Get<Obj_AI_Turret>().Any(t=>t.IsEnemy && !t.IsDead && t.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || ObjectManager.Get<Obj_BarracksDampener>().Any(b=>b.IsEnemy && !b.IsDead && b.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || GameObjects.EnemyNexus.Distance(ObjectManager.Player) < ObjectManager.Player.GetRealAutoAttackRange();
+            return !ObjectManager.Player.ServerPosition.IsDangerousPosition() && ObjectManager.Get<Obj_AI_Turret>().Any(t=>t.IsEnemy && !t.IsDead && t.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || ObjectManager.Get<Obj_BarracksDampener>().Any(b=>b.IsEnemy && !b.IsDead && b.Distance(ObjectManager.Player) < ObjectManager.Player.AttackRange) || GameObjects.EnemyNexus.Distance(ObjectManager.Player) < ObjectManager.Player.GetRealAutoAttackRange();
         }
 
         static TreeSharp.Action TakeAction()
@@ -31,9 +31,9 @@ namespace SharpAI.SummonersRift.Logic
                         .FirstOrDefault(t => t.IsEnemy && !t.IsDead && t.IsVisible && t.Distance(ObjectManager.Player) < 1250);
                 if (turret != null)
                 {
-                    if (!turret.Position.IsDangerousPosition())
+                    if (!turret.ServerPosition.IsDangerousPosition())
                     {
-                        turret.Position.Extend(ObjectManager.Player.Position, ObjectManager.Player.AttackRange - 225).WalkToPoint(OrbwalkingMode.LaneClear);
+                        turret.ServerPosition.Extend(ObjectManager.Player.ServerPosition, ObjectManager.Player.AttackRange - 225).WalkToPoint(OrbwalkingMode.LaneClear);
                     }
                 }
             });

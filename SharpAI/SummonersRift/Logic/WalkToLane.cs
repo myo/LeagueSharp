@@ -18,7 +18,7 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            return !GameObjects.Minions.Any(m=>m.Position.IsInside(StaticData.GetWholeLane(SessionBasedData.CurrentLane)));
+            return !GameObjects.Minions.Any(m=>m.ServerPosition.IsInside(StaticData.GetWholeLane(SessionBasedData.CurrentLane)));
         }
 
         static Action TakeAction()

@@ -19,6 +19,8 @@ namespace SharpAI.SummonersRift.Data
         public static Lane CurrentLane { get; set; } = Lane.Unknown;
         public static Geometry.Polygon CurrentLanePolygon => StaticData.GetWholeLane(CurrentLane);
 
+        public static Obj_AI_Turret ClosestAllyTurret => ObjectManager.Get<Obj_AI_Turret>()
+                .FirstOrDefault(turret=> turret.IsAlly && !turret.IsDead && Turrets.GetTurretsPosition(ObjectManager.Player.Team, CurrentLane).Any(pos=>turret.Position.Distance(pos) < 100));
 
 
         public static GameObjectTeam MyTeam => ObjectManager.Player.Team;

@@ -19,7 +19,7 @@ namespace SharpAI.Utility
             {
                 _humanizer = Environment.TickCount;
                 // another lane
-                if (point.Distance(ObjectManager.Player.Position) > 800 || forceIssueOrder)
+                if (point.Distance(ObjectManager.Player.ServerPosition) > 800 || forceIssueOrder)
                 {
                     ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, point, false);
                     Variables.Orbwalker.ActiveMode = OrbwalkingMode.None;

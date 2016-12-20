@@ -17,35 +17,8 @@ namespace SharpAI.SummonersRift.Logic
     {
         static bool ShouldTakeAction()
         {
-            if (
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Count(e => e.IsEnemy && !e.IsDead && e.Distance(ObjectManager.Player) < 1400) >= 2)
-            {
-                return false;
-            }
-            if (ObjectManager.Get<Obj_AI_Hero>()
-                .Any(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1650) &&
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Count(h => h.IsAlly && !h.IsDead && h.Distance(ObjectManager.Player) < 1650) >
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Count(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1650))
-            {
-                return true;
-            }
-            var orbwalkerTarget = Variables.Orbwalker.GetTarget();
-            if (orbwalkerTarget != null)
-            {
-                if (
-
-                    orbwalkerTarget is Obj_AI_Hero)
-                {
-                    var target = Variables.Orbwalker.GetTarget() as Obj_AI_Hero;
-                    return (target != null && ObjectManager.Player.HealthPercent >= target.HealthPercent*2 ||
-                            target.HealthPercent < 10) &&
-                           !target.IsUnderEnemyTurret();
-                }
-            }
-            return false;
+            return !ObjectManager.Player.IsUnderEnemyTurret() && ObjectManager.Get<Obj_AI_Hero>().Where(h =>h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1100).All(h=>h.Level <= ObjectManager.Player.Level) && ObjectManager.Get<Obj_AI_Hero>().Any(h => h.IsEnemy && !h.IsDead && h.Distance(ObjectManager.Player) < 1100 && h.IsVisible && h.Health < ObjectManager.Player.GetAutoAttackDamage(h) * 2 && !h.IsUnderEnemyTurret()) || ObjectManager.Get<Obj_AI_Hero>().Any(h => h.IsEnemy && !h.IsDead && h.Distance(ObjectManager.Player) < 1100 && h.IsVisible) &&  (ObjectManager.Get<Obj_AI_Hero>().Count(h=>h.IsAlly && !h.IsMe && !h.IsDead && h.Distance(ObjectManager.Player) < 1100) + 1 > ObjectManager.Get<Obj_AI_Hero>().Count(h => h.IsEnemy && !h.IsDead && h.Distance(ObjectManager.Player) < 1100)
+                || (ObjectManager.Get<Obj_AI_Hero>().Count(h => h.IsAlly && !h.IsDead && h.Distance(ObjectManager.Player) < 1100) == ObjectManager.Get<Obj_AI_Hero>().Count(h => h.IsEnemy && !h.IsDead && h.Distance(ObjectManager.Player) < 1100) && ObjectManager.Get<Obj_AI_Hero>().All(h => h.IsEnemy && !h.IsDead && h.Distance(ObjectManager.Player) < 1100 && ObjectManager.Player.Level - 1 > h.Level)));
         }
 
         static TreeSharp.Action TakeAction()
@@ -53,10 +26,27 @@ namespace SharpAI.SummonersRift.Logic
             return new TreeSharp.Action(a =>
             {
                 Logging.Log("SWITCHED MODE TO FIGHT");
-                Variables.Orbwalker.GetTarget()
-                        .Position.Extend(ObjectManager.Player.Position,
+                var target =
+                Variables.TargetSelector.GetTarget(1100);
+                if (target != null && !target.IsUnderEnemyTurret())
+                {
+                    if (
+                        ObjectManager.Get<Obj_AI_Hero>()
+                            .Any(h => h.IsAlly && !h.IsMe && !h.IsDead && h.Distance(ObjectManager.Player) < 1100))
+                    {
+                        Positioning.GetTeamfightPosition().WalkToPoint(OrbwalkingMode.Hybrid);
+                    }
+                    else
+                    {
+                        target.Position.Extend(ObjectManager.Player.Position,
                             ObjectManager.Player.GetRealAutoAttackRange() - 250)
-                        .WalkToPoint(OrbwalkingMode.Combo);
+                            .WalkToPoint(OrbwalkingMode.Hybrid);
+                    }
+                }
+                else
+                {
+                    Push.BehaviorComposite.Tick(null);
+                }
             });
         }
 

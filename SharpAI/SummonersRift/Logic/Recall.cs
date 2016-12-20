@@ -9,6 +9,7 @@ using SharpAI.Utility;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using LeagueSharp.SDK.Enumerations;
+using SharpDX;
 using TreeSharp;
 using Random = SharpAI.Utility.Random;
 
@@ -16,9 +17,10 @@ namespace SharpAI.SummonersRift.Logic
 {
     public static class Recall
     {
+        private static Vector3 _recallSpot;
         static bool ShouldTakeAction()
         {
-            return !ObjectManager.Player.InFountain() && !ObjectManager.Player.IsUnderEnemyTurret() && ObjectManager.Player.HealthPercent < 35 && !ObjectManager.Player.IsDead;
+            return !ObjectManager.Player.InFountain() && ObjectManager.Player.HealthPercent < 30 && !ObjectManager.Player.IsDead;
         }
 
         static TreeSharp.Action TakeAction()
@@ -26,9 +28,22 @@ namespace SharpAI.SummonersRift.Logic
             return new TreeSharp.Action(a =>
             {
                 Logging.Log("SWITCHED MODE TO RECALL");
-                if (ObjectManager.Get<Obj_AI_Hero>().Count(h=> h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1250) == 0 &&
-                    ObjectManager.Get<Obj_AI_Minion>()
-                        .Count(m => m.IsEnemy && !m.IsDead && m.IsVisible && m.Distance(ObjectManager.Player) < 500) < 1)
+                _recallSpot =
+                    StaticData.GetLanePolygon(ObjectManager.Player.Team, SessionBasedData.CurrentLane)
+                        .Points.FirstOrDefault(
+                            p =>
+                                !ObjectManager.Get<Obj_AI_Hero>()
+                                    .Any(h => h.IsEnemy && !h.IsDead && h.Distance(p) < 2200))
+                        .ToVector3();
+                    SessionBasedData.CurrentLanePolygon.Points.FirstOrDefault(
+                        p =>
+                            ObjectManager.Get<Obj_AI_Turret>()
+                                .Any(
+                                    t =>
+                                        t.IsAlly && t.Distance(p) < 900 &&
+                                        !ObjectManager.Get<Obj_AI_Hero>()
+                                            .Any(h => h.IsEnemy && !h.IsDead && h.Distance(t) < 1600))).ToVector3();
+                if (ObjectManager.Player.Distance(_recallSpot) < 350)
                 {
                     Variables.Orbwalker.ActiveMode = OrbwalkingMode.None;
                     if (!ObjectManager.Player.IsRecalling())
@@ -38,14 +53,21 @@ namespace SharpAI.SummonersRift.Logic
                 }
                 else
                 {
-                    Variables.Orbwalker.ActiveMode = OrbwalkingMode.None;
-                    if (!ObjectManager.Player.IsRecalling() ||
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Any(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1250))
+                    if (_recallSpot != Vector3.Zero)
                     {
-                        ObjectManager.Player.Position.Extend(GameObjects.AllyNexus.Position,
-                                Random.GetRandomInteger(400, 600)).WalkToPoint(OrbwalkingMode.None, true);
-                        Logging.Log("LOOKING FOR SAFE RECALL SPOT");
+                        _recallSpot.WalkToPoint(OrbwalkingMode.Combo);
+                    }
+                    else
+                    {
+                        Variables.Orbwalker.ActiveMode = OrbwalkingMode.None;
+                        if (!ObjectManager.Player.IsRecalling() ||
+                            ObjectManager.Get<Obj_AI_Hero>()
+                                .Any(h => h.IsEnemy && !h.IsDead && h.IsVisible && h.Distance(ObjectManager.Player) < 1250))
+                        {
+                            ObjectManager.Player.Position.Extend(GameObjects.AllyNexus.Position,
+                                    Random.GetRandomInteger(400, 600)).WalkToPoint(OrbwalkingMode.None, true);
+                            Logging.Log("LOOKING FOR SAFE RECALL SPOT");
+                        }
                     }
                 }
             });

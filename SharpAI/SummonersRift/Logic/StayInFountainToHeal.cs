@@ -2,29 +2,29 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SharpAI.SummonersRift.Data;
-using SharpAI.Utility;
 using LeagueSharp;
 using LeagueSharp.SDK;
 using LeagueSharp.SDK.Enumerations;
+using SharpAI.Utility;
 using TreeSharp;
-using Action = TreeSharp.Action;
+using Random = SharpAI.Utility.Random;
 
 namespace SharpAI.SummonersRift.Logic
 {
-    public static class Teamfight
+    class StayInFountainToHeal
     {
         static bool ShouldTakeAction()
         {
-            return false;// ObjectManager.Get<Obj_AI_Hero>().Any(h => !h.IsDead && h.IsAlly && !h.InFountain() && h.ServerPosition.CountAllyHeroesInRange(1850) >1);
+            return ObjectManager.Player.IsDead || (ObjectManager.Player.InFountain() && ObjectManager.Player.HealthPercent < 100) || ObjectManager.Player.IsRecalling();
         }
 
         static TreeSharp.Action TakeAction()
         {
-            Logging.Log("SWITCHED MODE TO TEAMFIGHT");
-            return new Action(a =>
+            return new TreeSharp.Action(a =>
             {
-                Positioning.GetTeamfightPosition().WalkToPoint(OrbwalkingMode.Combo);
+                Logging.Log("SWITCHED MODE TO HEAL IN FOUNTAIN");
+                Variables.Orbwalker.ActiveMode = OrbwalkingMode.None;
+                //do nothing
             });
         }
 

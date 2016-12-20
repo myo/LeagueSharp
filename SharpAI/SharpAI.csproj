@@ -33,16 +33,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="clipper_library">
-      <HintPath>C:\L\System\clipper_library.dll</HintPath>
+      <HintPath>C:\PS\References\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>C:\L\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\PS\References\LeagueSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="LeagueSharp.Common">
+      <HintPath>C:\PS\References\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.SDKEx">
-      <HintPath>C:\L\System\LeagueSharp.SDKEx.dll</HintPath>
+      <HintPath>C:\PS\References\LeagueSharp.SDKEx.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\L\System\SharpDX.dll</HintPath>
+      <HintPath>C:\PS\References\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,7 +56,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TreeSharp">
-      <HintPath>C:\L\System\TreeSharp.dll</HintPath>
+      <HintPath>C:\PS\References\TreeSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +76,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SummonersRift\Logic\Recall.cs" />
     <Compile Include="SummonersRift\Logic\Shop.cs" />
+    <Compile Include="SummonersRift\Logic\StayInFountainToHeal.cs" />
     <Compile Include="SummonersRift\Logic\Teamfight.cs" />
     <Compile Include="SummonersRift\Logic\WalkToLane.cs" />
     <Compile Include="SummonersRift\Shop\BuyItemEvent.cs" />
@@ -80,19 +84,17 @@
     <Compile Include="SummonersRift\Shop\Item.cs" />
     <Compile Include="SummonersRift\Shop\Main.cs" />
     <Compile Include="SummonersRift\Tree.cs" />
-    <Compile Include="Utility\AutoLevel.cs" />
-    <Compile Include="Utility\AutoLevelSequences.cs" />
     <Compile Include="Utility\EnumerableExtensions.cs" />
     <Compile Include="Utility\Geometry.cs" />
     <Compile Include="Utility\Logging.cs" />
     <Compile Include="Utility\Misc.cs" />
     <Compile Include="Utility\Pathfinding.cs" />
     <Compile Include="Utility\Random.cs" />
+    <Compile Include="Utility\UniversalLeveler\Program.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

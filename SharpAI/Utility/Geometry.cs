@@ -32,7 +32,7 @@ namespace SharpAI.Utility
         public static Vector3 GetRandomPointInPolygon(this Polygon poly)
         {
             var points = poly.Points;
-            return points.Shuffle().FirstOrDefault().ToVector3();
+            return points.Shuffle().FirstOrDefault(p => NavMesh.GetCollisionFlags((Vector3)p) != CollisionFlags.Building && NavMesh.GetCollisionFlags((Vector3)p) != CollisionFlags.Wall).ToVector3();
         }
 
         public static Vector3 SwitchYZ(this Vector3 v)

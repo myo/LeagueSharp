@@ -19,7 +19,6 @@ namespace SharpAI.SummonersRift
     public static class Hotfixes
     {
         private static int _lastMovementCommand = 0;
-        private static AutoLevel _autoLevel;
         public static bool AttackedByMinionsFlag = false;
         public static bool AttackedByTurretFlag = false;
         public static int _lastAfkCheckTime = 0;
@@ -29,46 +28,55 @@ namespace SharpAI.SummonersRift
             Events.OnLoad += (obj, loadArgs) =>
             {
                 Shop.Main.Init();
-                _autoLevel = new AutoLevel(AutoLevel.GetSequenceFromDb());
-                _autoLevel.Enable();
                 Obj_AI_Base.OnIssueOrder += (sender, issueOrderArgs) =>
                 {
                     if (SessionBasedData.Loaded && sender.IsMe)
                     {
-                        if (issueOrderArgs.Order == GameObjectOrder.MoveTo && ObjectManager.Player.Distance(issueOrderArgs.TargetPosition) < 1000)
+                        if (issueOrderArgs.Order == GameObjectOrder.MoveTo)
                         {
-                            if (ObjectManager.Player.IsRecalling() ||
-                                (ObjectManager.Player.InFountain() && ObjectManager.Player.HealthPercent < 95))
+                            //no walking to fountain.
+                            if (issueOrderArgs.TargetPosition == Vector3.Zero || issueOrderArgs.TargetPosition.X == 0)
                             {
-                                Logging.Log("bot is recalling");
                                 issueOrderArgs.Process = false;
                                 return;
                             }
-                            if (issueOrderArgs.TargetPosition.IsDangerousPosition())
+                            //no walking to cursor pos
+                            if (issueOrderArgs.TargetPosition.Distance(Game.CursorPos) < 50)
                             {
-                                Logging.Log("target position is dangerous");
                                 issueOrderArgs.Process = false;
                                 return;
                             }
+                            //force stay in fountain until 95% hp
+                            if (ObjectManager.Player.InFountain() && ObjectManager.Player.HealthPercent < 95)
+                            {
+                                issueOrderArgs.Process = false;
+                                return;
+                            }
+                            //no walking into turrets if no minions under it
+                            if (!ObjectManager.Player.IsUnderEnemyTurret() && issueOrderArgs.TargetPosition.IsDangerousPosition())
+                            {
+                                issueOrderArgs.Process = false;
+                                return;
+                            }
+                            //humanizer shit
                             if (Environment.TickCount - _lastMovementCommand > Utility.Random.GetRandomInteger(300, 1100))
                             {
-                                Logging.Log("humanizing");
                                 _lastMovementCommand = Environment.TickCount;
                                 return;
                             }
-                            issueOrderArgs.Process = false;
                         }
                         if (issueOrderArgs.Target != null)
                         {
+                            //no hitting heroes under enemy turrets
                             if (issueOrderArgs.Target is Obj_AI_Hero)
                             {
-                                Logging.Log("anti outtraded");
-                                if (ObjectManager.Player.IsUnderEnemyTurret() || (ObjectManager.Get<Obj_AI_Minion>().Count(m => m.IsEnemy && !m.IsDead && m.Distance(ObjectManager.Player) < 600) > 4 && Variables.Orbwalker.ActiveMode != OrbwalkingMode.Combo))
+                                if (ObjectManager.Player.IsUnderEnemyTurret())
                                 {
                                     issueOrderArgs.Process = false;
                                     return;
                                 }
                             }
+                            //no hitting jg camps
                             if (issueOrderArgs.Target is Obj_AI_Minion && (issueOrderArgs.Target as Obj_AI_Minion).Team == GameObjectTeam.Neutral)
                             {
                                 Logging.Log("skipped hitting jg camp");
@@ -82,7 +90,7 @@ namespace SharpAI.SummonersRift
                 {
                     if (castSpellArgs.Slot == SpellSlot.Recall)
                     {
-                        Variables.Orbwalker.ActiveMode = OrbwalkingMode.None;
+                        Variables.Orbwalker.ActiveMode = OrbwalkingMode.Combo;
                     }
                 };
                 Obj_AI_Base.OnProcessSpellCast += (sender, spellCastArgs) =>
@@ -92,12 +100,22 @@ namespace SharpAI.SummonersRift
                         if (sender is Obj_AI_Minion)
                         {
                             AttackedByMinionsFlag = true;
-                            DelayAction.Add(350, () => AttackedByMinionsFlag = false);
+                            DelayAction.Add(1350, () => AttackedByMinionsFlag = false);
                         }
                         if (sender is Obj_AI_Turret)
                         {
                             AttackedByTurretFlag = true;
-                            DelayAction.Add(500, () => AttackedByTurretFlag = false);
+                            DelayAction.Add(1500, () =>
+                            {
+                                if (!ObjectManager.Player.IsUnderEnemyTurret())
+                                {
+                                    AttackedByTurretFlag = false;
+                                }
+                                else
+                                {
+                                    DelayAction.Add(2250, () => AttackedByTurretFlag = false);
+                                }
+                            });
                         }
                     }
                 };
