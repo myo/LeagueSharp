@@ -67,6 +67,15 @@ namespace SharpAI.SummonersRift
                         }
                         if (issueOrderArgs.Target != null)
                         {
+                            if (issueOrderArgs.Target is Obj_BarracksDampener)
+                            {
+                                var target = (Obj_BarracksDampener) issueOrderArgs.Target;
+                                if (!target.IsValidTarget() || target.Health < 1)
+                                {
+                                    issueOrderArgs.Process = false;
+                                    return;
+                                }
+                            }
                             //no hitting heroes under enemy turrets
                             if (issueOrderArgs.Target is Obj_AI_Hero)
                             {

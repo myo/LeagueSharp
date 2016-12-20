@@ -37,7 +37,7 @@ namespace SharpAI.SummonersRift.Data
             }
             if (ObjectManager.Player.IsUnderAllyTurret())
             {
-                amount -= 800;
+                amount -= 250;
             }
             return amount > 0 ?amount:0;
         }
