@@ -40,13 +40,13 @@
       <HintPath>C:\LeagueSharp\System\clipper_library.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp">
-      <HintPath>C:\LeagueSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\PS\References\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>C:\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\PS\References\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\PS\References\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -68,7 +68,6 @@
     <Compile Include="MyLogic\Others\Damages.cs" />
     <Compile Include="MyLogic\Others\OnDraw.cs" />
     <Compile Include="MyLogic\Others\OnProcessSpellcast.cs" />
-    <Compile Include="MyLogic\Others\OnUpdate.cs" />
     <Compile Include="MyLogic\Others\SkinHack.cs" />
     <Compile Include="MyLogic\Others\SoulboundSaver.cs" />
     <Compile Include="MyLogic\Others\Zezzy.cs" />

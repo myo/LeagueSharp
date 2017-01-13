@@ -15,7 +15,7 @@ namespace HERMES_Kalista.MyLogic.Others
         public static bool IsRendKillable(this Obj_AI_Base target)
         {
             if (target.HasBuff("kindredrnodeathbuff")) return false;
-            if (target.Name.Contains("Baron") || target.Name.Contains("Dragon") || target.Health > 20)
+            if (target.Name.Contains("Baron") || target.Name.Contains("Dragon") || target.Health > 5)
             {
                 if (target is Obj_AI_Hero)
                 {
@@ -28,7 +28,7 @@ namespace HERMES_Kalista.MyLogic.Others
                 var dmg = Program.E.GetDamage(target);
                 if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
                 {
-                    dmg *= 0.55f;
+                    dmg *= 0.6f;
                 }
                 if (target.Name.Contains("Baron") && ObjectManager.Player.HasBuff("barontarget"))
                 {

@@ -43,8 +43,9 @@ namespace HERMES_Kalista.MyInitializer
                 Program.ComboMenu.AddItem(new MenuItem("QMinMana", "Min mana% for Q").SetValue(new Slider(10, 0, 100)));
                 Program.ComboMenu.AddItem(new MenuItem("EComboMinionReset", "USE SMART E RESET").SetValue(true));
                 Program.ComboMenu.AddItem(
-                    new MenuItem("EComboMinionResetStacks", "Min enemy stacks for SMART RESET").SetValue(new Slider(3, 1,
+                    new MenuItem("EComboMinionResetStacksNew", "Min enemy stacks for SMART RESET").SetValue(new Slider(3, 1,
                         33)));
+                Program.ComboMenu.AddItem(new MenuItem("UseE2Tilt", "Use E to TILT enemies?").SetValue(true));
                 Program.ComboMenu.AddItem(
                     new MenuItem("EComboMinStacks", "Min stacks for E poke").SetValue(new Slider(5, 1, 30)));
                 Program.ComboMenu.AddItem(
@@ -56,7 +57,6 @@ namespace HERMES_Kalista.MyInitializer
                 Program.ComboMenu.AddItem(new MenuItem("RComboSelf", "USE R TO SELF-PEEL").SetValue(false));
                 Program.ComboMenu.AddItem(new MenuItem("RComboSupport", "USE R TO SAVE SUPP").SetValue(true));
                 Program.ComboMenu.AddItem(new MenuItem("MinionOrbwalking", "ORBWALK ON MINIONS?").SetValue(false));
-                Program.ComboMenu.AddItem(new MenuItem("AutoBuy", "Auto-Swap Trinkets?").SetValue(true));
                 Program.LaneClearMenu.AddItem(new MenuItem("LaneclearE", "Use E").SetValue(true));
                 Program.LaneClearMenu.AddItem(new MenuItem("LaneclearEMinMana", "Min Mana% for E Laneclear").SetValue(new Slider(50)));
                 Program.LaneClearMenu.AddItem(
