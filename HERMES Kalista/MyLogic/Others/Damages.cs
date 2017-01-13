@@ -28,15 +28,23 @@ namespace HERMES_Kalista.MyLogic.Others
                 var dmg = Program.E.GetDamage(target);
                 if (ObjectManager.Player.HasBuff("SummonerExhaustSlow"))
                 {
-                    dmg *= 0.6f;
+                    dmg *= 0.55f;
                 }
-                if (target.Name.Contains("Baron") && ObjectManager.Player.HasBuff("barontarget"))
+                if (target.Name.Contains("Baron"))
                 {
-                    dmg *= 0.5f;
+                    dmg -= 20;
+                    if (ObjectManager.Player.HasBuff("barontarget"))
+                    {
+                        dmg *= 0.5f;
+                    }
                 }
-                if (target.Name.Contains("Dragon") && ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
+                if (target.Name.Contains("Dragon"))
                 {
-                    dmg *= (1f - (0.07f * ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
+                    dmg -= 20;
+                    if (ObjectManager.Player.HasBuff("s5test_dragonslayerbuff"))
+                    {
+                        dmg *= (1f - (0.07f*ObjectManager.Player.GetBuffCount("s5test_dragonslayerbuff")));
+                    }
                 }
                 return dmg > target.Health;
             }
